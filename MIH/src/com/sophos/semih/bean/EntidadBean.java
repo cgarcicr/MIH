@@ -1,0 +1,399 @@
+package com.sophos.semih.bean;
+
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.web.jsf.FacesContextUtils;
+
+import com.sophos.semih.common.Constants;
+import com.sophos.semih.model.Campo;
+import com.sophos.semih.model.TMihAplicacion;
+import com.sophos.semih.model.TMihEntidad;
+import com.sophos.semih.model.TMihLineanegocio;
+import com.sophos.semih.model.TMihProyecto;
+import com.sophos.semih.service.AplicacionManager;
+import com.sophos.semih.service.EntidadManager;
+import com.sophos.semih.service.LineaNegocioManager;
+import com.sophos.semih.service.ProyectoManager;
+
+@ManagedBean
+@ViewScoped
+public class EntidadBean extends BaseBean {
+
+	private static final long serialVersionUID = 5582537849222909683L;
+	    
+	// Atributos de la entidad
+	private String nombre;
+	private int tiempoVigencia;
+	private String creador;
+	private String solicitante;
+	private int codProyecto;
+	private int codLineaNegocio;
+	private int codAplicacion;
+	private String depurar;
+	private String descripcion;
+
+	// Listas para selección de aplicación
+	private List<TMihProyecto> proyectos;
+	private List<TMihLineanegocio> lineasNegocio;
+	private List<TMihAplicacion> aplicaciones;
+	private List<String> tipoDato;
+
+	// Manejo de campos
+	private List<Campo> campos;
+	private Campo campoSel;
+	private int pagCampos = 1;
+
+	// Lista de entidades existentes
+	private List<TMihEntidad> entidadesExistentes;
+	private TMihEntidad entidadSeleccionada;
+	private int pag = 1;
+
+	// Contiene error a desplegar al usuario
+	private String error;
+	private boolean creada;
+
+	private EntidadManager eManager;
+	private AplicacionManager aManager;
+	private LineaNegocioManager lnManager;
+	private ProyectoManager pManager;
+	private BeanFactory factory = FacesContextUtils
+			.getWebApplicationContext(FacesContext.getCurrentInstance());
+	private ExternalContext ec;
+	
+	/**
+	 * Constructor, carga los manager y la lista de entidades y proyectos
+	 */
+	public EntidadBean() {
+		// Carga los manager
+		lnManager = (LineaNegocioManager) factory
+				.getBean("lineaNegocioManager");
+		pManager = (ProyectoManager) factory.getBean("proyectoManager");
+		aManager = (AplicacionManager) factory.getBean("aplicacionManager");
+
+		// Carga la lista de todos los proyectos
+		TMihProyecto proy = new TMihProyecto();
+		proy.setEstado(Constants.ESTADO_ACTIVO);
+		proyectos = pManager.getProyectos(proy);
+
+		// Carga la lista de todas las entidades
+		eManager = (EntidadManager) factory.getBean("entidadManager");
+		TMihEntidad entidad = new TMihEntidad();
+		entidadesExistentes = eManager.getEntidades(entidad);
+
+	}
+
+	/**
+	 * Método ejecutado después de cargar el bean, carga los campos de las
+	 * entidades
+	 */
+	@PostConstruct
+	public void init() {
+		// Inicializa el nuevoCampo
+		campoSel = new Campo();
+		// Inicializa la nuevaEntidad
+		entidadSeleccionada = new TMihEntidad();
+
+		// Recorre la lista de entidades existentes
+//		for (TMihEntidad e : entidadesExistentes) {
+//			// Obtiene los campos de la BD y los carga a la entidad
+//			e.setCampos(eManager.getCampos(e));
+//		}
+	}	
+	
+	/**
+	 * 
+	 * Permite consultar los campos de la entidad seleccionada.
+	 * 
+	 */
+	public void camposEntidadSeleccionada(){
+		System.out.println("prueba"+eManager.getCampos(entidadSeleccionada));
+		this.entidadSeleccionada.setCampos(eManager.getCampos(entidadSeleccionada));
+	}
+	
+	/**
+	 * Actualiza los detalles de la entidad seleccionada.
+	 */
+	public String editar() {
+		try {
+			/** Guarda el id de la Entidad seleccionada en la sesi�n */
+			ec = FacesContext.getCurrentInstance().getExternalContext();
+			ec.getSessionMap().put("entId",(entidadSeleccionada.getCodigo()));
+			return "adm_entidad.xhtml?faces-redirect=true";
+		} catch (Exception e) {
+			error = "Error al modificar " + e.getMessage();
+			return null;
+		}
+	}
+
+	/**
+	 * Elimina la entidad seleccionada.
+	 */
+	public void eliminar() {
+		try {
+			System.out.println("El nombre es: "+entidadSeleccionada.getNombre());
+			eManager.deleteEntidad(entidadSeleccionada);
+			entidadesExistentes = eManager.getEntidades(new TMihEntidad());
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Aviso","Tabla eliminada con exito."));
+		} catch (Exception e) {
+			System.out.println();
+			error = "Error al eliminar " + e.getMessage();
+		}
+	}
+
+	// Getters y Setters
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public List<Campo> getCampos() {
+		return campos;
+	}
+
+	public int getTiempoVigencia() {
+		return tiempoVigencia;
+	}
+
+	public void setTiempoVigencia(int tiempoVigencia) {
+		this.tiempoVigencia = tiempoVigencia;
+	}
+
+	public String getSolicitante() {
+		return solicitante;
+	}
+
+	public void setSolicitante(String solicitante) {
+		this.solicitante = solicitante;
+	}
+
+	public int getProyecto() {
+		return codProyecto;
+	}
+
+	public void setProyecto(int proyecto) {
+		this.codProyecto = proyecto;
+	}
+
+	public int getLineaNegocio() {
+		return codLineaNegocio;
+	}
+
+	public void setLineaNegocio(int lineaNegocio) {
+		this.codLineaNegocio = lineaNegocio;
+	}
+
+	public int getAplicacion() {
+		return codAplicacion;
+	}
+
+	public void setAplicacion(int codaplicacion) {
+		this.codAplicacion = codaplicacion;
+	}
+
+	public String getDepurar() {
+		return depurar;
+	}
+
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
+	}
+
+	public void setDepurar(String depurar) {
+		this.depurar = depurar;
+	}
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public int getPag() {
+		return pag;
+	}
+
+	public void setPag(int pag) {
+		this.pag = pag;
+	}
+
+	public int getPagCampos() {
+		return pagCampos;
+	}
+
+	public void setPagCampos(int pagCampos) {
+		this.pagCampos = pagCampos;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public int getCodaplicacion() {
+		return codAplicacion;
+	}
+
+	public void setCodaplicacion(int codaplicacion) {
+		this.codAplicacion = codaplicacion;
+	}
+
+	public EntidadManager getManager() {
+		return eManager;
+	}
+
+	public void setManager(EntidadManager manager) {
+		this.eManager = manager;
+	}
+
+	public BeanFactory getFactory() {
+		return factory;
+	}
+
+	public void setFactory(BeanFactory factory) {
+		this.factory = factory;
+	}
+
+	public void setCampos(List<Campo> campos) {
+		this.campos = campos;
+	}
+
+	public boolean isCreada() {
+		return creada;
+	}
+
+	public void setCreada(boolean creada) {
+		this.creada = creada;
+	}
+
+	public EntidadManager geteManager() {
+		return eManager;
+	}
+
+	public void seteManager(EntidadManager eManager) {
+		this.eManager = eManager;
+	}
+
+	public AplicacionManager getaManager() {
+		return aManager;
+	}
+
+	public void setaManager(AplicacionManager aManager) {
+		this.aManager = aManager;
+	}
+
+	public LineaNegocioManager getLnManager() {
+		return lnManager;
+	}
+
+	public void setLnManager(LineaNegocioManager lnManager) {
+		this.lnManager = lnManager;
+	}
+
+	public ProyectoManager getpManager() {
+		return pManager;
+	}
+
+	public void setpManager(ProyectoManager pManager) {
+		this.pManager = pManager;
+	}
+
+	public List<TMihProyecto> getProyectos() {
+		return proyectos;
+	}
+
+	public void setProyectos(List<TMihProyecto> proyectos) {
+		this.proyectos = proyectos;
+	}
+
+	public List<TMihLineanegocio> getLineasNegocio() {
+		return lineasNegocio;
+	}
+
+	public void setLineasNegocio(List<TMihLineanegocio> lineasNegocio) {
+		this.lineasNegocio = lineasNegocio;
+	}
+
+	public List<TMihAplicacion> getAplicaciones() {
+		return aplicaciones;
+	}
+
+	public void setAplicaciones(List<TMihAplicacion> aplicaciones) {
+		this.aplicaciones = aplicaciones;
+	}
+
+	public String getCreador() {
+		return creador;
+	}
+
+	public void setCreador(String creador) {
+		this.creador = creador;
+	}
+
+	public Campo getCampoSel() {
+		return campoSel;
+	}
+
+	public void setCampoSel(Campo campoSel) {
+		this.campoSel = campoSel;
+	}
+
+	public List<TMihEntidad> getEntidadesExistentes() {
+		return entidadesExistentes;
+	}
+
+	public void setEntidadesExistentes(List<TMihEntidad> entidadesExistentes) {
+		this.entidadesExistentes = entidadesExistentes;
+	}
+
+	public int getCodProyecto() {
+		return codProyecto;
+	}
+
+	public void setCodProyecto(int codProyecto) {
+		this.codProyecto = codProyecto;
+	}
+
+	public int getCodLineaNegocio() {
+		return codLineaNegocio;
+	}
+
+	public void setCodLineaNegocio(int codLineaNegocio) {
+		this.codLineaNegocio = codLineaNegocio;
+	}
+
+	public int getCodAplicacion() {
+		return codAplicacion;
+	}
+
+	public void setCodAplicacion(int codAplicacion) {
+		this.codAplicacion = codAplicacion;
+	}
+
+	public List<String> getTipoDato() {
+		return tipoDato;
+	}
+
+	public void setTipoDato(List<String> tipoDato) {
+		this.tipoDato = tipoDato;
+	}
+
+	public TMihEntidad getEntidadSeleccionada() {
+		return entidadSeleccionada;
+	}
+
+	public void setEntidadSeleccionada(TMihEntidad entidadSeleccionada) {
+		this.entidadSeleccionada = entidadSeleccionada;
+	}
+}

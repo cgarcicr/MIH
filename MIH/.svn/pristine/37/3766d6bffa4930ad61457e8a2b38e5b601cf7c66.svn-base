@@ -1,0 +1,287 @@
+package com.sophos.semih.bean;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.web.jsf.FacesContextUtils;
+
+import com.sophos.semih.common.ApplicationSetup;
+import com.sophos.semih.common.Constants;
+import com.sophos.semih.model.TMihEntidad;
+import com.sophos.semih.model.TMihLogs;
+import com.sophos.semih.service.EntidadManager;
+import com.sophos.semih.service.MantenimientoManager;
+import com.sophos.semih.util.SendMailTLS;
+
+/**
+ * Bean que controla la ejecuci�n de las depuraciones
+ * 
+ * @author FT
+ * 
+ */
+@ManagedBean
+@RequestScoped
+public class MantenimientoBean extends BaseBean {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8165217085750145927L;
+	private String error;
+	private BeanFactory factory = FacesContextUtils.getWebApplicationContext(FacesContext.getCurrentInstance());
+	private TMihLogs log;
+	private List<TMihLogs> logs;
+	private MantenimientoManager manager;
+	private EntidadManager entidadManager;
+	private Integer diasLogs;
+	private Integer diasInfo;
+	private TMihEntidad entidad = new TMihEntidad();
+	private List<TMihEntidad> list;
+	private boolean confirmLog;
+	private boolean confirmInfo;
+	
+	private static final Log logErrores = LogFactory.getLog(MantenimientoBean.class);
+
+	/**
+	 * 
+	 */
+	public MantenimientoBean() {
+		setManager((MantenimientoManager) factory.getBean("mantenimientoManager"));
+		setEntidadManager((EntidadManager) factory.getBean("entidadManager"));
+		TMihEntidad entidad = new TMihEntidad();
+		entidad.setDepurar("S");
+		setList(entidadManager.getEntidades(entidad));
+	}
+	
+	/**
+	 * @param tablas
+	 */
+	public static void generarReporteDepuracion(Map<String, String> tablas) {
+		//Blank workbook
+        XSSFWorkbook workbook = new XSSFWorkbook(); 
+         
+        //Create a blank sheet
+        XSSFSheet sheet = workbook.createSheet("Reporte Depuracion");
+
+        //Iterate over data and write to sheet
+        int rownum = 0;
+        int cellnum = 0;
+        
+        Row row = sheet.createRow(rownum++);
+        Cell cell = row.createCell(cellnum++);
+        CellStyle styleTitulo = workbook.createCellStyle();
+        Font fontTitulo = workbook.createFont();
+        fontTitulo.setBoldweight(Font.BOLDWEIGHT_BOLD);
+        styleTitulo.setFont(fontTitulo);
+        
+        cell.setCellStyle(styleTitulo);
+        cell.setCellValue(getMessage("mantenimiento.reporte.Tabla", null));
+        cell = row.createCell(cellnum++);
+        cell.setCellStyle(styleTitulo);
+        cell.setCellValue(getMessage("mantenimiento.reporte.borrar", null));
+        cell = row.createCell(cellnum++);
+        cell.setCellStyle(styleTitulo);
+        cell.setCellValue(getMessage("mantenimiento.reporte.restantes", null));
+        sheet.setColumnWidth(0, 6000);
+        sheet.setColumnWidth(1, 6000);
+        sheet.setColumnWidth(2, 6000);
+        
+        Iterator<Entry<String, String>> it = tablas.entrySet().iterator();
+        while(it.hasNext()){
+        	Entry<String, String> entry = it.next();
+	        cellnum = 0;
+	        Double borrar = Double.valueOf(entry.getValue().toString().substring(0, entry.getValue().toString().indexOf(Constants.SEPARATOR)));
+	        if (borrar != null && borrar > 0) {
+				row = sheet.createRow(rownum++);
+				cell = row.createCell(cellnum++);
+				cell.setCellValue((String) entry.getKey());
+				cell = row.createCell(cellnum++);
+				Double restantes = Double.valueOf(entry.getValue().toString().substring(entry.getValue().toString().indexOf(Constants.SEPARATOR) + 1))
+						- Double.valueOf(entry.getValue().toString().substring(0, entry.getValue().toString().indexOf(Constants.SEPARATOR)));
+				cell.setCellValue(borrar.toString());
+				cell = row.createCell(cellnum++);
+				cell.setCellValue(restantes.toString());
+			}
+        }
+        
+        try {
+        	if(sheet.getLastRowNum() > 0){
+	            //Write the workbook in file system
+	        	Calendar c = Calendar.getInstance();
+	        	String file = ApplicationSetup.getInstance().getParamValue("RUTA_REPORTE_DEPURACION") + "\\"
+	            		+ "ReporteDepuracion" + c.get(Calendar.YEAR) + (c.get(Calendar.MONTH)+1) + c.get(Calendar.DAY_OF_MONTH) + ".xlsx";
+	            FileOutputStream out = new FileOutputStream(new File(file));
+	            workbook.write(out);
+	            out.close();
+	            Calendar d = Calendar.getInstance();
+	            d.add(Calendar.DAY_OF_MONTH, Integer.valueOf(ApplicationSetup.getInstance().getParamValue("ALERT_DAYS")));
+	            String fecha = d.get(Calendar.YEAR) + "/" + (d.get(Calendar.MONTH)+1) + "/" + d.get(Calendar.DAY_OF_MONTH);
+	            String texto = getMessage("mantenimiento.mail.texto", new String[]{fecha}) + file;
+	            String asunto = getMessage("mantenimiento.mail.asunto", null) + c.get(Calendar.YEAR) + (c.get(Calendar.MONTH)+1) + c.get(Calendar.DAY_OF_MONTH);
+	            SendMailTLS.sendMail(texto, asunto, ApplicationSetup.getInstance().getParamValue("ALERT_EMAIL_TO"));
+        	}
+        } 
+        catch (Exception e) {
+        	logErrores.error("Error generando reporte de depuracion", e);
+        }
+	}
+    	 
+	public String depurarLogs(){
+		try {
+			getManager().depurarLogs(getDiasLogs());
+			setMessage("mantenimiento.exito", BaseBean.INFO, null, null);
+		} catch (Exception e) {
+			setMessage("mantenimiento.fallo", BaseBean.ERROR, null, null);
+			logErrores.error("Error ejecutando la depuración de logs", e);
+		}
+		return null;
+	}
+	
+	public String depurarInfoHistorica(){
+		try {
+			getManager().depurarInfoHistorica(getEntidad().getNombre());
+			setMessage("mantenimiento.exito", BaseBean.INFO, null, null);
+		} catch (Exception e) {
+			setMessage("mantenimiento.fallo", BaseBean.ERROR, null, null);
+			logErrores.error("Error ejecutando la depuración de información", e);
+		}
+		return null;
+	}
+	
+	public String showConfirmLog(){
+		this.confirmLog = true;
+        return null;
+	}
+	
+	public String hideConfirmLog(){
+		this.confirmLog = false;
+        return null;
+	}
+	
+	public String showConfirmInfo(){
+		this.confirmInfo = true;
+        return null;
+	}
+	
+	public String hideConfirmInfo(){
+		this.confirmInfo = false;
+        return null;
+	}
+	
+	// Getters y Setters
+	public MantenimientoManager getManager() {
+		return manager;
+	}
+
+	public void setManager(MantenimientoManager manager) {
+		this.manager = manager;
+	}
+
+	public EntidadManager getEntidadManager() {
+		return entidadManager;
+	}
+
+	public void setEntidadManager(EntidadManager entidadManager) {
+		this.entidadManager = entidadManager;
+	}
+
+	public TMihLogs getLog() {
+		return log;
+	}
+
+	public void setLog(TMihLogs log) {
+		this.log = log;
+	}
+
+	public List<TMihLogs> getLogs() {
+		return logs;
+	}
+
+	public void setLogs(List<TMihLogs> logs) {
+		this.logs = logs;
+	}
+
+	public BeanFactory getFactory() {
+		return factory;
+	}
+
+	public void setFactory(BeanFactory factory) {
+		this.factory = factory;
+	}
+
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
+	}
+
+	public Integer getDiasLogs() {
+		return diasLogs;
+	}
+
+	public void setDiasLogs(Integer diasLogs) {
+		this.diasLogs = diasLogs;
+	}
+
+	public Integer getDiasInfo() {
+		return diasInfo;
+	}
+
+	public void setDiasInfo(Integer diasInfo) {
+		this.diasInfo = diasInfo;
+	}
+
+	public TMihEntidad getEntidad() {
+		return entidad;
+	}
+
+	public void setEntidad(TMihEntidad entidad) {
+		this.entidad = entidad;
+	}
+
+	public List<TMihEntidad> getList() {
+		return list;
+	}
+
+	public void setList(List<TMihEntidad> list) {
+		this.list = list;
+	}
+
+	public boolean isConfirmLog() {
+		return confirmLog;
+	}
+
+	public void setConfirmLog(boolean confirmLog) {
+		this.confirmLog = confirmLog;
+	}
+
+	public boolean isConfirmInfo() {
+		return confirmInfo;
+	}
+
+	public void setConfirmInfo(boolean confirmInfo) {
+		this.confirmInfo = confirmInfo;
+	}
+
+}

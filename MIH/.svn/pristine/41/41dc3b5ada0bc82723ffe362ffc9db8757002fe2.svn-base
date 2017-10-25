@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+<h:body>
+	<ui:composition>
+		<h:form>
+
+
+			<div class="ui-g">
+
+				<div class="ui-g-4">								
+									<p:commandButton value="Inicio" action="#{loginBean.main}"/>
+				</div>				
+				<div class="ui-g-4" />
+				<div class="ui-g-4">
+					<!-- 			<h:outputLabel rendered="#{loginBean.logedUser.nombres != null}" value="#{msg['login.bienvenido_top']}: #{loginBean.logedUser.nombres} #{loginBean.logedUser.apellidos} (#{loginBean.logedUser.codigoempleado}) - #{loginBean.logedUser.TMihRol.nombre}" /> -->
+					<span class="user">
+						<h:outputLabel rendered="#{loginBean.logedUser.nombres != null}" value="#{loginBean.logedUser.nombres} #{loginBean.logedUser.apellidos}" />
+					</span>
+							
+					
+				</div>
+
+			</div>
+
+
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<c:if test="#{loginBean.logedUser!=null}">
+						<p:menubar>
+							<c:forEach items="#{menuBean.menu}" var="item">
+								<p:submenu label="#{item.titulo}">
+									<c:forEach items="#{item.hijos}" var="hijo">
+										<p:menuitem value="#{hijo.titulo}" url="#{hijo.url}" />
+									</c:forEach>
+								</p:submenu>
+							</c:forEach>
+								<p:menuitem value="Salir" action="#{loginBean.logout}" icon="ui-icon-close"/>
+						</p:menubar>	
+					</c:if>
+				</div>
+			</div>
+
+
+
+		</h:form>
+	</ui:composition>
+</h:body>
+</html>

@@ -1,0 +1,408 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:c="http://java.sun.com/jstl/core"
+
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition
+	template="${pageContext.request.contextPath}/modules/jsf/template/template.xhtml">
+	<ui:param name="title" value="Creación / Modificación de entidades" />
+	<ui:define name="content">
+	
+	
+		<div class="ui-g">
+			<div class="ui-g-5 titulo">
+				<p:outputLabel value="#{msg['entidades.creacion_titulo_pag']}" />
+			</div>
+			<div class="ui-g-5"></div>
+			<div class="ui-g-2">
+				<h:panelGroup id="fade">
+					<h:graphicImage styleClass="block_tooltip" library="images"	name="icon_help.png" />
+				</h:panelGroup>
+				<p:tooltip id="toolTipFade" for="fade" styleClass="tooltip"	trackMouse="true" position="left">
+					<h:outputText value="#{msg['entidades.creacion.ayuda1']}" />
+					<br></br>
+					<h:outputText value="#{msg['entidades.creacion.ayuda2']}" />
+					<br></br>
+					<h:outputText value="#{msg['entidades.creacion.ayuda3']}" />
+					<br></br>
+					<h:outputText value="#{msg['entidades.creacion.ayuda4']}" />
+					<br></br>
+					<h:outputText value="#{msg['entidades.creacion.ayuda5']}" />
+					<br></br>
+					<h:outputText value="#{msg['entidades.creacion.ayuda6']}" />
+					<br></br>
+					<h:outputText value="#{msg['entidades.creacion.ayuda7']}" />
+					<br></br>
+					<h:outputText value="#{msg['entidades.creacion.ayuda8']}" />
+					<br></br>
+					<h:outputText value="#{msg['entidades.creacion.ayuda9']}" />
+					<br></br>
+					<h:outputText value="#{msg['entidades.creacion.ayuda10']}" />
+					<br></br>
+					<h:outputText value="#{msg['entidades.creacion.ayuda11']}" />
+					<br></br>
+					<h:outputText value="#{msg['entidades.creacion.ayuda12']}" />
+					<br></br>
+					<h:outputText value="#{msg['entidades.creacion.ayuda13']}" />
+					<br></br>
+					<h:outputText value="#{msg['entidades.creacion.ayuda14']}" />
+					<br></br>
+					<h:outputText value="#{msg['entidades.creacion.ayuda15']}" />
+					<br></br>
+					<h:outputText value="#{msg['entidades.creacion.ayuda16']}" />
+					<br></br>
+					<h:outputText value="#{msg['entidades.creacion.ayuda17']}" />
+					<br></br>
+					<h:outputText value="#{msg['entidades.creacion.ayuda18']}" />
+					<br></br>
+					<h:outputText value="#{msg['entidades.creacion.ayuda19']}" />
+					<br></br>
+					<h:outputText value="#{msg['entidades.creacion.ayuda20']}" />
+					<br></br>
+					<h:outputText value="#{msg['entidades.creacion.ayuda21']}" />
+					<br></br>
+					<h:outputText value="#{msg['entidades.creacion.ayuda22']}" />
+					<br></br>
+					<h:outputText value="#{msg['entidades.creacion.ayuda23']}" />
+					<br></br>
+					<h:outputText value="#{msg['entidades.creacion.ayuda24']}" />
+				</p:tooltip>
+			</div>
+		</div>
+		
+			<p:growl id="confirmacion" showSummary="false" showDetail="true" life="8000" />	
+	
+		<h:form id="formEntidad">
+				
+			
+<!-- 			<p:messages id="mensaje" autoUpdate="true" styleClass="mensajes_validacion"/> -->
+			
+			<p:fieldset legend="#{msg['entidades.detalle_tablas']}" >
+			 
+			 <!-- 1er Columna -->
+			 
+			<div class="ui-g">
+					<div class="ui-g-3 titleSize2">
+						<p:outputLabel value="#{msg['entidades.nombre']}:"/>					
+					</div>
+					<div class="ui-g-1 contenido">
+						<p:inputText size="10" value="#{entidadNueva.entidad.nombre}" id="nuevoNombre"
+						converter="mayusculasConverter"	rendered="#{entidadNueva.nueva}" required="true" 
+						maxlength="25" requiredMessage="#{msg['requerido.nombre']}">
+						<f:validator validatorId="oracleValidator" />
+													
+						</p:inputText> 
+						<p:outputLabel value="#{entidadNueva.entidad.nombre}" rendered="#{!entidadNueva.nueva}"/>						
+						
+					</div>
+					
+					<div class="ui-g-3 titleSize2">
+						<p:outputLabel value="#{msg['entidades.tiempoVigencia']} (en días):"/>
+					</div>
+					<div class="ui-g-1 contenido">
+						<p:inputText size="10" id="nuevoTiempoVigencia" value="#{entidadNueva.entidad.tvigencia}"
+							maxlength="8" converterMessage="#{msg['validacion.tiempoVigencia']}"
+							validatorMessage="#{msg['validacion.positivo.tiempoVigencia']}" required="true"
+							requiredMessage="#{msg['requerido.tiempo_vigencia']}">
+							<f:convertNumber integerOnly="true" type="number" />
+							<f:validateLongRange minimum="1" />
+						</p:inputText>
+					</div>
+					
+					<div class="ui-g-2 titleSize2" >
+						<p:outputLabel value="#{msg['entidades.solicitante']}:"/>
+					</div>
+					<div class="ui-g-1 contenido">
+						<p:selectOneMenu id="solicitante" title="#{msg['entidades.title.solicitante']}"
+								value="#{entidadNueva.entidad.usrsolcreacion}" required="true"
+								requiredMessage="#{msg['requerido.usr_sol']}" style="width:85px">
+								<f:selectItem itemLabel="--Solicitante--" />
+								<f:selectItems value="#{entidadNueva.solicitantes}" var="sol"
+									itemValue="#{sol.codigoempleado}"
+									itemLabel="#{sol.codigoempleado}" />
+						</p:selectOneMenu>
+					</div>
+					
+			</div>
+			
+			<!-- 2da Columna -->
+			
+			<div class="ui-g">
+				<div class="ui-g-3 titleSize2">
+					<p:outputLabel for="cpList" value="#{msg['entidades.proyecto']}:"/>
+				</div>
+				<div class="ui-g-1 contenido">
+					<p:selectOneMenu id="cpList" title="#{msg['entidades.title.proyecto']}"
+								value="#{entidadNueva.codProyecto}" required="true"
+								requiredMessage="#{msg['requerido.proyecto']}" style="width:85px">
+						<f:selectItem itemLabel="--Proyecto--" />
+						<f:selectItems value="#{entidadNueva.proyectos}" var="proy"	itemLabel="#{proy.nombre}" itemValue="#{proy.codigo}" />
+ 						<p:ajax listener="#{entidadNueva.cambioProyecto}" update="clnList"/>
+					</p:selectOneMenu>
+				</div>
+				
+				<div class="ui-g-3 titleSize2">
+					<p:outputLabel value="#{msg['entidades.lineaNegocio']}:"/>
+				</div>
+				<div class="ui-g-1 contenido">
+					<p:selectOneMenu id="clnList" title="#{msg['entidades.title.ln']}"
+								value="#{entidadNueva.codLineaNegocio}" required="true"
+								requiredMessage="#{msg['requerido.lineaNegocio']}" style="width:85px">
+						<f:selectItem itemLabel="--Línea de Negocio--" />
+						<f:selectItems value="#{entidadNueva.lineasNegocio}" var="ln" itemLabel="#{ln.nombre}" itemValue="#{ln.codigo}" />
+						<p:ajax listener="#{entidadNueva.cambioLineaNegocio}" update="caList" />
+					</p:selectOneMenu>
+				 </div>
+				 
+				 <div class="ui-g-2 titleSize2">
+				 	<p:outputLabel value="#{msg['entidades.aplicacion']}:" />
+				 </div>
+				 <div class="ui-g-1 contenido">
+				 	<p:selectOneMenu id="caList" required="true" title="#{msg['entidades.title.aplicacion']}"
+								requiredMessage="#{msg['requerido.aplicacion']}"
+								value="#{entidadNueva.codAplicacion}" style="width:85px">
+								<f:selectItem itemLabel="--Aplicación--" />
+								<f:selectItems value="#{entidadNueva.aplicaciones}" var="a" itemLabel="#{a.nombre}" itemValue="#{a.codigo}" />
+							</p:selectOneMenu>
+				 </div>
+		  </div>
+			
+			<!-- 3er Columna -->
+			
+			<div class="ui-g">
+				<div class="ui-g-3 titleSize">
+					<p:outputLabel value="#{msg['entidades.depuracion']}:" />					
+				</div>
+				<div class="ui-g-1 contenido">
+					<p:selectOneMenu value="#{entidadNueva.entidad.depurar}" id="deList" required="true" style="width:85px"
+								requiredMessage="#{msg['requerido.depurar']}" title="#{msg['entidades.title.depurar']}">
+								<f:selectItem itemValue="S" itemLabel="#{msg['entidades.depuracion.si']}" />
+								<f:selectItem itemValue="N" itemLabel="#{msg['entidades.depuracion.no']}" />
+							</p:selectOneMenu>
+				</div>
+				
+				<div class="ui-g-3 titleSize2">
+					<p:outputLabel value="Clave Primaria:" />
+				</div>
+				<div class="ui-g-1 contenido">
+					<p:selectOneMenu id="cLlave" title="#{msg['entidades.title.clave']}"
+								value="#{entidadNueva.entidad.campoLlave}" required="true"
+								requiredMessage="#{msg['requerido.clavePrimaria']}" style="width:85px">
+								<f:selectItem itemLabel="-Llave Primaria-" itemValue="" />
+								<f:selectItems value="#{entidadNueva.entidad.campos}" var="c" itemValue="#{c.nombreCorto}" />
+							</p:selectOneMenu>
+				</div>
+				
+				<div class="ui-g-2 titleSize2">
+					<p:outputLabel value="Campo Fecha:"/>
+				</div>
+				<div class="ui-g-1 contenido" >
+					<p:selectOneMenu id="cFecha" title="#{msg['entidades.title.fecha']}"
+								value="#{entidadNueva.entidad.campoFecha}" required="true"
+								requiredMessage="#{msg['requerido.campoFecha']}" style="width:85px">
+								<f:selectItem itemLabel="-Campo Fecha-" itemValue=""/>
+								<f:selectItems value="#{entidadNueva.camposFecha}" var="c" itemValue="#{c.nombreCorto}" itemDisabled="#{c.tipoDato != 'DATE'}" />
+							</p:selectOneMenu>
+				</div>
+				
+			</div>
+			
+			<div class="ui-g">
+				<div class="ui-g-3 titleSize">
+					<p:outputLabel value="#{msg['entidades.descripcion']}:"/>
+				</div>
+				<div class="ui-g-4 contenido">
+					<p:inputTextarea id="descripcion"
+						value="#{entidadNueva.entidad.descripcion}" cols="105" rows="4" 
+						validatorMessage="#{msg['longitud.descripcion.400']}" 
+						onkeyup="limitTextArea(this,400);" 
+						onkeydown="limitTextArea(this,400);" >
+						
+					</p:inputTextarea>
+				</div>
+				
+			</div>
+			
+			</p:fieldset>
+			
+			
+						
+			<div class="ui-g">
+				<div class="ui-g-4">
+					<p:commandButton action="#{entidadNueva.guardar()}" value="#{msg['boton.guardar']}" update="confirmacion"/>
+					<p:commandButton action="#{entidadNueva.limpiar()}" value="#{msg['boton.cancelar']}" process="@this"/>
+					
+				</div>
+			</div>					
+		</h:form>
+		
+		<!-- Campos -->
+	<h:panelGroup id="result"> 
+		
+		<p:fieldset legend="Campos">
+			<h:form id="camposList">
+					
+			
+			<h:panelGrid columns="2">
+				<p:commandButton icon="ui-icon-plusthick" value="Nuevo" onclick="PF('wdialogo').show();"/>						
+			</h:panelGrid>
+			
+			
+			
+			<p:dataTable value="#{entidadNueva.entidad.campos}" var="c" 
+				id="camposGrid" styleClass="letras">
+				
+				<p:column headerText="#{msg['entidades.campos.nombreCorto']}" styleClass="letras">
+					<p:outputLabel value="#{c.nombreCorto}" />
+				</p:column>
+				
+				<p:column headerText="#{msg['entidades.campos.nombreCompleto']}" styleClass="letras">
+					<p:outputLabel value="#{c.nombreCompleto}"/>
+				</p:column>
+				
+				<p:column headerText="#{msg['entidades.campos.descripcion']}" styleClass="letras">
+					<p:outputLabel value="#{c.descripcion}" />
+				</p:column>
+				
+				<p:column headerText="#{msg['entidades.campos.tipoDato']}" styleClass="letras">					
+					<p:outputLabel value="#{c.tipoDato}" />
+				</p:column>
+				
+				<p:column headerText="#{msg['entidades.campos.longitud']}" styleClass="letras">
+					<p:outputLabel value="#{c.longitud}" rendered="#{c.tipoDato != 'TIMESTAMP' and c.tipoDato != 'TIMESTAMP(6)' and c.tipoDato != 'DATE'}"/>
+					<p:outputLabel value="NA" rendered="#{c.tipoDato == 'TIMESTAMP' or c.tipoDato == 'TIMESTAMP(6)' or c.tipoDato == 'DATE'}"/>
+					<p:outputLabel value=", #{c.precision}" rendered="#{c.tipoDato == 'NUMBER'}" />
+				</p:column>
+				
+				<p:column headerText="#{msg['entidades.botones']}" styleClass="letras">
+				
+					<p:commandLink onclick="PF('wdialogo_eliminar_campo').show();">
+						<p:graphicImage library="images" name="ico-salir.png" with="16px" height="16px" title="#{msg['boton.eliminar']}" />
+						<f:setPropertyActionListener target="#{entidadNueva.campoSel}" value="#{c}" />
+					</p:commandLink>&nbsp;
+							
+					<p:commandLink onclick="PF('wdialogo_editar').show();" action="#{entidadNueva.camposEditar()}" update=":form_editar" process="@this">
+						<p:graphicImage library="images" name="ico-editar.png" with="16px" height="16px" title="#{msg['entidades.title.editar_tabla']}" />
+						<f:setPropertyActionListener target="#{entidadNueva.campoEdi}" value="#{c}" />	
+					</p:commandLink>
+										
+				</p:column>
+				
+			</p:dataTable>
+			
+			</h:form>
+		</p:fieldset>	
+						
+		</h:panelGroup>
+		
+		
+		<!-- Crear nuevo campo en la tabla -->
+			
+		<h:form id="idCampo">	
+			
+			<p:growl id="validacion" showSummary="false" showDetail="true" life="8000" />	
+				
+			<p:dialog id="dialogo" widgetVar="wdialogo" header="Nuevo campo" modal="true" resizable="false" closeOnEscape="true" draggable="true" visible="">				
+					<h:panelGrid columns="4">
+						<p:outputLabel for="txtNombre_corto" value="Nombre corto: " style="font-size:15px;font-family:verdana;" />
+						<p:inputText value="#{entidadNueva.campoSel.nombreCorto}" id="txtNombre_corto" required="true" style="width:100px;font-size:11px;font-family:verdana;" />
+	
+						<p:outputLabel for="txtNombre_completo" value="Nombre completo: "	style="font-size:15px;font-family:verdana;" />
+						<p:inputText value="#{entidadNueva.campoSel.nombreCompleto}" id="txtNombre_completo" required="true" style="width:100px;font-size:11px;font-family:verdana;" />
+	
+						<p:outputLabel value="Tipo de dato: " style="font-size:15px;font-family:verdana;" />
+						<p:selectOneMenu value="#{entidadNueva.campoSel.tipoDato}" required="true" style="width:85px;font-size:12px;" >
+							<f:selectItems value="#{entidadNueva.tipoDato}" />
+						</p:selectOneMenu>
+	
+						<p:outputLabel for="txtLongitud" value="Longitud: " style="font-size:15px;font-family:verdana;" />
+						<p:inputMask mask="9?9999" value="#{entidadNueva.campoSel.longitud}" id="txtLongitud" required="true" style="width:100px;font-size:11px;font-family:verdana;" />						
+						
+				   </h:panelGrid>
+				   
+				   	<h:panelGrid columns="4">
+				   		<p:outputLabel value="Descripción: " style="font-size:15px;font-family:verdana;"/>
+					    <p:inputTextarea value="#{entidadNueva.campoSel.descripcion}" style="font-size:11px;font-family:verdana;" cols="59" rows="4" />		
+				   	</h:panelGrid>	
+					
+					<h:panelGrid columns="2">
+						<p:commandButton value="Guardar" icon="ui-icon-check" action="#{entidadNueva.agregarCampo()}"   update="camposList,:formEntidad:cLlave,:formEntidad:cFecha,validacion"  />
+					    <p:commandButton value="Cancelar" icon="ui-icon-close" immediate="true" onclick="PF('wdialogo').hide();"/>
+					</h:panelGrid>						
+					
+			</p:dialog>
+		</h:form>
+		
+		<!-- Eliminar campo -->
+		
+		
+			<p:dialog id="eliminar_campo" widgetVar="wdialogo_eliminar_campo" header="Eliminar campo" modal="true" resizable="false" closeOnEscape="true" draggable="true" >
+				<h:form>
+				<p:outputLabel value="¿Desea eliminar el campo seleccionado?"/><br></br>
+				<h:panelGrid columns="4">
+					<p:commandButton value="Aceptar" icon="ui-icon-check" action="#{entidadNueva.eliminarCampo}" onclick="PF('wdialogo_eliminar_campo').hide();" update=":camposList:camposGrid" />
+					<p:commandButton value="Cancelar" icon="ui-icon-close" immediate="true" onclick="PF('wdialogo_eliminar_campo').hide();"/>
+				</h:panelGrid>
+				</h:form>	
+			</p:dialog>
+		
+		
+		<!-- Editar campo -->		
+		
+			<p:dialog id="dialogo_editar" widgetVar="wdialogo_editar" header="Edición de campo" modal="true" resizable="false" closeOnEscape="true" draggable="true" visible="">
+				
+				<p:growl id="validacion" showSummary="false" showDetail="true" life="8000" />
+				
+				<h:form id="form_editar">	
+				<h:panelGrid columns="4">
+						<p:outputLabel for="nombreCorto_e" value="Nombre corto: " style="font-size:15px;font-family:verdana;" />
+						<p:inputText value="#{entidadNueva.campoEdi.nombreCorto}" id="nombreCorto_e" required="true" style="width:100px;font-size:11px;font-family:verdana;" title="#{msg['entidades.title.nombre_corto']}"/>
+	
+						<p:outputLabel for="nombreCompleto_e" value="Nombre completo: "	style="font-size:15px;font-family:verdana;" />
+						<p:inputText value="#{entidadNueva.campoEdi.nombreCompleto}" id="nombreCompleto_e" required="true" style="width:100px;font-size:11px;font-family:verdana;" />
+						
+						<p:outputLabel value="Tipo de dato: " style="font-size:15px;font-family:verdana;" />
+						<p:selectOneMenu value="#{entidadNueva.campoEdi.tipoDato}" required="true" style="width:85px;font-size:11px;" id="selTipoDato_e" title="#{msg['entidades.title.tipo_dato']}">
+							<f:selectItems value="#{entidadNueva.tipoDato}" />
+						</p:selectOneMenu>
+						
+						<p:outputLabel for="txtLongitud" value="Longitud: " style="font-size:15px;font-family:verdana;" />
+						<p:inputMask mask="9?9999" value="#{entidadNueva.campoEdi.longitud}" id="txtLongitud" required="true" style="width:100px;font-size:11px;font-family:verdana;" title="#{msg['entidades.title.longitud']}"/>
+						
+	
+				   </h:panelGrid>
+				   
+				   <h:panelGrid columns="4">
+				   		<p:outputLabel for="descripcionCampo_e" value="Descripción: " style="font-size:15px;font-family:verdana;"/>
+					    <p:inputTextarea id="descripcionCampo_e" value="#{entidadNueva.campoEdi.descripcion}" style="font-size:11px;font-family:verdana;" cols="59" rows="4" title="#{msg['entidades.title.descripcion']}"/>		
+				   	</h:panelGrid>	
+					
+					<h:panelGrid columns="2">
+						<p:commandButton value="Guardar" action="#{entidadNueva.editarCampos()}" icon="ui-icon-check"  oncomplete="PF('wdialogo_editar').hide();" update=":camposList:camposGrid" />
+					    <p:commandButton value="Cancelar" icon="ui-icon-close" immediate="true" onclick="PF('wdialogo_editar').hide();"/>
+					</h:panelGrid>			
+				   
+			    </h:form>
+			
+			</p:dialog>
+			
+	
+			<!-- Preload -->
+			<p:ajaxStatus onstart="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()" />
+ 
+			<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+			    <center><p:graphicImage library="images" name="preloader.gif" /></center><br/>
+				<p:outputLabel value="#{msg['cargando']}" styleClass="letras" />				
+			</p:dialog>
+			
+
+		
+	</ui:define>
+</ui:composition>
+
+</html>

@@ -1,0 +1,385 @@
+/**
+ * 
+ */
+package com.sophos.semih.service;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.apache.commons.lang.SerializationUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.sophos.semih.common.ApplicationSetup;
+import com.sophos.semih.common.Constants;
+import com.sophos.semih.dao.TMihEntidadHome;
+import com.sophos.semih.model.Campo;
+import com.sophos.semih.model.TMihEntidad;
+import com.sophos.semih.model.TMihUsuario;
+import com.sun.rowset.CachedRowSetImpl;
+
+/**
+ * @author FT
+ * 
+ */
+@Service
+public class EntidadManagerImpl extends BaseManager implements EntidadManager,
+		Serializable {
+	// Salto de linea
+	private static final String nl = System.getProperty("line.separator");
+	
+	private static final Log log = LogFactory.getLog(EntidadManagerImpl.class);
+
+	private static final long serialVersionUID = -2648999740009872103L;
+	@Autowired
+	private TMihEntidadHome tMihEntidadHome;
+
+	@Override
+	@Transactional
+	public void insertEntidad(TMihEntidad entidad) {
+		try {
+			entidad.setUsrcreador(getUser().getCodigoempleado());
+			crearTablaEntidad(entidad);
+			tMihEntidadHome.persist(entidad);
+			com.sophos.audit.LogService.insertLog(ApplicationSetup.getInstance().getParamValue("DATASOURCE_NAME"),	null, null,	Constants.FLAG_INSERCION,
+					getUser().getCodigoempleado(), com.sophos.semih.model.TMihLogs.class.getName(),	entidad, null,
+					new Boolean(ApplicationSetup.getInstance().getParamValue("USE_WINDOWS_LOG")), ApplicationSetup.getInstance().getParamValue("APP_NAME"),
+					ApplicationSetup.getInstance().getParamValue("LOG_LEVEL"), ApplicationSetup.getInstance().getParamValue("LOG_LEVEL_ID"),
+					ApplicationSetup.getInstance().getParamValue("REMOTE_LOG_SERVER"), ApplicationSetup.getInstance().getParamValue("USER_LOG_SERVER"),
+					ApplicationSetup.getInstance().getParamValue("PASSWORD_LOG_SERVER"), new Boolean(ApplicationSetup.getInstance().getParamValue("USE_DB_LOG")),
+					new Boolean(ApplicationSetup.getInstance().getParamValue("USE_UNIX_LOG")), ApplicationSetup.getInstance().getParamValue("UNIX_PRIORITY_LOG"));
+		} catch (Exception e) {
+			log.error("Error insertEntidad()", e);
+		}
+	}
+
+	@Override
+	@Transactional
+	public TMihEntidad getEntidadById(int entidadId) {
+		try {
+			TMihEntidad entidad = tMihEntidadHome.findById(entidadId);
+			if (entidad.getCodigo() > 0 && getUser() != null)
+				com.sophos.audit.LogService.insertLog(ApplicationSetup.getInstance().getParamValue("DATASOURCE_NAME"),	null, null,	Constants.FLAG_CONSULTA,
+						getUser().getCodigoempleado(),	com.sophos.semih.model.TMihLogs.class.getName(), entidad, null,
+						new Boolean(ApplicationSetup.getInstance().getParamValue("USE_WINDOWS_LOG")), ApplicationSetup.getInstance().getParamValue("APP_NAME"),
+						ApplicationSetup.getInstance().getParamValue("LOG_LEVEL"),	ApplicationSetup.getInstance().getParamValue("LOG_LEVEL_ID"),
+						ApplicationSetup.getInstance().getParamValue("REMOTE_LOG_SERVER"), ApplicationSetup.getInstance().getParamValue("USER_LOG_SERVER"),
+						ApplicationSetup.getInstance().getParamValue("PASSWORD_LOG_SERVER"), new Boolean(ApplicationSetup.getInstance().getParamValue("USE_DB_LOG")),
+						new Boolean(ApplicationSetup.getInstance().getParamValue("USE_UNIX_LOG")), ApplicationSetup.getInstance().getParamValue("UNIX_PRIORITY_LOG"));
+			return entidad;
+		} catch (Exception e) {
+			log.error("Error getEntidadById()", e);
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public void deleteEntidad(TMihEntidad entidad) {
+		try {
+			borrarTablaEntidad(entidad);
+			tMihEntidadHome.delete(entidad);
+			com.sophos.audit.LogService.insertLog(ApplicationSetup.getInstance().getParamValue("DATASOURCE_NAME"), null, null, Constants.FLAG_ELIMINACION,
+					getUser().getCodigoempleado(), com.sophos.semih.model.TMihLogs.class.getName(), entidad, null,
+					new Boolean(ApplicationSetup.getInstance().getParamValue("USE_WINDOWS_LOG")), ApplicationSetup.getInstance().getParamValue("APP_NAME"),
+					ApplicationSetup.getInstance().getParamValue("LOG_LEVEL"), ApplicationSetup.getInstance().getParamValue("LOG_LEVEL_ID"),
+					ApplicationSetup.getInstance().getParamValue("REMOTE_LOG_SERVER"), ApplicationSetup.getInstance().getParamValue("USER_LOG_SERVER"),
+					ApplicationSetup.getInstance().getParamValue("PASSWORD_LOG_SERVER"), new Boolean(ApplicationSetup.getInstance().getParamValue("USE_DB_LOG")),
+					new Boolean(ApplicationSetup.getInstance().getParamValue("USE_UNIX_LOG")), ApplicationSetup.getInstance().getParamValue("UNIX_PRIORITY_LOG"));
+		} catch (Exception e) {
+			log.error("Error deleteEntidad()", e);
+		}
+	}
+
+	@Override
+	@Transactional
+	public List<TMihEntidad> getEntidades(TMihEntidad entidad) {
+		try {
+			List<TMihEntidad> entidades = tMihEntidadHome.findByExample(entidad);
+			if (entidades != null && entidades.size() > 0 && getUser() != null)
+				com.sophos.audit.LogService.insertLog(ApplicationSetup.getInstance().getParamValue("DATASOURCE_NAME"), null, null, Constants.FLAG_CONSULTA,
+						getUser().getCodigoempleado(),	com.sophos.semih.model.TMihLogs.class.getName(), entidad, null,
+						new Boolean(ApplicationSetup.getInstance().getParamValue("USE_WINDOWS_LOG")), ApplicationSetup.getInstance().getParamValue("APP_NAME"),
+						ApplicationSetup.getInstance().getParamValue("LOG_LEVEL"), ApplicationSetup.getInstance().getParamValue("LOG_LEVEL_ID"),
+						ApplicationSetup.getInstance().getParamValue("REMOTE_LOG_SERVER"), ApplicationSetup.getInstance().getParamValue("USER_LOG_SERVER"),
+						ApplicationSetup.getInstance().getParamValue("PASSWORD_LOG_SERVER"), new Boolean(ApplicationSetup.getInstance().getParamValue("USE_DB_LOG")),
+						new Boolean(ApplicationSetup.getInstance().getParamValue("USE_UNIX_LOG")), ApplicationSetup.getInstance().getParamValue("UNIX_PRIORITY_LOG"));
+			return entidades;
+		} catch (Exception e) {
+			log.error("Error getEntidades()", e);
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public void updateEntidad(TMihEntidad entidad) {
+		try {
+			TMihEntidad cur = tMihEntidadHome.findById(entidad.getCodigo());
+			TMihEntidad old = (TMihEntidad) SerializationUtils.clone(cur);
+			entidad.setUsrcreador(getUser().getCodigoempleado());
+			borrarTablaEntidad(entidad);
+			crearTablaEntidad(entidad);
+			tMihEntidadHome.merge(entidad);
+			com.sophos.audit.LogService.insertLog(ApplicationSetup.getInstance().getParamValue("DATASOURCE_NAME"), null, null, Constants.FLAG_MODIFICACION,
+					getUser().getCodigoempleado(), com.sophos.semih.model.TMihLogs.class.getName(), cur, old,
+					new Boolean(ApplicationSetup.getInstance().getParamValue("USE_WINDOWS_LOG")), ApplicationSetup.getInstance().getParamValue("APP_NAME"),
+					ApplicationSetup.getInstance().getParamValue("LOG_LEVEL"), ApplicationSetup.getInstance().getParamValue("LOG_LEVEL_ID"),
+					ApplicationSetup.getInstance().getParamValue("REMOTE_LOG_SERVER"), ApplicationSetup.getInstance().getParamValue("USER_LOG_SERVER"),
+					ApplicationSetup.getInstance().getParamValue("PASSWORD_LOG_SERVER"), new Boolean(ApplicationSetup.getInstance().getParamValue("USE_DB_LOG")),
+					new Boolean(ApplicationSetup.getInstance().getParamValue("USE_UNIX_LOG")), ApplicationSetup.getInstance().getParamValue("UNIX_PRIORITY_LOG"));
+		} catch (Exception e) {
+			log.error("Error updateEntidad()", e);
+		}
+	}
+
+	@Override
+	@Transactional
+	public List<TMihEntidad> getEntidadesxUsuario(Object... autorizador) {
+		try {
+			List<TMihEntidad> entidades = tMihEntidadHome.getEntidadesxUsuario(
+					getUser(), autorizador);
+			if (entidades != null && entidades.size() > 0 && getUser() != null)
+				com.sophos.audit.LogService.insertLog(ApplicationSetup.getInstance().getParamValue("DATASOURCE_NAME"), null, null, Constants.FLAG_CONSULTA,
+						getUser().getCodigoempleado(), com.sophos.semih.model.TMihLogs.class.getName(), getUser(), null, 
+						new Boolean(ApplicationSetup.getInstance().getParamValue("USE_WINDOWS_LOG")), ApplicationSetup.getInstance().getParamValue("APP_NAME"),
+						ApplicationSetup.getInstance().getParamValue("LOG_LEVEL"), ApplicationSetup.getInstance().getParamValue("LOG_LEVEL_ID"),
+						ApplicationSetup.getInstance().getParamValue("REMOTE_LOG_SERVER"), ApplicationSetup.getInstance().getParamValue("USER_LOG_SERVER"),
+						ApplicationSetup.getInstance().getParamValue("PASSWORD_LOG_SERVER"), new Boolean(ApplicationSetup.getInstance().getParamValue("USE_DB_LOG")),
+						new Boolean(ApplicationSetup.getInstance().getParamValue("USE_UNIX_LOG")), ApplicationSetup.getInstance().getParamValue("UNIX_PRIORITY_LOG"));
+			return entidades;
+		} catch (Exception e) {
+			log.error("Error getEntidadesxUsuario()", e);
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public List<TMihEntidad> getEntidadesxUsuario(TMihUsuario usuario, Object... autorizador) {
+		List<TMihEntidad> entidades = null;
+		try {
+			entidades = tMihEntidadHome.getEntidadesxUsuario(usuario, autorizador);
+			
+			if (entidades != null && entidades.size() > 0 && usuario != null) {
+				com.sophos.audit.LogService.insertLog(ApplicationSetup.getInstance().getParamValue("DATASOURCE_NAME"), null, null, Constants.FLAG_CONSULTA,
+						usuario.getCodigoempleado(), com.sophos.semih.model.TMihLogs.class.getName(), usuario, null,
+						new Boolean(ApplicationSetup.getInstance().getParamValue("USE_WINDOWS_LOG")), ApplicationSetup.getInstance().getParamValue("APP_NAME"),
+						ApplicationSetup.getInstance().getParamValue("LOG_LEVEL"), ApplicationSetup.getInstance().getParamValue("LOG_LEVEL_ID"),
+						ApplicationSetup.getInstance().getParamValue("REMOTE_LOG_SERVER"), ApplicationSetup.getInstance().getParamValue("USER_LOG_SERVER"),
+						ApplicationSetup.getInstance().getParamValue("PASSWORD_LOG_SERVER"), new Boolean(ApplicationSetup.getInstance().getParamValue("USE_DB_LOG")),
+						new Boolean(ApplicationSetup.getInstance().getParamValue("USE_UNIX_LOG")), ApplicationSetup.getInstance().getParamValue("UNIX_PRIORITY_LOG"));
+				return entidades;
+			}
+		} catch (Exception e) {
+			log.error("Error getEntidadesxUsuario()", e);
+		}
+		return entidades;
+	}
+
+	@Override
+	@Transactional
+	public List<Campo> getCampos(TMihEntidad entidad) {
+		try {
+			List<Campo> campos = tMihEntidadHome.consultarCampos(entidad);
+			if (campos != null && campos.size() > 0 && getUser() != null)
+				com.sophos.audit.LogService.insertLog(ApplicationSetup.getInstance().getParamValue("DATASOURCE_NAME"), null, null, Constants.FLAG_CONSULTA,
+						getUser().getCodigoempleado(), com.sophos.semih.model.TMihLogs.class.getName(),	entidad, null,
+						new Boolean(ApplicationSetup.getInstance().getParamValue("USE_WINDOWS_LOG")), ApplicationSetup.getInstance().getParamValue("APP_NAME"),
+						ApplicationSetup.getInstance().getParamValue("LOG_LEVEL"), ApplicationSetup.getInstance().getParamValue("LOG_LEVEL_ID"),
+						ApplicationSetup.getInstance().getParamValue("REMOTE_LOG_SERVER"), ApplicationSetup.getInstance().getParamValue("USER_LOG_SERVER"),
+						ApplicationSetup.getInstance().getParamValue("PASSWORD_LOG_SERVER"), new Boolean(ApplicationSetup.getInstance().getParamValue("USE_DB_LOG")),
+						new Boolean(ApplicationSetup.getInstance().getParamValue("USE_UNIX_LOG")), ApplicationSetup.getInstance().getParamValue("UNIX_PRIORITY_LOG"));
+			return campos;
+		} catch (Exception e) {
+			log.error("Error getCampos()", e);
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public ArrayList<LinkedHashMap<String, String>> consultaDinamica(
+			String strHql, ArrayList<Campo> camposRetorno) throws Exception{
+		try {
+			ArrayList<LinkedHashMap<String, String>> map = tMihEntidadHome
+					.consultaDinamica(strHql, camposRetorno);
+			if (map != null && map.size() > 0 && getUser() != null)
+				com.sophos.audit.LogService.insertLog(ApplicationSetup.getInstance().getParamValue("DATASOURCE_NAME"), null, null, Constants.FLAG_CONSULTA,
+						getUser().getCodigoempleado(), com.sophos.semih.model.TMihLogs.class.getName(), strHql, null,
+						new Boolean(ApplicationSetup.getInstance().getParamValue("USE_WINDOWS_LOG")), ApplicationSetup.getInstance().getParamValue("APP_NAME"),
+						ApplicationSetup.getInstance().getParamValue("LOG_LEVEL"), ApplicationSetup.getInstance().getParamValue("LOG_LEVEL_ID"),
+						ApplicationSetup.getInstance().getParamValue("REMOTE_LOG_SERVER"), ApplicationSetup.getInstance().getParamValue("USER_LOG_SERVER"),
+						ApplicationSetup.getInstance().getParamValue("PASSWORD_LOG_SERVER"), new Boolean(ApplicationSetup.getInstance().getParamValue("USE_DB_LOG")),
+						new Boolean(ApplicationSetup.getInstance().getParamValue("USE_UNIX_LOG")), ApplicationSetup.getInstance().getParamValue("UNIX_PRIORITY_LOG"));
+			return map;
+		} catch (Exception e) {
+			log.error("Error consultaDinamica()", e);
+			throw new Exception();
+		}
+	}
+
+	@Override
+	@Transactional
+	public int rowCount(String strHql) {
+		try {
+			int map = tMihEntidadHome.rowCount(strHql);
+			com.sophos.audit.LogService.insertLog(ApplicationSetup.getInstance().getParamValue("DATASOURCE_NAME"),null,null,Constants.FLAG_CONSULTA,
+						getUser().getCodigoempleado(),com.sophos.semih.model.TMihLogs.class.getName(), strHql, null,
+						new Boolean(ApplicationSetup.getInstance().getParamValue("USE_WINDOWS_LOG")), ApplicationSetup.getInstance().getParamValue("APP_NAME"),
+						ApplicationSetup.getInstance().getParamValue("LOG_LEVEL"), ApplicationSetup.getInstance().getParamValue("LOG_LEVEL_ID"),
+						ApplicationSetup.getInstance().getParamValue("REMOTE_LOG_SERVER"), ApplicationSetup.getInstance().getParamValue("USER_LOG_SERVER"),
+						ApplicationSetup.getInstance().getParamValue("PASSWORD_LOG_SERVER"), new Boolean(ApplicationSetup.getInstance().getParamValue("USE_DB_LOG")),
+						new Boolean(ApplicationSetup.getInstance().getParamValue("USE_UNIX_LOG")), ApplicationSetup.getInstance().getParamValue("UNIX_PRIORITY_LOG"));
+			return map;
+		} catch (Exception e) {
+			log.error("Error rowCount()", e);
+		}
+		return 0;
+	}
+
+	@Override
+	@Transactional
+	public CachedRowSetImpl consultaDinamica(String query) {
+		try {
+			CachedRowSetImpl crs = tMihEntidadHome.consultaDinamica(query);
+//			if (crs != null && getUser() != null){
+//				com.sophos.audit.LogService.insertLog(ApplicationSetup.getInstance().getParamValue("DATASOURCE_NAME"), null, null, Constants.FLAG_CONSULTA,
+//						getUser().getCodigoempleado(), com.sophos.semih.model.TMihLogs.class.getName(), query, null,
+//						new Boolean(ApplicationSetup.getInstance().getParamValue("USE_WINDOWS_LOG")), ApplicationSetup.getInstance().getParamValue("APP_NAME"),
+//						ApplicationSetup.getInstance().getParamValue("LOG_LEVEL"), ApplicationSetup.getInstance().getParamValue("LOG_LEVEL_ID"),
+//						ApplicationSetup.getInstance().getParamValue("REMOTE_LOG_SERVER"), ApplicationSetup.getInstance().getParamValue("USER_LOG_SERVER"),
+//						ApplicationSetup.getInstance().getParamValue("PASSWORD_LOG_SERVER"), new Boolean(ApplicationSetup.getInstance().getParamValue("USE_DB_LOG")),
+//						new Boolean(ApplicationSetup.getInstance().getParamValue("USE_UNIX_LOG")), ApplicationSetup.getInstance().getParamValue("UNIX_PRIORITY_LOG"));
+//			}
+			return crs;
+		} catch (Exception e) {
+			log.error("Error consultaDinamica()", e);
+		}
+		return null;
+	}
+
+	/**
+	 * Prepara la sentencia DDL para la creaci�n de objetos en BD
+	 * 
+	 * @param e	entidad a ser creada
+	 * @throws Exception 
+	 */
+	@Transactional
+	public void crearTablaEntidad(TMihEntidad e) throws Exception {
+		List<Campo> campos = e.getCampos();
+		// Si la lista est� vacia o es nula no crea la tabla en BD
+		if (campos.size() == 0 || campos == null) {
+			return;
+		}
+		StringBuilder sql = new StringBuilder();
+		String nombreEntidad = e.getNombre();
+		sql.append("CREATE TABLE SCHSEMIH.");
+		sql.append(nombreEntidad + "( ");
+		List<String> comCampos = new ArrayList<String>();
+		for (Campo c : campos) {
+			agregaCampo(sql, comCampos, c, nombreEntidad, e.getCampoFecha());
+		}
+		sql.append("CONSTRAINT " + e.getNombre() + "_PK PRIMARY KEY ("
+				+ e.getCampoLlave() + ")");
+		sql.append(")");
+		tMihEntidadHome.crearTablaEntidad(sql.toString(), comCampos);		
+	}
+	
+	/**
+	 * Prepara la sentencia DDL para eliminar objetos en BD
+	 * 
+	 * @param e	entidad a ser creada
+	 */
+	public void borrarTablaEntidad(TMihEntidad e) {
+		StringBuilder sql = new StringBuilder();
+		String nombreEntidad = e.getNombre();
+		sql.append("DROP TABLE SCHSEMIH.");
+		sql.append(nombreEntidad);
+		tMihEntidadHome.borrarTablaEntidad(sql.toString());			
+	}
+
+	/**
+	 * Agrega los detalles del campo que recibe al StringBuilder donde se esta
+	 * construyendo la sentencia de creacion
+	 * 
+	 * @param sbTabla			StringBuilder donde se esta construyendo la sentencia SQL de la Tabla
+	 * @param sbComm			StringBuilder donde se esta construyendo la sentencia SQL de los comentarios
+	 * @param c					Campo a ser agregado a la sentencia
+	 * @param nombreEntidad		nombre de la entidad
+	 */
+	public void agregaCampo(StringBuilder sbTabla, List<String> comCampos,
+			Campo c, String nombreEntidad) {
+		String nombreCampo = c.getNombreCorto();
+		String tipoDato = c.getTipoDato();
+		// Si es numero debe tener en cuenta la precision
+		sbTabla.append(nl);
+		if (tipoDato.equals("NUMBER")) {
+			String p = c.getPrecision();
+			log.info(p);
+			sbTabla.append(nombreCampo + " " + tipoDato + "(" + c.getLongitud()
+					+ "," + ((p == null || p == "") ? "0" : c.getPrecision())  + "), ");
+		}
+		// Si es VARCHAR2 debe tener en cuenta la longitud
+		else if(tipoDato.equals("VARCHAR2")) {
+			sbTabla.append(nombreCampo + " " + tipoDato + "(" + c.getLongitud()
+					+ " CHAR), ");
+		}
+		// Si es DATE o TIMESTAMP s�lo importa el tipoDato
+		else {
+			sbTabla.append(nombreCampo + " " + tipoDato +", ");
+		}
+
+		// Agrega el comentario del campo
+		comCampos.add("COMMENT ON COLUMN SCHSEMIH." + nombreEntidad + "." + nombreCampo
+				+ " IS '" + c.getNombreCompleto() + "||||" + c.getDescripcion()
+				+ "'");		
+	}
+	
+	/**
+	 * Agrega los detalles del campo que recibe al StringBuilder donde se est�
+	 * construyendo la sentencia de creacion
+	 * 
+	 * @param sbTabla			StringBuilder donde se est� construyendo la sentencia SQL de la Tabla
+	 * @param sbComm			StringBuilder donde se est� construyendo la sentencia SQL de los comentarios
+	 * @param c					Campo a ser agregado a la sentencia
+	 * @param nombreEntidad		nombre de la entidad
+	 */
+	public void agregaCampo(StringBuilder sbTabla, List<String> comCampos,
+			Campo c, String nombreEntidad, String campoFecha) {
+		String nombreCampo = c.getNombreCorto();
+		String tipoDato = c.getTipoDato();
+		// Si es numero debe tener en cuenta la precision
+		sbTabla.append(nl);
+		if (tipoDato.equals("NUMBER")) {
+			String p = c.getPrecision();
+			log.info(p);
+			sbTabla.append(nombreCampo + " " + tipoDato + "(" + c.getLongitud()
+					+ "," + ((p == null || p == "") ? "0" : c.getPrecision())  + "), ");
+		}
+		// Si es VARCHAR2 debe tener en cuenta la longitud
+		else if(tipoDato.equals("VARCHAR2")) {
+			sbTabla.append(nombreCampo + " " + tipoDato + "(" + c.getLongitud()
+					+ " CHAR), ");
+		}
+		// Si es DATE o TIMESTAMP s�lo importa el tipoDato
+		else {
+			if (nombreCampo.equals(campoFecha)) {
+				sbTabla.append(nombreCampo + " " + tipoDato +" NOT NULL, ");
+			} else {
+				sbTabla.append(nombreCampo + " " + tipoDato +", ");
+			}
+		}
+
+		// Agrega el comentario del campo
+		comCampos.add("COMMENT ON COLUMN SCHSEMIH." + nombreEntidad + "." + nombreCampo
+				+ " IS '" + c.getNombreCompleto() + "||||" + c.getDescripcion()
+				+ "'");		
+	}
+
+}

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+		"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+		"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory name="sessionFactory">
+    
+    	<property name="statement_cache.size">0</property>
+    	
+		<!-- TOMCAT -->
+		
+        <property name="hibernate.connection.driver_class">oracle.jdbc.driver.OracleDriver</property>
+        <property name="hibernate.default_schema">SYSTEM</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</property>
+        <property name="connection.pool_size">2</property>
+        <property name="hibernate.show_sql">false</property>
+        
+        		<!-- TOMCAT -->
+		
+<!--         <property name="hibernate.connection.driver_class">oracle.jdbc.driver.OracleDriver</property> -->
+<!--         <property name="hibernate.default_schema">schsemih</property> -->
+<!--         <property name="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</property> -->
+<!--         <property name="connection.pool_size">2</property> -->
+<!--         <property name="hibernate.show_sql">false</property> -->
+        
+        <!-- DLLO -->
+<!--         <property name="hibernate.connection.url">jdbc:oracle:thin:@172.23.85.50:1521:DEVDB</property> -->
+<!-- 		 <property name="hibernate.connection.username">SEMIH</property> -->
+<!--         <property name="hibernate.connection.password">semih</property> -->
+
+		<!-- PBAS -->
+<!-- 		<property name="hibernate.connection.url">jdbc:oracle:thin:@172.23.85.50:1521:TESTDB</property> -->
+<!-- 		<property name="hibernate.connection.username">SEMIH</property> -->
+<!-- 		<property name="hibernate.connection.password">semih</property> -->
+
+		<!-- PBAS SOPHOS EXTERNO -->
+<!-- 		<property name="hibernate.connection.url">jdbc:oracle:thin:@200.116.4.210:1521:DEVDB</property> -->
+<!-- 		<property name="hibernate.connection.username">SEMIH</property> -->
+<!--        <property name="hibernate.connection.password">semih</property> -->
+		
+		<!-- PBAS PANAMA -->
+<!-- 		<property name="hibernate.connection.url">jdbc:oracle:thin:@166.26.3.138:1521:SEMIHDEV</property> -->
+<!-- 		<property name="hibernate.connection.username">SEMIH</property> -->
+<!--        <property name="hibernate.connection.password">SEMIH</property> -->
+
+		<!-- FIN TOMCAT -->
+
+
+        <mapping class="com.sophos.semih.model.EmpXml" />
+        <mapping class="com.sophos.semih.model.Employee" />
+        <mapping class="com.sophos.semih.model.TMihAplicacion" />
+        <mapping class="com.sophos.semih.model.TMihCatalogo" />
+        <mapping class="com.sophos.semih.model.TMihEntidad" />
+        <mapping class="com.sophos.semih.model.TMihEntxusr" />
+        <mapping class="com.sophos.semih.model.TMihLineanegocio" />
+        <mapping class="com.sophos.semih.model.TMihLogs" />
+        <mapping class="com.sophos.semih.model.TMihProyecto" />
+        <mapping class="com.sophos.semih.model.TMihRol" />
+        <mapping class="com.sophos.semih.model.TMihTipocatalogo" />
+        <mapping class="com.sophos.semih.model.TMihUsuario" />
+        <mapping class="com.sophos.semih.model.TMihParametro" />
+        <mapping class="com.sophos.semih.model.TMihControlcarga" />
+        <mapping class="com.sophos.semih.model.TMihConsulta" />
+        <mapping class="com.sophos.semih.model.TMihConstbl" />
+        <mapping class="com.sophos.semih.model.TMihConsfld" />
+    </session-factory>
+</hibernate-configuration>

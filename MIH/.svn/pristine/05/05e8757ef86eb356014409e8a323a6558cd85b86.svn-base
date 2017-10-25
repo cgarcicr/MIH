@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+	
+<h:body>
+
+	<ui:composition	template="${pageContext.request.contextPath}/modules/jsf/template/template.xhtml">
+	
+		
+		<ui:define name="content">
+		<script type="text/javascript">
+			//<![CDATA[ 
+
+			    function get(name){
+			    	   if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search)){
+			    	      return decodeURIComponent(name[1]);
+			    	   }
+			    }
+			
+			    function hideShowComp(id, hideShow)
+			    {
+			    	document.getElementById(id).style.display=hideShow;
+			    }
+			    
+			    function hideShowCompTable()
+			    {
+			    	 if (document.getElementById('formEntidad:mensajes:')) {
+				    	document.getElementById('formEntidad:result').style.display='none';
+				    	return;
+					} else {
+						document.getElementById('formEntidad:result').style.display='block';
+			    	 	return;
+					}
+			    }
+			    
+			    function accion(){
+			    	recargarForaneas();
+			    	recargarForaneas();
+			    }
+			    
+			//]]>
+		</script>
+		
+			<div class="ui-g">
+			<div class="ui-g-10 titulo">
+			    
+					<h:outputText value="#{msg['acceso.title']}" />
+				
+			</div>
+			
+			<div class="ui-g-2">
+
+				<h:panelGroup id="fade">
+					<h:graphicImage styleClass="block_tooltip" library="images" name="icon_help.png" />
+				</h:panelGroup>
+				<p:tooltip id="toolTipFade" for="fade" styleClass="tooltip" trackMouse="true" position="left">
+					   <h:outputText value="#{msg['acceso.ayuda1']}"/>
+		               <h:outputText value="#{msg['acceso.ayuda2']}"/><br/>
+		               <h:outputText value="#{msg['acceso.ayuda3']}"/><br/>
+		               <h:outputText value="#{msg['acceso.ayuda4']}"/><br/>
+		               <h:outputText value="#{msg['acceso.ayuda5']}"/><br/>
+		               <h:outputText value="#{msg['acceso.ayuda6']}"/><br/>
+		               <h:outputText value="#{msg['acceso.ayuda7']}"/>
+				</p:tooltip>
+			</div>
+		</div>
+		
+		<div class="ui-g">
+			<div class="ui-g-1"></div>
+			<div class="ui-g-10">
+				<h:form id="formEntidad">
+					<p:dataTable value="#{accesoEntidadesBean.usuarios}" var="user" id="tableUsuarios"
+					    emptyMessage="No existen registros para la consulta." paginator="true"
+						rows="10" styleClass="letras"
+						paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+						rowsPerPageTemplate="5,10,15" scrollable="true" scrollWidth="100%"
+						 widgetVar="entidadTable">
+						 
+						<p:column width="80" headerText="#{msg['usuarios.tb_codigo']} "  filterBy="#{user.codigoempleado}" filterMatchMode="contains" filterStyle="width:70px;height:13px">
+					 		<p:outputLabel value="#{user.codigoempleado}"/>
+					 	</p:column>
+					 	
+					 	<p:column width="80" headerText="#{msg['usuarios.tb_nombres']} "  filterBy="#{user.nombres}" filterMatchMode="contains" filterStyle="width:70px;height:13px">
+					 		<p:outputLabel value="#{user.nombres}"/>
+					 	</p:column>
+					 	
+					 	<p:column width="80" headerText="#{msg['usuarios.tb_apellidos']} "  filterBy="#{user.apellidos}" filterMatchMode="contains" filterStyle="width:70px;height:13px">
+					 		<p:outputLabel value="#{user.apellidos}"/>
+					 	</p:column>
+					 	
+					 	<p:column width="80" headerText="#{msg['usuarios.tb_rol']} "  filterBy="#{user.TMihRol.nombre}" filterMatchMode="contains" filterStyle="width:70px;height:13px">
+					 		<p:outputLabel value="#{user.TMihRol.nombre}"/>
+					 	</p:column>
+					 	
+					 	<p:column width="80" headerText="#{msg['usuarios.tb_lnegocio']} "  filterBy="#{user.TMihLineanegocio.nombre}" filterMatchMode="contains" filterStyle="width:70px;height:13px">
+					 		<p:outputLabel value="#{user.TMihLineanegocio.nombre}"/>
+					 	</p:column>
+					 	
+					 	<p:column width="80" headerText="#{msg['entidades.botones']}">
+							<p:commandLink id="editarTable" onclick="PF('wdialog_editar').show();" update=":form_editar">
+								<p:graphicImage library="images" name="ico-editar.png" with="16px" height="16px" title="#{msg['boton.editar']}"/>
+								<f:setPropertyActionListener target="#{accesoEntidadesBean.usuario}" value="#{user}" />
+							</p:commandLink>
+							
+							<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" style="font-size:11px;font-family:verdana;">
+								<p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+								<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>														
+							</p:confirmDialog>
+						
+							<p:dialog header="#{msg['acceso.permisos']}">
+							</p:dialog>
+							
+					 	</p:column>
+						 
+					</p:dataTable>
+				</h:form>
+				
+				
+					<p:dialog id="dialogo_editar" widgetVar="wdialog_editar" header="#{msg['acceso.permisos']}" modal="true" resizable="false" closeOnEscape="true" draggable="true" width="900px">
+						<h:form id="form_editar">
+						
+						<p:fieldset legend="#{msg['acceso.entidades_dispobibles']}#{accesoEntidadesBean.lnAutorizador.nombre}" >
+						
+						<p:dataTable value="#{accesoEntidadesBean.keyAsList}" var="ent" id="entidadesDisponibles" 
+					    emptyMessage="No existen registros para la consulta." paginator="true"
+						rows="10" style="font-size:11px;font-family:verdana;color:#424242;"
+						paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+						rowsPerPageTemplate="5,10,15" scrollable="true" scrollWidth="100%"
+						 widgetVar="entidadTable">
+						 
+						<p:column width="50" headerText="#{msg['entidades.codigo']}" >
+					 		<p:outputLabel value="#{ent.codigo}"/>
+					 	</p:column>
+					 	
+					 	<p:column width="50" headerText="#{msg['entidades.nombre']}" >
+					 		<p:outputLabel value="#{ent.nombre}"/>
+					 	</p:column>
+					 	
+					 	<p:column width="50" headerText="#{msg['entidades.descripcion']}" >
+					 		<p:outputLabel value="#{ent.descripcion}"/>
+					 	</p:column>
+					 	
+					 	<p:column width="50" headerText="#{msg['entidades.creador']}" >
+					 		<p:outputLabel value="#{ent.usrcreador}"/>
+					 	</p:column>
+					 	
+					 	<p:column width="50" headerText="#{msg['entidades.vacia']}" >
+					 		<p:outputLabel value="#{ent.vacia}"/>
+					 	</p:column>
+					 	
+					 	<p:column width="50" headerText="#{msg['acceso.permitir']}" >
+					 		<div class="divBoton">
+								<p:selectBooleanCheckbox value="#{accesoEntidadesBean.entidadesSeleccionadas[ent.codigo]}" 
+											title="#{msg['usuarios.acceso.title.seleccion']}"/>
+								</div>
+					 	</p:column>
+						 
+						 </p:dataTable>
+						 
+						 </p:fieldset>
+						 
+						 <h:panelGrid columns="2">
+									<p:commandButton value="#{msg['boton.guardar']}" icon="ui-icon-check" action="#{accesoEntidadesBean.guardar()}" oncomplete="PF('wdialog_editar').hide();"  update=":formEntidad:tableUsuarios"  />
+									<p:commandButton value="#{msg['boton.cancelar']}"  icon="ui-icon-close" immediate="true" onclick="PF('wdialog_editar').hide();"/>
+						 </h:panelGrid>
+						</h:form>
+					</p:dialog>	
+			</div>
+			<div class="ui-g-1"></div>
+		</div>
+		
+		<!-- Preload -->
+<!-- 		<p:ajaxStatus onstart="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()" /> -->
+
+<!-- 		<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false"> -->
+<!-- 		    <center><p:graphicImage library="images" name="preloader.gif" /></center><br/> -->
+<!-- 			<p:outputLabel value="#{msg['cargando']}" styleClass="letras" />				 -->
+<!-- 		</p:dialog> -->
+						
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

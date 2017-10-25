@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition
+	template="${pageContext.request.contextPath}/modules/jsf/template/template.xhtml">
+
+
+	<ui:define name="content">
+
+
+		<div class="ui-g">
+
+			<div class="ui-g-5 titulo">
+				<p:outputLabel value="#{msg['auditoria.titulo']}" />
+			</div>
+			<div class="ui-g-5 "></div>
+			<div class="ui-g-2">
+
+				<h:panelGroup id="fade">
+					<h:graphicImage styleClass="block_tooltip" library="images"
+						name="icon_help.png" />
+				</h:panelGroup>
+				<p:tooltip id="toolTipFade" for="fade" styleClass="tooltip"
+					trackMouse="true" position="left">
+					<h:outputText value="#{msg['auditoria.ayuda1']}" />
+					<br></br>
+					<h:outputText value="#{msg['auditoria.ayuda2']}" />
+					<br></br>
+					<h:outputText value="#{msg['auditoria.ayuda3']}" />
+					<br></br>
+					<h:outputText value="#{msg['auditoria.ayuda4']}" />
+					<br></br>
+					<h:outputText value="#{msg['auditoria.ayuda5']}" />
+					<br></br>
+					<h:outputText value="#{msg['auditoria.ayuda6']}" />
+					<br></br>
+					<h:outputText value="#{msg['auditoria.ayuda7']}" />
+					<br></br>
+				</p:tooltip>
+
+			</div>
+		</div>
+
+		<div class="ui-g">
+			<div class="ui-g-1"></div>
+			<div class="ui-g-10">
+
+				<h:form>
+
+					<p:dataTable value="#{auditoriaBean.logs}" var="log"
+						emptyMessage="No existen registros para la consulta." paginator="true"
+						rows="10"
+						paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+						rowsPerPageTemplate="5,10,15" scrollable="true" scrollWidth="100%" style="font-size:11px;font-family:verdana;color:#424242;"
+						 widgetVar="logTable">
+
+						<p:column width="3" headerText="#{msg['auditoria.tabla']}" filterStyle="width:100px;" filterBy="#{log.id.tabla}" filterMatchMode="contains"
+							      sortBy="#{log.id.tabla}">
+						<p:outputLabel value="#{log.id.tabla}" onchange="PF('logTable').filter()" />
+						</p:column>
+
+						<p:column width="3" headerText="#{msg['auditoria.usuario']}" filterStyle="width:80px;" filterBy="#{log.id.usuario}" filterMatchMode="contains"
+							      sortBy="#{log.id.usuario}">
+						<p:outputLabel value="#{log.id.usuario}" onchange="PF('logTable').filter()" />
+						</p:column>
+
+						<p:column width="3" headerText="#{msg['auditoria.accion']}" filterStyle="width:50px;" filterBy="#{log.id.accion}" filterMatchMode="contains"
+							      sortBy="#{log.id.accion}">
+			 			<p:outputLabel value="#{log.id.accion}" onchange="PF('logTable').filter()" />
+						</p:column>
+
+						<p:column width="20" headerText="#{msg['auditoria.feregistro']}" filterStyle="width:50px;" filterBy="#{log.id.feregistro}" filterMatchMode="contains"
+							      sortBy="#{log.id.feregistro}">
+						<p:outputLabel value="#{log.id.feregistro}" onchange="PF('logTable').filter()" />
+						</p:column>
+
+						<p:column width="150" headerText="#{msg['auditoria.descripcion']}" filterStyle="width:120px;" filterBy="#{log.id.descripcion}" filterMatchMode="contains"
+								  sortBy="#{log.id.descripcion}">
+							<p:outputLabel value="#{log.id.descripcion}" onchange="PF('logTable').filter()" />
+						</p:column>
+
+					</p:dataTable>
+
+				</h:form>
+
+			</div>
+			<div class="ui-g-1"></div>
+		</div>
+
+
+	<!-- Preload -->
+			<p:ajaxStatus onstart="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()" />
+ 
+			<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+			    <center><p:graphicImage library="images" name="preloader.gif" /></center><br/>
+				<p:outputLabel value="#{msg['cargando']}" styleClass="letras" />				
+			</p:dialog>
+
+
+	</ui:define>
+</ui:composition>
+</html>

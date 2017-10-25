@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+
+<ui:composition template="${pageContext.request.contextPath}/modules/jsf/template/template.xhtml">
+	<ui:param name="title" value="Administración de catálogos" />
+
+
+
+<ui:define name="content">
+		
+		
+		<div class="ui-g">
+			<div class="ui-g-10 titulo">
+			    
+					<h:outputText value="#{msg['catalogos.titulo']}" />
+				
+			</div>
+			
+			<div class="ui-g-2">
+
+				<h:panelGroup id="fade">
+					<h:graphicImage styleClass="block_tooltip" library="images" name="icon_help.png" />
+				</h:panelGroup>
+				<p:tooltip id="toolTipFade" for="fade" styleClass="tooltip" trackMouse="true" position="left">
+					
+						<h:outputText value="#{msg['parametros.ayuda1']}" />
+						<br></br>
+						<h:outputText value="#{msg['parametros.ayuda2']}" />
+						<br></br>
+						<h:outputText value="#{msg['parametros.ayuda3']}" />
+						<br></br>
+						<h:outputText value="#{msg['parametros.ayuda4']}" />
+						<br></br>
+						<h:outputText value="#{msg['parametros.ayuda5']}" />
+						<br></br>
+						<h:outputText value="#{msg['parametros.ayuda6']}" />
+						
+				
+				</p:tooltip>
+			</div>
+		</div>
+		
+       <p:growl id="growl" showSummary="false" showDetail="true"></p:growl>  
+		
+		<div class="ui-g">
+			<div class="ui-g-1"></div>
+			<div class="ui-g-10">
+				
+		<h:form id="formCatalogo">
+		
+		<p:fieldset legend="#{msg['catalogos.title.lista']}" >
+		        
+				   <center>
+					<h:outputLabel value="#{msg['catalogos.catalogosSeleccion']}" /> &nbsp;<br/>
+					<p:selectOneMenu value="#{catalogoExistente.tipoCatalogo}" style="width:190px" styleClass="letras"
+						valueChangeListener="#{catalogoExistente.cambioTipoCatalogo}"
+						required="true" requiredMessage="#{msg['catalogos.catalogo.noSelect']}" 
+						title="#{msg['catalogos.title.catalogo']}">
+						
+						<f:selectItem itemLabel="--Tipo de Catálogo--"  />
+						<div class="contenido"><f:selectItems value="#{catalogoExistente.tiposCatalogo}" var="tc"
+							itemLabel="#{tc.tipomaestro}" itemValue="#{tc}" />
+						</div>	
+					
+						<f:converter converterId="TipoCatalogoConverter"/>
+						
+						<f:ajax event="change" render="tablaC" execute="@this"></f:ajax>
+					</p:selectOneMenu><br/><br/>
+				  </center>
+				  
+                  <!--Boton para abrir formulario de creacion de parametro -->
+				  <p:commandButton value="Nuevo Parámetro" onclick="{PF('modalNuevo').show();}" update=":growl"></p:commandButton>
+				  
+             </p:fieldset>
+                 
+						<p:dataTable value="#{catalogoExistente.catalogos}" var="cat"
+						             emptyMessage="No existen datos para la consulta." 
+						             paginator="true" rows="10" paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+				                     rowsPerPageTemplate="5,10,15" scrollable="true" scrollWidth="100%"
+							         iterationStatusVar="it" id="tablaC"  styleClass="letras">
+							<p:column width="190">
+								<f:facet name="header">
+									<h:outputText value="#{msg['catalogos.codigo']}" />
+								</f:facet>
+								<h:outputText value="#{cat.id.codigo}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="#{msg['catalogos.nombre']}" />
+								</f:facet>
+								<h:outputText value="#{cat.descripcion}" />
+							</p:column>
+							<p:column width="50">
+								<f:facet name="header">
+									<h:outputText value="#{msg['entidades.botones']}" />
+								</f:facet>
+						<div class="divBoton">
+								
+							<p:commandLink process="@this" render="@none" action="#{catalogoExistente.validarEliminar}" 
+							               oncomplete="{PF('confirm').show();}" update=":confirm" >
+                                 <h:graphicImage library="images" name="ico-eliminar.png" height="18" title="#{msg['boton.eliminar']}" />
+								<f:setPropertyActionListener target="#{catalogoExistente.catalogo}" value="#{cat}" />
+							</p:commandLink>
+							
+						</div>
+							</p:column>
+							
+						</p:dataTable>
+						
+                  <!-- Mensaje flotante para fallo de eliminación -->
+                  
+                
+             
+		  </h:form>
+				  <h:form id="confirm">
+				  
+				    <!-- Modal para eliminacion de parametro -->
+				    
+					<p:dialog header="Eliminar" widgetVar="confirm" showEffect="explode" resizable="false" modal="true"  height="80">
+                       <h:outputText value="Está seguro que desea eliminar el registro?." /><br/><br/>
+                     	<table align="center">
+								<tr>
+									<td class="boton" >
+										<p:commandButton value="Si" 
+					                    action="#{catalogoExistente.eliminar()}" process="@this"
+					                    render="tablaC,cError,falloEliminar" 
+									    onclick="{PF('confirm').hiden();}" />
+									</td>
+									<td class="boton">
+										<p:commandButton value="No" onclick="PF('confirm').hide();" />
+									</td>
+								</tr>
+						</table> 	 		   
+                    </p:dialog>
+          </h:form>
+          
+          
+
+				  <h:form id="nuevoParametro" >
+				  
+                    <!--Modal para creación de parámetro -->
+				    
+				     
+					<p:dialog header="Nuevo Parámetro" resizable="false" widgetVar="modalNuevo" showEffect="explode" modal="true"  height="80">
+                      
+                             <p:growl id="growlGuardar" showSummary="false" showDetail="true"></p:growl>  
+							<table class="tablaCentrada" align="center">
+								<tr>
+									<td>
+										<h:outputLabel value="#{msg['catalogos.nombre']}" />
+									</td>
+									
+									<td>
+										<p:inputText  value="#{catalogoExistente.nombreNuevo}" id="nombre"
+										   converter="mayusculasConverter" required="true"
+										   maxlength="100" requiredMessage="#{msg['campo.requerido']}"
+										   title="#{msg['catalogos.title.nombre']}">
+
+										</p:inputText>
+									
+									</td>
+								</tr>
+								
+								 <tr>
+								  
+									<td >
+									  <p:commandButton value="#{msg['boton.guardar']}"  update=":growl" action="#{catalogoExistente.guardar()}" />
+									   
+									</td>
+									
+									<td>
+									<p:commandButton   value="#{msg['boton.cancelar']}" onclick="{PF('modalNuevo').hiden();}" /> 
+                                    </td>
+                                    
+								</tr>
+								
+									
+ 									
+                                    
+								   
+								
+							</table>
+
+						</p:dialog>
+                   </h:form>
+				</div>
+			<div class="ui-g-1"></div>
+		</div>
+		
+		
+   
+  </ui:define>
+ </ui:composition>
+</html>

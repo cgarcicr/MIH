@@ -1,0 +1,431 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	
+<h:body>
+
+	<h:outputStylesheet>
+        .ui-datatable .ui-sortable-column-icon {
+		    display: none !important;
+		}
+    </h:outputStylesheet>
+
+	<ui:composition template="${pageContext.request.contextPath}/modules/jsf/template/template.xhtml">
+		<ui:param name="title" value="Consulta dinamica" />
+		<ui:define name="content">
+		<script type="text/javascript">
+			//<![CDATA[ 
+
+			    function get(name){
+			    	   if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search)){
+			    	      return decodeURIComponent(name[1]);
+			    	   }
+			    }
+			
+			    function hideShowComp(id, hideShow)
+			    {
+			    	document.getElementById(id).style.display=hideShow;
+			    }
+			    
+			    function hideShowCompTable()
+			    {
+			    	 if (document.getElementById('formEntidad:mensajes:')) {
+				    	document.getElementById('formEntidad:result').style.display='none';
+				    	return;
+					} else {
+						document.getElementById('formEntidad:result').style.display='block';
+			    	 	return;
+					}
+			    }
+			    			    
+			    function accion(){
+			    	recargarForaneas();
+			    	recargarForaneas();
+			    }
+			    
+			    function verificar(){
+			    	if (condition) {
+						 
+					} else {
+						
+					}
+			    }
+			    
+			    function start() {  
+			        PF('statusDialog').show();  
+			    }  
+			      
+			    function stop() {  
+			        PF('statusDialog').hide();  
+			    }  
+			//]]>
+		</script>
+		<a4j:status onstart="#{rich:component('statPane')}.show()" onstop="#{rich:component('statPane')}.hide()" />
+		
+			<table width="100%">
+				<tr>
+					<td align="left"><h1><h:outputText value="#{msg['consultas.dinamicas.titulo']}" /></h1></td>
+					<td align="right">
+						<h:form id="fAyuda">
+							<h:graphicImage library="images" name="question.png" height="16" id="giAyuda" />
+							<rich:tooltip id="ttAyuda" showEvent="click" for="giAyuda" >
+								<h:panelGrid >
+			                        <h:outputText value="#{msg['consultas.dinamicas.ayuda1']}"/>
+			                        <h:outputText value="#{msg['consultas.dinamicas.ayuda2']}"/>
+			                        <h:outputText value="#{msg['consultas.dinamicas.ayuda3']}"/>
+			                        <h:outputText value="#{msg['consultas.dinamicas.ayuda4']}"/>
+			                        <h:outputText value="#{msg['consultas.dinamicas.ayuda5']}"/>
+			                        <h:outputText value="#{msg['consultas.dinamicas.ayuda6']}"/>
+			                        <h:outputText value="#{msg['consultas.dinamicas.ayuda7']}"/>
+			                        <h:outputText value="#{msg['consultas.dinamicas.ayuda8']}"/>
+			                    </h:panelGrid>
+							</rich:tooltip>
+						</h:form>
+					</td>
+				</tr>
+			</table>
+
+			<h:form id="formEntidad">
+				<a4j:jsFunction name="ocultarConConfirmacion"
+					action="#{consultaDinamicaBean.ocultarConConfirmacion}" execute="@this"/>
+					
+				<a4j:jsFunction name="consultar" 
+					action="#{consultaDinamicaBean.exportar}" execute="@this"/>
+			
+				<fieldset class="fieldsetDetail" title="#{msg['consultas.dinamicas.predefinida']}">
+					<legend class="legendFldsHeader"> <h:outputText value="#{msg['consultas.dinamicas.predefinida']}" />					
+						</legend>
+						  	<table align="center">
+		            	   <tr>
+							 <td colspan="4" align="center">
+					        <rich:panel style="width:950px;border: white;">
+					            <f:facet name="header" >
+					                <h:outputText value="#{msg['consultas.dinamicas.predefinida']}"></h:outputText>
+					            </f:facet>
+					            <table>
+									<tr>
+										<td>
+					            <h:selectOneMenu id="codConsulta" value="#{consultaDinamicaBean.consultadoId}"
+												title="#{msg['consultas.dinamicas.predefinida']}"> 
+											<f:selectItem itemLabel="#{msg['consultas.dinamicas.selectConsulta']}"/>
+											<f:selectItems value="#{consultaDinamicaBean.consultas}" var="con"
+												itemLabel="#{con.descripcion}" itemValue="#{con.codigo}" />
+	 										<a4j:ajax event="change" render="selectEntidad1,labelEntidad1,selectEntidad2,labelEntidad2,estructura1,estructura2,campos,selectForanea" 
+	 											execute="@this" listener="#{consultaDinamicaBean.consultarConsulta}"/>
+								</h:selectOneMenu>
+								         </td>
+								   <td align="left" class="boton">    
+								<a4j:commandButton action="#{consultaDinamicaBean.limpiarCampos()}"  id="cancelarConsulta" execute="@this"
+											value="#{msg['boton.limpiar']}"/></td> 
+								</tr>
+								
+							  </table>
+											
+					        </rich:panel>
+						 </td>
+						</tr>	
+					</table>
+				</fieldset>
+
+				<!-- Seleccion de entidades / estructuras -->
+				<fieldset class="fieldsetDetail"
+					title="#{msg['consultas.dinamicas.fc_estructuras']}">
+					<legend class="legendFldsHeader">
+						<h:outputText value="#{msg['consultas.dinamicas.fc_estructuras']}" />
+					</legend>
+					<table align="center">
+		            	   <tr>
+							 <td colspan="4" align="center">
+					        <rich:panel style="width:500px;border: white;">
+					            <f:facet name="header" >
+					                <h:outputText value="#{msg['consultas.dinamicas.fc_estructuras']}"></h:outputText>
+					            </f:facet>
+						<table align="center">
+						<tr>
+							<td><h:outputLabel
+									value="#{msg['consultas.dinamicas.estructura1']}" /></td>
+							<td>
+								<h:selectOneMenu id="selectEntidad1" onchange="hideShowComp('formEntidad:result', 'none');" title="#{msg['consultas.title.tabla1']}"
+									value="#{consultaDinamicaBean.entidad1.nombre}" required="true" requiredMessage="#{msg['consultas.dinamicas.requerido.entidad_uno']}">
+									<f:selectItem itemLabel="#{msg['consultas.dinamicas.slct_tab1']}" ></f:selectItem>
+									<f:selectItems value="#{consultaDinamicaBean.nombreEntidades}" var="nombreEntidad" itemLabel="nombreEntidad" itemValue="nombreEntidad" />
+									<a4j:ajax event="change" render="estructura1,labelEntidad1" execute="@this"/>
+								</h:selectOneMenu>
+								</td>
+						</tr>
+						<tr>
+							<td><h:outputLabel
+									value="#{msg['consultas.dinamicas.estructura2']}" /></td>
+							<td>
+								<h:selectOneMenu id="selectEntidad2" onchange="hideShowComp('formEntidad:result', 'none');" title="#{msg['consultas.title.tabla2']}"
+									value="#{consultaDinamicaBean.entidad2.nombre}" required="true" requiredMessage="#{msg['consultas.dinamicas.requerido.entidad_dos']}">
+									<f:selectItem itemLabel="#{msg['consultas.dinamicas.slct_tab2']}" itemValue=""></f:selectItem>
+									<f:selectItems value="#{consultaDinamicaBean.nombreEntidades}" var="nombreEntidad" itemLabel="nombreEntidad" itemValue="nombreEntidad" />
+									<a4j:ajax event="change" render="estructura2,labelEntidad2,selectForanea" execute="selectEntidad2 selectForanea"/>
+								</h:selectOneMenu>
+								</td>
+						</tr>
+						<tr>
+							<td><h:outputLabel
+									value="" /></td>
+							<td align="left" class="boton">
+								<a4j:commandButton action="#{consultaDinamicaBean.limpiarCampos()}"  id="cancelar1" execute="@this"
+										value="#{msg['boton.cancelar']}"/>
+							</td>
+						</tr>
+					</table>
+					</rich:panel>
+						 </td>
+						</tr>	
+					</table>
+					<rich:popupPanel id="statPane" autosized="true">
+			            <h:graphicImage library="images" name="preloader.gif" alt="preloader"/>
+			           <h:outputText value="#{msg['cargando']}" />
+			        </rich:popupPanel>
+				</fieldset>
+
+
+				<!-- Seleccion de campos entidades / estructuras -->
+				<fieldset id="campos" class="fieldsetDetail" title="#{msg['consultas.title.campos']}">
+					<legend class="legendFldsHeader">
+						<h:outputText value="#{msg['consultas.dinamicas.campos_estructuras']}" />
+					</legend>
+					<table align="center">
+						<tr>
+							<td colspan="4" align="center" title="#{msg['consultas.title.campost1']}">
+								<h2><h:outputLabel id="labelEntidad1" value="#{consultaDinamicaBean.entidad1.nombre}" /></h2>
+								<rich:panel style="width:100%; border: white;">
+									<rich:pickList  id="estructura1" value="#{consultaDinamicaBean.camposSeleccionadosE1}" var="campo1"
+										listHeight="200px" listWidth="300px">
+										<f:selectItems value="#{consultaDinamicaBean.camposE1}" />
+										<f:converter converterId="CamposConverterE1"/>
+										<rich:column>
+											<f:facet name="header">#{msg['consultas.dinamicas.campos']}</f:facet>
+						                    #{campo1.nombreCorto}
+						                </rich:column>
+						                <rich:column>
+						                    <f:facet name="header">#{msg['consultas.dinamicas.pk']}</f:facet>
+						                    #{campo1.clave}
+						                </rich:column>
+										<rich:column>
+											<f:facet name="header">#{msg['consultas.dinamicas.descripcion']}</f:facet>
+						                    #{campo1.nombreCompleto}
+						                </rich:column>
+									</rich:pickList>
+								</rich:panel></td>
+						</tr>
+						<tr>
+							<td colspan="4" align="center" title="#{msg['consultas.title.campost2']}">
+								<h2><h:outputLabel id="labelEntidad2" value="#{consultaDinamicaBean.entidad2.nombre}" /></h2> 
+								<a4j:jsFunction name="recargarForaneas" execute="estructura2" render="selectForanea"/>
+								<rich:panel style="width:100%; border: white;">
+									<rich:pickList id="estructura2" value="#{consultaDinamicaBean.camposSeleccionadosE2}" var="campo2"
+										listHeight="200px" 
+										listWidth="300px"
+										onadditems="accion(); return false;" 
+										onremoveitems="accion(); return false;"
+										style="width:100%;">
+										
+										<f:selectItems value="#{consultaDinamicaBean.camposE2}" />
+										<f:converter converterId="CamposConverterE2" />
+										<rich:column>
+											<f:facet name="header">#{msg['consultas.dinamicas.campos']}</f:facet>
+						                    #{campo2.nombreCorto}
+						                </rich:column>
+						                <rich:column>
+						                    <f:facet name="header">#{msg['consultas.dinamicas.pk']}</f:facet>
+						                    #{campo2.clave}
+						                </rich:column>
+										<rich:column>
+											<f:facet name="header">#{msg['consultas.dinamicas.descripcion']}</f:facet>
+						                    #{campo2.nombreCompleto}
+						                </rich:column>
+									</rich:pickList>
+								</rich:panel></td>
+						</tr>
+						<tr>
+							<td>
+								<h:outputText value="#{msg['consultas.dinamicas.relacion']} "></h:outputText>
+								
+								<h:selectOneMenu id="selectForanea" value="#{consultaDinamicaBean.foranea}" title="#{msg['consultas.title.relacion']}">
+									<f:selectItem itemValue="#{consultaDinamicaBean.foranea}" itemLabel="#{msg['consultas.dinamicas.slct_relacion']}" ></f:selectItem>
+									<f:selectItems value="#{consultaDinamicaBean.camposSeleccionadosE2}" var="campo" itemValue="#{campo.nombreCorto}" />
+									<f:converter converterId="ForaneaConverter" />
+									<a4j:ajax event="change" render="botones,buttonPanel" execute="@this" listener="#{consultaDinamicaBean.activaBotones}"/>
+								</h:selectOneMenu>
+							</td>
+						</tr>
+					</table>
+					
+
+				</fieldset>
+				<fieldset>
+					<!-- Mensajes -->
+					<div align="center">
+					<div style="width: 30%;">
+						<rich:messages id="mensajes" ajaxRendered="true"></rich:messages>
+					</div>
+					</div>
+						<table align="center">
+							<tr>
+								<td colspan="5" align="center">
+								</td>
+							</tr>
+							<tr>
+								<td colspan="4" align="left" class="boton">
+										<a4j:commandButton value="#{msg['boton.consultar']}" id="consultar"
+											action="#{consultaDinamicaBean.consultar}" oncomplete="hideShowCompTable(); return false;"	
+											render="result,selectForanea,datos_consulta">
+										</a4j:commandButton>
+								</td>
+								<td colspan="4" align="left" class="boton">
+										<a4j:commandButton value="#{msg['boton.guardar']}" id="guardar" render="confirmGuardarCON,selectForanea,datos_consulta" 
+											action="#{consultaDinamicaBean.validarGuardar}">
+										</a4j:commandButton>
+								</td>
+								<td colspan="4" align="left" class="boton">
+										<a4j:commandButton value="#{msg['boton.eliminar']}" id="eliminar" render="codConsulta" execute="@this"
+											oncomplete="#{rich:component('confirmEliminarCON')}.show()" >
+										</a4j:commandButton>
+								</td>
+								<td align="left" class="boton">
+									<a4j:commandButton action="#{consultaDinamicaBean.limpiarCampos()}"  id="cancelar" execute="@this"
+											value="#{msg['boton.cancelar']}"/>
+								</td>
+							</tr>
+						</table>
+						
+ 				<a4j:jsFunction name="eliminarCON" 
+						action="#{consultaDinamicaBean.eliminarConsulta}" execute="@this"
+						oncomplete="#{rich:component('confirmEliminarCON')}.hide();" />
+						
+				 <a4j:jsFunction name="guardarCON" 
+						action="#{consultaDinamicaBean.guardarConsulta}" execute="@this"
+						render="selectEntidad1,labelEntidad1,selectEntidad2,labelEntidad2,estructura1,estructura2,campos,codConsulta,cargando" 
+						oncomplete="#{rich:component('confirmGuardarCON')}.hide();" />
+				
+				<rich:popupPanel id="confirmEliminarCON" autosized="true" styleClass="panel"> 
+					<h:outputText value="#{msg['consultas.dinamicas.eliminar1']}  
+									#{consultaDinamicaBean.constaDesc}
+									#{msg['consultas.dinamicas.eliminar2']}" />
+					<div class="divBoton">
+						<a4j:commandButton value="#{msg['boton.eliminar']}"
+							onclick="eliminarCON(); return false;" 
+							action="#{consultaDinamicaBean.eliminarConsulta}" />
+						<a4j:commandButton value="#{msg['boton.cancelar']}" reRender="codConsulta"
+							onclick="#{rich:component('confirmEliminarCON')}.hide(); return false;" />
+					</div>
+				</rich:popupPanel>
+				
+				<rich:popupPanel id="confirmGuardarCON" autosized="true" styleClass="panel" modal="true" resizeable="false" domElementAttachment="parent" show="#{consultaDinamicaBean.mostrarGuardar}"> 
+					<div class="divBoton">
+					 <table>
+					  <tr><td>
+					    <h:outputText value="#{msg['consultas.dinamicas.cofirmar']}" /></td>
+					  </tr>
+					  <tr><td>
+						<h:inputText id="descripcion" value="#{consultaDinamicaBean.constaDesc}" 
+						maxlength="90" size="90"/></td>
+					  </tr>
+					  <tr><td>	
+						<a4j:commandButton value="#{msg['boton.guardar']}"
+							execute="descripcion,confirmGuardarCON,guardarCON"
+							action="#{consultaDinamicaBean.guardarConsulta}" 
+							render="selectEntidad1,labelEntidad1,selectEntidad2,labelEntidad2,estructura1,estructura2,campos,codConsulta,cargando"
+							oncomplete="if (#{facesContext.maximumSeverity==null}) {#{rich:component('confirmGuardarCON')}.hide();}"/>
+						<a4j:commandButton value="#{msg['boton.cancelar']}"
+							action="#{consultaDinamicaBean.ocultarGuardarConsulta}" 
+							onclick="#{rich:component('confirmGuardarCON')}.hide(); return false;" /></td>
+					   </tr>		
+					</table>	
+					</div>
+					<rich:messages id="mensajes2" ajaxRendered="true"></rich:messages>
+				</rich:popupPanel>
+					
+				<rich:popupPanel id="cargando" autosized="true" show="#{consultaDinamicaBean.buttonRender}" styleClass="panel">
+					<h:outputText value="#{msg['consultas.dinamicas.confirmacion1']} 
+										 #{consultaDinamicaBean.constaDesc}
+										 #{msg['consultas.dinamicas.confirmacion2']}"  />
+					<div class="divBoton">
+						<a4j:commandButton action="#{consultaDinamicaBean.limpiarCampos()}"  id="limpiar" execute="@this"
+										value="#{msg['boton.aceptar']}"/>
+					</div>
+				</rich:popupPanel>	
+						
+			</fieldset>
+
+			<!-- Resultados de la consulta -->
+			<h:panelGroup id="result" styleClass="display: none"> 
+			<fieldset class="fieldsetDetail"
+				title="#{msg['consultas.title.resultado']}">
+				<legend class="legendFldsHeader">
+					<h:outputText value="#{msg['consultas.dinamicas.resultado']}" rendered="#{consultaDinamicaBean.getConsulta}" />
+				</legend>
+				
+					<div style="overflow-x: scroll; width: 1025px;">
+					    <p:dataTable id="datos_consulta" var="registro" value="#{consultaDinamicaBean.lazyModel}" emptyMessage="#{msg['sin.resultados']}"
+					    	paginator="true" rows="10" paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+					    	rowsPerPageTemplate="5,10,15,20,50" lazy="true" >                      
+					        <p:columns value="#{consultaDinamicaBean.columnas}" var="column"   
+					                    sortBy="#{column}" filterBy="#{column}">  
+					            <f:facet name="header">  
+					                #{column}  
+					            </f:facet>  
+					            #{registro[column]}  
+					        </p:columns>  
+					    </p:dataTable>
+				    </div>
+					
+					<!-- Exportar consulta a excel -->
+					<table>
+						<tr>
+							<td align="left" class="boton">
+							
+								<c:choose>
+								    <c:when test="#{consultaDinamicaBean.verificarTamano}">
+								      	<a4j:commandButton value="#{msg['consultas.dinamicas.btn_exportar']}" execute="@this"
+											onclick="#{rich:component('confirmacion')}.show(); return false;" />
+								    </c:when>
+								    <c:otherwise>
+										<h:commandButton id="exportar" action="#{consultaDinamicaBean.exportar}" 
+												value="#{msg['consultas.dinamicas.btn_exportar']}" render="confirmacion">
+										</h:commandButton>
+								    </c:otherwise>
+								</c:choose>
+							</td>
+						</tr>
+					</table>
+			</fieldset>
+			</h:panelGroup>
+			
+			<p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false" resizable="false">  
+			    <p:graphicImage value="/design/ajaxloadingbar.gif" />  
+			</p:dialog> 
+			
+			<!-- Confirmacion tamano excel -->
+			<rich:popupPanel id="confirmacion" styleClass="panel" modal="true" autosized="true" domElementAttachment="parent"
+				onmaskclick="#{rich:component('confirmacion')}.hide()">
+				<h:outputText value="#{msg['consultas.dinamicas.conf1']}" /><br/>
+				<h:outputText value="#{msg['consultas.dinamicas.conf2']}" /><br/><br/>
+				<h:outputText value="#{msg['consultas.dinamicas.conf3']}" />
+
+				<div class="divBoton">
+					<h:commandButton value="#{msg['consultas.dinamicas.btn_exportar']}" action="#{consultaDinamicaBean.exportar}" />
+					
+					<h:commandButton value="#{msg['boton.salir']}"
+							onclick="#{rich:component('confirmacion')}.hide(); ocultarConConfirmacion(); return false;" />
+				</div>
+			</rich:popupPanel>
+
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

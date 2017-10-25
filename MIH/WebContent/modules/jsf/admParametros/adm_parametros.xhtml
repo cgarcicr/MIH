@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="${pageContext.request.contextPath}/modules/jsf/template/template.xhtml">
+
+
+	<ui:define name="content">
+
+
+		<div class="ui-g">
+			<div class="ui-g-5 titulo">
+			    
+					<h:outputText value="#{msg['parametros.list']}" />
+				
+				</div>
+			<div class="ui-g-5"></div>
+			<div class="ui-g-2">
+
+				<h:panelGroup id="fade">
+					<h:graphicImage styleClass="block_tooltip" library="images" name="icon_help.png" />
+				</h:panelGroup>
+				<p:tooltip id="toolTipFade" for="fade" styleClass="tooltip" trackMouse="true" position="left">
+					
+						<h:outputText value="#{msg['parametros.ayuda1']}" />
+						<br></br>
+						<h:outputText value="#{msg['parametros.ayuda2']}" />
+						<br></br>
+						<h:outputText value="#{msg['parametros.ayuda3']}" />
+						<br></br>
+						<h:outputText value="#{msg['parametros.ayuda4']}" />
+						<br></br>
+						<h:outputText value="#{msg['parametros.ayuda5']}" />
+						<br></br>
+						<h:outputText value="#{msg['parametros.ayuda6']}" />
+						
+				
+				</p:tooltip>
+			</div>
+		</div>
+
+		<div class="ui-g">
+			<div class="ui-g-1"></div>
+			<div class="ui-g-10">
+			<p:growl  id="growl" showDetail="true" showSummary="false" />	
+			<p:messages autoUpdate="true"></p:messages>
+		<h:form>
+
+			<p:dataTable value="#{parametrosBean.listaParametros}" var="parametro"  styleClass="letras"
+				emptyMessage="No existen datos para la consulta." paginator="true"
+				rows="10"
+				paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+				rowsPerPageTemplate="5,10,15" 
+				scrollable="true" scrollWidth="100%" >
+
+				<p:column  headerText="#{msg['parametros.tb_codigo']}" styleClass="letras"
+					filterStyle="width:50px;" filterBy="#{parametro.codigo}"
+					filterMatchMode="contains" sortBy="#{parametro.codigo}">
+					<p:outputLabel value="#{parametro.codigo}"  />
+				</p:column>
+				
+				<p:column   headerText="#{msg['parametros.tb_valor']}" styleClass="letras"
+					filterStyle="width:100px;" filterBy="#{parametro.valor}"
+					filterMatchMode="contains" sortBy="#{parametro.valor}">
+					<h:outputLabel value="#{parametro.valor}" rendered="#{parametro.espss.toString() == 'N'}" />
+					<h:outputLabel value="#{msg['parametros.hide_pss']}" rendered="#{parametro.espss.toString() == 'S'}" />
+				</p:column>
+				
+				<p:column  headerText="#{msg['parametros.tb_descripcion']}" styleClass="letras"
+					filterStyle="width:130px;" filterBy="#{parametro.descripcion}"
+					filterMatchMode="contains" sortBy="#{parametro.descripcion}">
+					<p:outputLabel value="#{parametro.descripcion}"/>
+				</p:column>
+				
+				<p:column width="50"  headerText="#{msg['entidades.botones']}" styleClass="letras">
+
+                          <p:commandLink  rendered="#{parametro.espss.toString() == 'S'}"
+								render="editGrid_pss pss_edit" process="@this" update=":dialogPwd"
+								oncomplete="{PF('dlg4').show();}">
+								<f:setPropertyActionListener target="#{parametrosBean.parametro}" value="#{parametro}" />
+								<f:setPropertyActionListener target="#{parametrosBean.pss1}" value="****************" />
+					            <f:setPropertyActionListener target="#{parametrosBean.pss2}" value="****************" />
+								<h:graphicImage library="images" name="ico-editar.png"  height="16" title="#{msg['boton.editar']}"/>
+							</p:commandLink>
+							
+							<p:commandLink  rendered="#{parametro.espss.toString() == 'N'}"
+								render="editGrid param_edit" process="@this" update=":dialog"
+								oncomplete="{PF('dlg3').show();}">
+								<f:setPropertyActionListener target="#{parametrosBean.parametro}" value="#{parametro}" />
+								<h:graphicImage library="images" name="ico-editar.png"  height="16" title="#{msg['boton.editar']}"/>
+							</p:commandLink>
+							
+			    </p:column>
+				
+         </p:dataTable>
+         
+   </h:form>
+				
+		  <!-- Editar parámetro -->
+			<h:form id="dialog">
+				<p:dialog header="Modificación" widgetVar="dlg3" showEffect="explode"  
+				        responsive="true" closable="true" id="param_edit"
+						modal="true" height="100"  update=":tabla" >
+						
+						<p:messages id="msgPss0" for="valorParametro"  styleClass="mensajes_validacion" autoUpdate="true" />
+						
+							<legend class="failureNotification" >
+								<h:outputText value="#{msg['parametros.edicion']}" />
+							</legend>
+							
+							<table id="editGrid" class="letras">
+							
+								<tr>
+									<td><h:outputLabel value="#{parametrosBean.parametro.codigo}" /></td>
+									<td><p:inputText id="valorParametro" value="#{parametrosBean.parametro.valor}"  
+											maxlength="100" required="true" title="#{msg['parametros.title.valor_edit']}" 
+											requiredMessage="#{msg['parametros.requerido.valor']}">
+										</p:inputText>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2"><h:outputLabel value="#{parametrosBean.parametro.descripcion}" /></td>
+								</tr>
+								<tr>
+									<td colspan="4" align="center">
+										<table>
+											<tr>
+												<td class="boton">
+												<p:commandButton
+														value="#{msg['boton.actualizar']}"
+														action="#{parametrosBean.actualizar()}"
+														render="usrError,editGrid" execute="editGrid,pss_edit"
+														oncomplete="if (#{facesContext.maximumSeverity==null}) {PF('dlg3').show();}" update="growl"/>
+												</td>
+												<td class="boton"><p:commandButton
+														render="pss_edit editGrid"
+														value="#{msg['boton.cancelar']}"
+														onclick="PF('dlg3').hide();" />
+												</td>
+											</tr>
+										</table> 
+									</td>
+								</tr>
+							</table>
+                    </p:dialog>
+			   </h:form>
+			   
+			   
+			   
+			   <!-- Editar contraseña -->
+			   
+			   <h:form id="dialogPwd">
+				<p:dialog header="Modificación" widgetVar="dlg4" showEffect="explode"  
+				        responsive="true" closable="true" id="pss_edit"
+						modal="true" height="100"  update=":tabla" >
+						
+					  <p:messages id="msgPss1" for="valorParametroPss1"  styleClass="mensajes_validacion" autoUpdate="true" />
+					  <p:messages id="msgPss2" for="valorParametroPss2"  styleClass="mensajes_validacion" autoUpdate="true" />
+						
+							<legend class="failureNotification" >
+								<h:outputText value="#{msg['parametros.edicion']}" />
+							</legend>
+							
+							
+							
+							<table id="editGrid_pss" class="letras">
+							
+								<tr>
+									<td><h:outputLabel value="#{parametrosBean.parametro.codigo}" /></td>
+									<td><p:password id="valorParametroPss1" value="#{parametrosBean.pss1}" match="valorParametroPss2" 
+									     validatorMessage="#{msg['parametros.pss_verification']}"
+										redisplay="true" maxlength="100" required="true" title="#{msg['parametros.title.valor_pss1']}" 
+										requiredMessage="#{msg['parametros.requerido.valor_pss']}"> 
+										</p:password>
+									</td>
+									<td><p:password id="valorParametroPss2" value="#{parametrosBean.pss2}"  
+									    validatorMessage="#{msg['parametros.pss_verification']}"
+										redisplay="true" maxlength="100" required="true" title="#{msg['parametros.title.valor_pss2']}" 
+										requiredMessage="#{msg['parametros.requerido.valor_pssc']}"/></td>
+								</tr>
+								
+								<tr>
+									<td colspan="4" align="center">
+										<table>
+											<tr>
+												<td class="boton">
+												<p:commandButton
+														value="#{msg['boton.actualizar']}" 
+														action="#{parametrosBean.actualizar()}"
+														oncomplete="if (#{facesContext.maximumSeverity==null}) {PF('dlg4').show();}"  update="growl"/>
+												</td>
+												<td class="boton"><p:commandButton
+														render="pss_edit editGrid"
+														value="#{msg['boton.cancelar']}"
+														onclick="PF('dlg4').hide();" />
+												</td>
+											</tr>
+										</table> 
+									</td>
+								</tr>
+							</table>
+					
+						
+						 
+                    </p:dialog>
+			   </h:form>
+			   
+			   
+			   
+			</div>
+			<div class="ui-g-1"></div>
+		</div>
+
+
+	
+
+
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"	
+	>
+	
+
+<h:body>
+
+	<ui:composition template="${pageContext.request.contextPath}/modules/jsf/template/template.xhtml">
+		
+		 		
+		<ui:define name="content">
+		
+<!-- 		<a4j:status onstart="#{rich:component('statPane')}.show()" onstop="#{rich:component('statPane')}.hide()" /> -->
+		
+		<div class="ui-g">
+			<div class="ui-g-5 titulo">
+				<p:outputLabel value="#{msg['historicos.prevalidador.titulo']}"/>
+			</div>
+			<div class="ui-g-5"></div>
+			<div class="ui-g-2">
+				<h:panelGroup id="fade">
+					<h:graphicImage styleClass="block_tooltip" library="images"	name="icon_help.png" />
+				</h:panelGroup>
+				<p:tooltip id="toolTipFade" for="fade" styleClass="tooltip"	trackMouse="true" position="left">
+									<h:outputText value="#{msg['historicos.prevalidador.ayuda1']}"/>
+									<br></br>								
+			                        <h:outputText value="#{msg['historicos.prevalidador.ayuda2']}"/>
+			                        <br></br>			                        
+			                        <h:outputText value="#{msg['historicos.prevalidador.ayuda3']}"/>
+			                        <br></br>
+			                        <h:outputText value="#{msg['historicos.prevalidador.ayuda4']}"/>
+			                        <br></br>
+			                        <h:outputText value="#{msg['historicos.prevalidador.ayuda5']}"/>
+			                        <br></br>
+			                        <h:outputText value="#{msg['historicos.prevalidador.ayuda6']}"/>
+			                        <br></br>
+			                        <h:outputText value="#{msg['historicos.prevalidador.ayuda7']}"/>
+			                        <br></br>
+			                        <h:outputText value="#{msg['historicos.prevalidador.ayuda8']}"/>
+			                        <br></br>
+			                        <h:outputText value="#{msg['historicos.prevalidador.ayuda9']}"/>
+				</p:tooltip>
+			</div>
+		</div>
+		
+		<p:growl id="mensajes_pop" showSummary="false" showDetail="true" life="8000" />	
+			
+		<h:form id="cargaDatosform" >
+				<p:fieldset legend="#{msg['historicos.prevalidador.fc_estructura']}">
+
+					<!-- 1er fila -->
+					<div class="ui-g">
+						<div class="ui-g-2 titleSize2">
+							<p:outputLabel
+								value="#{msg['historicos.prevalidador.Estructura']}" />
+						</div>
+						<div class="ui-g-1 contenido">
+							<p:selectOneMenu id="codEntidad1" value="#{prevalidadorBean.nombreEntidad}" required="true" title="#{msg['historicos.prevalidador.ttTabla']}" style="width:85px" requiredMessage="#{msg['historicos.prevalidador.reqEntidad']}">
+								<f:selectItem itemLabel="#{msg['historicos.prevalidador.somEntidad']}" itemDisabled="true" noSelectionOption="true" />
+								<f:selectItems value="#{prevalidadorBean.entidades}" var="ent" itemLabel="#{ent.nombre}" itemValue="#{ent.codigo}" />
+							</p:selectOneMenu>
+						</div>
+
+					</div>
+					
+					<!-- 2da fila -->
+					
+					<div class="ui-g">
+						<div class="ui-g-2 titleSize2">
+							<p:outputLabel value="#{msg['historicos.carga.Encabezado']} :"/>						
+						</div>
+						<div class="ui-g-1">
+							<p:selectBooleanCheckbox id="encabezado" value="#{prevalidadorBean.encabezado}" title="#{msg['historicos.carga.ttEncabezado']}"/>
+						</div>
+					
+					</div>
+					
+					<!-- 3ra fila -->
+					
+					<div class="ui-g">
+						<div class="ui-g-2 titleSize2">
+							<p:outputLabel value="#{msg['historicos.prevalidador.Nulo']} :"/>						
+						</div>
+						<div class="ui-g-1">
+							<p:selectBooleanCheckbox id="datosNulos" value="#{prevalidadorBean.nulo}" title="#{msg['historicos.prevalidador.Nulo']}"/>
+						</div>
+					
+					</div>
+					
+					<!-- 4ta fila -->
+					<div class="ui-g">
+						<div class="ui-g-2 titleSize2">
+							<p:outputLabel
+								value="#{msg['historicos.prevalidador.Separador']}" />
+						</div>
+						<div class="ui-g-1 contenido"> 
+						<p:selectOneMenu id="codSeparador" value="#{prevalidadorBean.delimiter}" required="true" title="#{msg['historicos.prevalidador.reqSeparador']}" style="width:85px" requiredMessage="#{msg['historicos.prevalidador.reqSeparador']}">
+								<f:selectItem itemLabel="#{msg['historicos.prevalidador.somSeparador']}" itemDisabled="true" noSelectionOption="true"/>
+								<f:selectItems value="#{prevalidadorBean.listaSeparadores}" itemLabel="#{listaSeparadores}"/> 
+						</p:selectOneMenu>
+						</div>
+
+					</div>
+					
+					<!-- 5ta fila -->
+					<div class="ui-g">
+						<div class="ui-g-2 titleSize2">
+							<p:outputLabel value="#{msg['historicos.prevalidador.Archivo']}" />
+						</div>
+						<div class="ui-g-1 contenido"> 
+						<p:selectOneMenu id="somArchivo" value="#{prevalidadorBean.archivo}" required="true" title="#{msg['historicos.prevalidador.ttArchivo']}" style="width:85px" requiredMessage="#{msg['historicos.prevalidador.reqArchivo']}">
+								<f:selectItem itemLabel="#{msg['historicos.prevalidador.somArchivo']}" itemDisabled="true" noSelectionOption="true"/>
+								<f:selectItems value="#{prevalidadorBean.archivos}" itemLabel="#{archivos}"/>
+						</p:selectOneMenu>
+						</div>
+
+					</div>
+
+					<div class="ui-g">
+						<div class="ui-g-12">
+							<p:panel id="lblCampos" >
+								<p:outputLabel value="#{prevalidadorBean.rowsVisible? ' ' : msg['historicos.prevalidador.arreglo'] }" />
+									<p:selectManyCheckbox value="#{prevalidadorBean.camposSeleccionado}"  >
+								      	<c:forEach var="campos" items="#{prevalidadorBean.campos}" >
+							         	 		<f:selectItem itemValue="#{campos.nombreCorto}" itemLabel="#{campos.nombreCorto} " />
+							          	</c:forEach>
+									</p:selectManyCheckbox>	
+						
+							</p:panel>
+						</div>
+					</div>
+
+				</p:fieldset> <br></br>
+				
+				<h:panelGrid columns="2">
+					<p:commandButton update="cargaDatosform,popup,mensajes_pop" value="#{msg['historicos.prevalidador.btnAceptar']}" id="btnAceptar" action="#{prevalidadorBean.mostrarPopup}" title="#{msg['historicos.prevalidador.ttAceptar']}" />
+					<p:commandButton value="#{msg['historicos.prevalidador.btnCancelar']}" action="#{prevalidadorBean.limpiar()}"  id="btnCancelar1"
+					 				process="@this" title="#{msg['historicos.prevalidador.ttCancelar1']}" update="cargaDatosform"/>
+				</h:panelGrid>
+				
+				
+		</h:form>	
+
+			<p:dialog height="280" width="400" id="popup" header="#{msg['historicos.prevalidador.tituloConfirmacion']}" modal="true" visible="#{prevalidadorBean.popupVisible}" resizable="false" closeOnEscape="true" draggable="true" widgetVar="wdialogo"> 
+				<h:form>
+					
+					<h:outputText value="#{prevalidadorBean.encabezado?  msg['historicos.carga.notaEncabezado'] :  msg['historicos.carga.notaSinEncabezado'] }" style="font-size:15px;font-family:verdana;color:red;"/><br/>
+		        	<h:outputText value="#{prevalidadorBean.nulo?  msg['historicos.prevalidador.notaNulo'] :  msg['historicos.prevalidador.notaSinNulo'] }" style="font-size:15px;font-family:verdana;color:red;"/> 
+					<br></br><br></br>
+					
+					<h:panelGrid columns="3">
+						<p:outputLabel value="#{msg['historicos.prevalidador.Estructura']}" style="font-size:15px;font-family:verdana;" />&nbsp;					
+						<p:outputLabel id="lblEntidad" value="#{prevalidadorBean.entidad.nombre}" style="font-size:15px;font-family:verdana;"/>
+					</h:panelGrid>
+					
+					<h:panelGrid columns="3">
+						<p:outputLabel value="#{msg['historicos.carga.Encabezado']} :" style="font-size:15px;font-family:verdana;" />&nbsp;
+						<p:outputLabel id="lblEncabezado" value="#{prevalidadorBean.encabezado? 'Si' : 'No'}" style="font-size:15px;font-family:verdana;"/>
+					</h:panelGrid>
+					
+					<h:panelGrid columns="3">
+						<p:outputLabel value="#{msg['historicos.prevalidador.Nulo']} :" style="font-size:15px;font-family:verdana;"/>&nbsp;
+						<p:outputLabel id="lblNulo" value="#{prevalidadorBean.nulo? 'Si' : 'No'}" style="font-size:15px;font-family:verdana;"/>					
+					</h:panelGrid>
+					
+					<h:panelGrid columns="3">
+						<p:outputLabel value="#{msg['historicos.prevalidador.Separador']}" style="font-size:15px;font-family:verdana;"/>
+						<p:outputLabel id="lblSeparador" value="#{prevalidadorBean.delimiter}" style="font-size:15px;font-family:verdana;"/>
+					</h:panelGrid>
+					
+					<h:panelGrid columns="3">
+						<p:outputLabel value="#{msg['historicos.prevalidador.Archivo']}" style="font-size:15px;font-family:verdana;"/>
+						<p:outputLabel id="lblArchivo" value="#{prevalidadorBean.archivo}" style="font-size:15px;font-family:verdana;"/>					
+					</h:panelGrid>
+					
+					<h:panelGrid columns="3">
+						<p:outputLabel value="#{msg['historicos.prevalidador.sumatoria']}" style="font-size:15px;font-family:verdana;"/>
+							<c:forEach var="campos" items="#{prevalidadorBean.camposSeleccionado}" >
+									<h:outputLabel value="#{msg['historicos.prevalidador.vineta']}" />
+									<h:outputLabel value="#{campos}" />
+							</c:forEach>
+					</h:panelGrid><br></br>
+					
+					<h:panelGrid columns="2">
+						<p:commandButton id="btnCargar" icon="ui-icon-check" value="#{msg['historicos.prevalidador.btnCargar']}" action="#{prevalidadorBean.validarArchivo}" title="#{msg['historicos.prevalidador.ttCargar']}" oncomplete="PF('wdialogo').hide()"/>
+						<p:commandButton id="btnCancelar2" icon="ui-icon-close" value="#{msg['historicos.prevalidador.btnCancelar']}" onclick="PF('wdialogo').hide();" title="#{msg['historicos.prevalidador.ttCancelar2']}"/>
+					</h:panelGrid>
+				
+				</h:form>
+			</p:dialog>
+
+
+				
+			
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

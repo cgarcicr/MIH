@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:body>
+
+	<ui:composition template="${pageContext.request.contextPath}/modules/jsf/template/template.xhtml">
+		<ui:define name="content">
+
+			<div class="ui-g">
+				<div class="ui-g-5 titulo">
+					<p:outputLabel value="#{msg['ln.titulo']}" />
+				</div>
+				<div class="ui-g-5"></div>
+				<div class="ui-g-2">
+					<h:panelGroup id="fade">
+						<h:graphicImage styleClass="block_tooltip" library="images"	name="icon_help.png" />
+					</h:panelGroup>
+					<p:tooltip id="toolTipFade" for="fade" styleClass="tooltip" trackMouse="true" position="left">
+						<h:outputText value="#{msg['ln.ayuda1']}" />
+						<br></br>
+						<h:outputText value="#{msg['ln.ayuda2']}" />
+						<br></br>
+						<h:outputText value="#{msg['ln.ayuda3']}" />
+						<br></br>
+						<h:outputText value="#{msg['ln.ayuda4']}" />
+						<br></br>
+						<h:outputText value="#{msg['ln.ayuda5']}" />
+						<br></br>
+						<h:outputText value="#{msg['ln.ayuda6']}" />
+						<br></br>
+						<h:outputText value="#{msg['ln.ayuda7']}" />
+						<br></br>
+						<h:outputText value="#{msg['ln.ayuda8']}" />
+						<br></br>
+						<h:outputText value="#{msg['ln.ayuda9']}" />
+						<br></br>
+						<h:outputText value="#{msg['ln.ayuda10']}" />
+					</p:tooltip>
+				</div>
+			</div>
+
+			<h:form id="formLineaNegocio">
+				<p:fieldset legend="#{msg['ln.lnExistentes']}">
+				<p:dataTable value="#{lineaNegocioExistente.lineasNegocio}" var="ln" id="tablaLN" paginator="true" emptyMessage="No existen registros para la consulta."
+						rows="10" 
+						paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+						rowsPerPageTemplate="5,10,15" scrollable="true" scrollWidth="100%" style="font-size:11px;font-family:verdana;color:#424242;">
+				
+					<p:column headerText="#{msg['ln.codigo']}" styleClass="letras">
+						<p:outputLabel value="#{ln.codigo}"/>
+					</p:column>
+					
+					<p:column headerText="#{msg['ln.nombre']}" styleClass="letras">
+						<p:outputLabel value="#{ln.nombre}"/>
+					</p:column>
+					
+					<p:column headerText="#{msg['ln.estado']}" styleClass="letras">
+						<p:outputLabel value="#{ln.estado}"/>
+					</p:column>
+					
+					<p:column headerText="#{msg['ln.proyecto']}" styleClass="letras">
+						<p:outputLabel value="#{ln.TMihProyecto.nombre}"/>
+					</p:column>
+					
+					<p:column headerText="#{msg['ln.descripcion']}" styleClass="letras">
+						<p:outputLabel value="#{ln.descripcion}"/>
+					</p:column>
+					
+					<p:column headerText="#{msg['entidades.botones']}" styleClass="letras">
+						<p:commandLink onclick="PF('wdialogo_eliminar_campo').show();">
+							<p:graphicImage library="images" name="ico-salir.png" with="16px" height="16px" title="#{msg['boton.eliminar']}" />
+							<f:setPropertyActionListener target="#{lineaNegocioExistente.lnEditada}" value="#{ln}" />							
+						</p:commandLink>&nbsp;
+						
+						<p:commandLink onclick="PF('wdialogo_editar_campo').show();"  update=":form_editar" action="#{lineaNegocioExistente.refrescarValores()}">
+							<p:graphicImage library="images" name="ico-editar.png" with="16px" height="16px" title="#{msg['entidades.title.editar_tabla']}" />
+							<f:setPropertyActionListener target="#{lineaNegocioExistente.lnEditada}" value="#{ln}" />
+						</p:commandLink>
+					</p:column>
+				
+				</p:dataTable>			
+			</p:fieldset>
+			</h:form>
+			
+			<!-- Modal editar campo -->
+					
+			<p:dialog widgetVar="wdialogo_editar_campo" header="#{msg['ln.editar.titulo']}" modal="true" resizable="false" closeOnEscape="true" draggable="true"  >
+				
+			<p:growl id="validacion" showSummary="false" showDetail="true" life="8000" />
+			
+					<h:form id="form_editar">	
+						<h:panelGrid columns="2">
+							<p:outputLabel value="#{msg['ln.codigo']} :" style="font-size:15px;font-family:verdana;"/>
+							<p:outputLabel value="#{lineaNegocioExistente.lnEditada.codigo}" style="font-size:15px;font-family:verdana;"/>
+						
+							<p:outputLabel value="#{msg['ln.nombre']} :" style="font-size:15px;font-family:verdana;"/>
+							<p:inputText id="editarNombre" title="#{msg['ln.title.nombre']}" value="#{lineaNegocioExistente.lnEditada.nombre}" style="width:100px;font-size:11px;font-family:verdana;" 
+								         required="true" requiredMessage="#{msg['requerido.nombre']}" maxlength="40"/>
+						
+							<p:outputLabel value="#{msg['ln.proyecto']} :" style="font-size:15px;font-family:verdana;"/>
+							<h:selectOneMenu id="editarProy" title="#{msg['ln.title.proyecto']}" required="true" requiredMessage="#{msg['requerido.proyecto']}" style="width:85px;font-size:11px;font-family:verdana;"
+								value="#{lineaNegocioExistente.lnEditada.TMihProyecto.codigo}">
+								<f:selectItem itemLabel=" " />
+								<f:selectItems value="#{lineaNegocioNueva.proyectos}" var="proy" itemLabel="#{proy.nombre}" itemValue="#{proy.codigo}" />
+							</h:selectOneMenu>
+					
+							<p:outputLabel value="#{msg['ln.estado']} :" style="font-size:15px;font-family:verdana;"/>
+							<p:selectOneMenu id="estado" title="#{msg['ln.title.estado']}" value="#{lineaNegocioExistente.lnEditada.estado}" style="width:85px;font-size:11px;font-family:verdana;">
+								<f:selectItem itemValue="A" itemLabel="#{msg['estado.activo']}" />
+								<f:selectItem itemValue="I" itemLabel="#{msg['estado.inactivo']}" />
+							</p:selectOneMenu>
+							
+							<p:outputLabel value="#{msg['ln.descripcion']} :" style="font-size:15px;font-family:verdana;"/>
+							<p:inputTextarea id="descripcion" value="#{lineaNegocioExistente.lnEditada.descripcion}" cols="50" rows="4" onkeyup="limitTextArea(this,400);" 
+								             onkeydown="limitTextArea(this,400);" style="font-size:11px;font-family:verdana;"/>
+					</h:panelGrid>	
+					<h:panelGrid columns="2">
+						<p:commandButton icon="ui-icon-check" value="#{msg['boton.guardar']}" action="#{lineaNegocioExistente.editar()}" update="validacion,:formLineaNegocio:tablaLN"/>
+						<p:commandButton icon="ui-icon-close" value="#{msg['boton.cancelar']}" onclick="PF('wdialogo_editar_campo').hide();" immediate="true" />
+					</h:panelGrid>
+					
+					</h:form>
+			</p:dialog>
+			
+			
+			
+			<!-- Modal eliminar campo -->
+			<p:dialog id="eliminar_campo" widgetVar="wdialogo_eliminar_campo" header="Eliminar campo" modal="true" resizable="false" closeOnEscape="true" draggable="true" >
+				<p:growl id="confirmacion" showSummary="false" showDetail="true" life="8000" />	
+				<h:form>
+				<p:outputLabel value="#{msg['ln.confirmar.eliminacion']}" style="font-size:15px;font-family:verdana;"/><br></br>
+				<h:panelGrid columns="4">
+					<p:commandButton value="Aceptar" icon="ui-icon-check" action="#{lineaNegocioExistente.eliminar}" onclick="PF('wdialogo_eliminar_campo').hide();" update="confirmacion,:formLineaNegocio:tablaLN" />
+					<p:commandButton value="Cancelar" icon="ui-icon-close" immediate="true" onclick="PF('wdialogo_eliminar_campo').hide();" />
+				</h:panelGrid>
+				</h:form>	
+			</p:dialog><br></br>
+			
+			<p:fieldset legend="#{msg['ln.nuevaLineaNegocio']}">
+				<h:form id="formLN">
+					<h:panelGrid columns="2">
+						<p:outputLabel value="#{msg['ln.nombre']} :" style="font-size:15px;font-family:verdana;"/>
+						<p:inputText value="#{lineaNegocioNueva.nombre}" title="#{msg['ln.title.nombre']}" id="nuevoNombre" converter="mayusculasConverter" maxlength="40"
+									required="true" requiredMessage="#{msg['requerido.nombre']}" style="width:100px;font-size:11px;font-family:verdana;">
+						</p:inputText>
+						
+						<p:outputLabel value="#{msg['ln.proyecto']} :" style="font-size:15px;font-family:verdana;"/>
+						<p:selectOneMenu id="nuevoProy" title="#{msg['ln.title.proyecto']}" value="#{lineaNegocioNueva.codProyecto}" required="true"
+									requiredMessage="#{msg['requerido.proyecto']}" style="width:85px;font-size:11px;font-family:verdana;">
+									<f:selectItem itemLabel="--Proyecto--" />
+									<f:selectItems value="#{lineaNegocioNueva.proyectos}" var="proy" itemLabel="#{proy.nombre}"	itemValue="#{proy.codigo}" />
+						</p:selectOneMenu>
+						
+						<p:outputLabel value="#{msg['ln.estado']} :" style="font-size:15px;font-family:verdana;"/>
+						<p:selectOneMenu value="#{lineaNegocioNueva.estado}" id="codEstado" title="#{msg['ln.title.estado']}" style="width:85px;font-size:11px;font-family:verdana;">
+									<f:selectItem itemValue="A" itemLabel="#{msg['estado.activo']}" />
+									<f:selectItem itemValue="I"	itemLabel="#{msg['estado.inactivo']}" />
+						</p:selectOneMenu>
+						
+						<p:outputLabel value="#{msg['ln.descripcion']} :" style="font-size:15px;font-family:verdana;"/>
+						<p:inputTextarea value="#{lineaNegocioNueva.descripcion}" cols="100" rows="4" validatorMessage="#{msg['longitud.400']}" id="descripcion"
+									onkeyup="limitTextArea(this,400);" onkeydown="limitTextArea(this,400);" style="font-size:11px;font-family:verdana;">
+						     <f:validateLength maximum="400" />
+						</p:inputTextarea>
+						
+						<p:commandButton value="#{msg['boton.guardar']}" action="#{lineaNegocioNueva.guardar}"/>						
+						<p:commandButton id="cancelar" value="#{msg['boton.cancelar']}" action="#{lineaNegocioNueva.clean()}" execute="@this" type="reset" immediate="true" />
+						
+					</h:panelGrid>
+					
+				</h:form>
+			
+			</p:fieldset>
+			
+			
+			<!-- Preload -->
+			<p:ajaxStatus onstart="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()" />
+ 
+			<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+			    <center><p:graphicImage library="images" name="preloader.gif" /></center><br/>
+				<p:outputLabel value="#{msg['cargando']}" styleClass="letras" />				
+			</p:dialog>
+			
+
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	
+<h:body>
+	<ui:composition template="${pageContext.request.contextPath}/modules/jsf/template/template.xhtml">
+		<ui:param name="title" value="#{msg['consultas.masiva.titulo']}" />
+		<ui:define name="content">
+		
+		<script type="text/javascript">
+
+
+        PrimeFaces.locales['es'] = {
+                closeText: 'Cerrar',
+                prevText: 'Anterior',
+                nextText: 'Siguiente',
+                monthNames: ['Enero','Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+                dayNames: ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+                dayNamesShort: ['Dom','Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+                dayNamesMin: ['D','L','M','M','J','V','S'],
+                weekHeader: 'Semana',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: '',
+                timeOnlyTitle: 'Sólo hora',
+                timeText: 'Tiempo',
+                hourText: 'Hora',
+                minuteText: 'Minuto',
+                secondText: 'Segundo',
+                currentText: 'Fecha actual',
+                ampm: false,
+                month: 'Mes',
+                week: 'Semana',
+                day: 'Día',
+                allDayText : 'Todo el día'
+        };
+        
+        
+        function recargar(){
+        	location.reload();
+        }
+        
+      </script>
+		
+		
+		<div class="ui-g">
+			<div class="ui-g-5 titulo">
+				<p:outputLabel value="#{msg['consultas.masiva.titulo']}"/>
+			</div>
+			<div class="ui-g-5"></div>
+			<div class="ui-g-2">
+				<h:panelGroup id="fade">
+					<h:graphicImage styleClass="block_tooltip" library="images"	name="icon_help.png" />
+				</h:panelGroup>
+				<p:tooltip id="toolTipFade" for="fade" styleClass="tooltip"	trackMouse="true" position="left">
+					<h:outputText value="#{msg['consultas.masiva.ayuda1']}"/><br/>
+			        <h:outputText value="#{msg['consultas.masiva.ayuda2']}"/><br/>
+			        <h:outputText value="#{msg['consultas.masiva.ayuda3']}"/><br/>
+			        <h:outputText value="#{msg['consultas.masiva.ayuda4']}"/><br/>
+			        <h:outputText value="#{msg['consultas.masiva.ayuda5']}"/><br/>
+			        <h:outputText value="#{msg['consultas.masiva.ayuda6']}"/><br/>
+			        <h:outputText value="#{msg['consultas.masiva.ayuda7']}"/><br/>
+			        <h:outputText value="#{msg['consultas.masiva.ayuda8']}"/><br/>
+				</p:tooltip>
+				</div>
+				</div>
+				<p:growl id="mensajes_pop" showSummary="false" showDetail="true" life="8000" />	
+				<h:form id="ConsultaMasivaForm" >
+				
+				<!-- funciones que se deben validar cuando se hagan pruebas funcionales con datos  -->
+				<!-- Inicio funciones que ya no van con richfaces -->
+				
+<!-- 				<a4j:jsFunction name="consultar" -->
+<!-- 				action="#{consultaMasivaBean.consultar}" execute="@this"/> -->
+			
+<!-- 				<a4j:jsFunction name="ocultarConConfirmacion" -->
+<!-- 				action="#{consultaMasivaBean.ocultarConConfirmacion}" execute="@this"/> -->
+				
+				<!-- Fin funciones que ya no van con richfaces -->
+
+				
+				<p:fieldset legend="#{msg['consultas.masiva.fc_estructura']}">
+					<!-- 1er fila -->
+					<div class="ui-g">
+						<div class="ui-g-1 titleSize2">
+							<p:outputLabel value="#{msg['consultas.masiva.entidad']}" />
+						</div>
+						<div class="ui-g-1 contenido">
+							<p:selectOneMenu id="entidad" value="#{consultaMasivaBean.codEntidad}" required="true" style="width:85px" requiredMessage="#{msg['consultas.masiva.reqEntidad']}"
+							title="#{msg['consultas.masiva.ttTabla']}">
+								<f:selectItem itemLabel="#{msg['consultas.masiva.somEntidad']}" itemDisabled="true" noSelectionOption="true"/>
+								<f:selectItems value="#{consultaMasivaBean.entidades}" var="ent" itemLabel="#{ent.nombre}" itemValue="#{ent.codigo}" />
+							</p:selectOneMenu>
+					</div>				
+					</div>
+					<!-- 2da fila -->
+					<div class="ui-g">
+						<div class="ui-g-1 titleSize2">
+							<p:outputLabel value="#{msg['consultas.masiva.fechaInicial']}"/>
+						</div>
+						<div class="ui-g-2 contenido">
+							<p:outputPanel id="panelFeInicio" title="#{msg['consultas.masiva.ttFechaInicial']}">
+				                <p:calendar value="#{consultaMasivaBean.fechaInicio}" id="cFechaInicio"
+				                	locale="es"
+				                    datePattern="MM-dd-yyyy"
+				                    showApplyButton="#{calendarBean.showApply}"
+				                    disabled="#{calendarBean.disabled}"
+				                    required="true"
+				                	showOn="button"
+				                    requiredMessage="#{msg['consultas.masiva.reqFechaInicial']}">
+				                </p:calendar>
+				            </p:outputPanel>
+				            
+						</div>
+					</div>
+					<!-- 3ra fila -->
+					<div class="ui-g">
+						<div class="ui-g-1 titleSize2">
+							<p:outputLabel value="#{msg['consultas.masiva.fechaFinal']}"/>
+						</div>
+						<div class="ui-g-2 contenido">
+							<p:outputPanel  id="panelFeFin" title="#{msg['consultas.masiva.ttFechaFinal']}">
+				                <p:calendar value="#{consultaMasivaBean.fechaFin}" id="cFechaFin"
+				                	locale="es"
+				                    datePattern="MM-dd-yyyy"
+				                    showApplyButton="#{calendarBean.showApply}"
+				                    disabled="#{calendarBean.disabled}"
+				                    required="true"
+				                	showOn="button"
+				                    requiredMessage="#{msg['consultas.masiva.reqFechaFinal']}">
+				                </p:calendar>
+				            </p:outputPanel>
+				            
+						</div>
+					</div>
+	
+				</p:fieldset>
+				
+				 <h:panelGrid columns="3">
+					<p:commandButton value="#{msg['consultas.masiva.btnConsultar']}" icon="ui-icon-check" action="#{consultaMasivaBean.consultar()}" type="submit" title="#{msg['consultas.masiva.ttConsultar']}" update="ConsultaMasivaForm,mensajes_pop"/>
+					
+					<p:commandButton value="#{msg['consultas.masiva.btnCancelar']}" icon="ui-icon-close" immediate="true" onclick="recargar();"  id="btnCancelar1" 
+								 title="#{msg['consultas.masiva.ttCancelar']}" type="reset">   
+					</p:commandButton>
+
+				</h:panelGrid>
+				
+				<!-- 		Preload -->
+				<p:ajaxStatus onstart="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide();if(#{consultaMasivaBean.sinDatos}){PF('wdialog_editar').show();};"/>
+		
+				<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+				    <center><p:graphicImage library="images" name="preloader.gif" /></center><br/>
+					<p:outputLabel value="#{msg['cargando']}" styleClass="letras" />				
+				</p:dialog>
+				
+				</h:form>
+			
+				<p:dialog  id="popup"  widgetVar="wdialog_editar" header="#{msg['consultas.masiva.tituloSinDatos']}" modal="true" resizable="false" closeOnEscape="true" draggable="true" width="250px" styleClass="letras">
+	
+			       		<table>
+							<tr>
+								<td align="left"><h:outputLabel value="#{msg['consultas.masiva.no_resultados']}" styleClass="letras"/></td>
+							</tr>
+							<tr></tr>
+							<tr>
+								<td align="center" class="boton">
+									<p:commandButton value="#{msg['consultas.masiva.btnAceptar']}" id="btnAceptar" type="reset"
+										onclick="PF('wdialog_editar').hide();">
+									</p:commandButton>
+								</td>
+							</tr>
+						</table>
+				
+				
+				</p:dialog>
+			
+<!-- popup de mensaje de confirmacion se debe validar cuando se hagan pruebas funcionales con datos  -->
+			
+<!-- 			<rich:popupPanel id="mensajeConfirmacion" autosized="true" styleClass="panel" show="#{consultaMasivaBean.conConfirmacion}"> -->
+<!-- 					<h:panelGrid > -->
+<!-- 						<h:outputText value="#{msg['consultas.confirmacion1']}" /> -->
+<!-- 						<h:outputText value="#{msg['consultas.confirmacion2']}" /> -->
+<!-- 						<h:outputText value="#{msg['consultas.confirmacion3']}" /> -->
+<!-- 						<h:outputText value="#{msg['consultas.confirmacion4']}" /> -->
+<!-- 					</h:panelGrid> -->
+<!-- 					<div class="divBoton"> -->
+<!-- 						<h:commandButton value="#{msg['boton.aceptar']}" -->
+<!-- 							onclick="#{rich:component('mensajeConfirmacion')}.hide(); consultar(); return false;"/> -->
+<!-- 						<h:commandButton value="#{msg['boton.cancelar']}" -->
+<!-- 							onclick="#{rich:component('mensajeConfirmacion')}.hide(); ocultarConConfirmacion(); return false;" /> -->
+<!-- 					</div> -->
+<!-- 			</rich:popupPanel> -->
+	
+
+			
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

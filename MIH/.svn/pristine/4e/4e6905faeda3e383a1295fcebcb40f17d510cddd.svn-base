@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:p="http://primefaces.org/ui">
+
+
+<h:body>
+	<ui:composition
+		template="${pageContext.request.contextPath}/modules/jsf/template/template.xhtml">
+	
+		<ui:define name="content">
+	
+			
+			<div class="ui-g">
+				<div class="ui-g-5 titulo">
+					<p:outputLabel value="#{msg['entidades.titulo_pag']}"/>
+				</div>
+				<div class="ui-g-5"></div>
+				<div class="ui-g-2">
+							<h:panelGroup id="fade">
+								<h:graphicImage styleClass="block_tooltip" library="images"
+									name="icon_help.png" />
+							</h:panelGroup>
+							<p:tooltip id="toolTipFade" for="fade" styleClass="tooltip"
+								trackMouse="true" position="left">
+								<h:outputText value="#{msg['entidades.consulta.ayuda1']}" />
+								<br></br>
+								<h:outputText value="#{msg['entidades.consulta.ayuda2']}" />
+								<br></br>
+								<h:outputText value="#{msg['entidades.consulta.ayuda3']}" />
+								<br></br>
+							    <h:outputText value="#{msg['entidades.consulta.ayuda4']}" />
+							    <br></br>
+								<h:outputText value="#{msg['entidades.consulta.ayuda5']}" />
+								<br></br>
+								<h:outputText value="#{msg['entidades.consulta.ayuda6']}" />
+								<br></br>
+								<h:outputText value="#{msg['entidades.consulta.ayuda7']}" />
+								<br></br>
+							</p:tooltip>
+				</div>
+			</div>
+			
+			<p:growl id="mensaje" showSummary="false" showDetail="true" />
+			
+			<div class="ui-g">
+				<div class="ui-g-1"></div>
+				<div class="ui-g-10">
+					<h:form id="formEntidad">
+					
+					
+				<p:dataTable value="#{entidadBean.entidadesExistentes}" var="ent" id="tabla"
+					    emptyMessage="No existen registros para la consulta." paginator="true"
+						rows="10" styleClass="letras"
+						paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+						rowsPerPageTemplate="5,10,15" scrollable="true" scrollWidth="100%"
+						 widgetVar="entidadTable">
+						 
+					 <p:column width="50" headerText="#{msg['entidades.codigo']}"  >
+					 	<p:outputLabel value="#{ent.codigo}"/>
+					 </p:column>
+					 
+					 <p:column width="80" headerText="#{msg['entidades.nombre']}"  filterBy="#{ent.nombre}" filterMatchMode="contains" filterStyle="width:70px;height:13px">
+					 	<p:outputLabel value="#{ent.nombre}"/>
+					 </p:column>
+					 
+					 <p:column width="80" headerText="#{msg['entidades.descripcion']}" >
+					 	<p:outputLabel value="#{ent.descripcion}"/>
+					 </p:column>
+					 
+					 <p:column headerText="#{msg['entidades.depuracion']}" >
+					 	<p:outputLabel value="#{ent.depurar}"/>
+					 </p:column>
+					 
+					 <p:column width="50" headerText="#{msg['entidades.tiempoVigencia']}" >
+					 	<p:outputLabel value="#{ent.tvigencia}"/>
+					 </p:column>
+					 
+					 <p:column width="100" headerText="#{msg['entidades.proyecto']}" >
+					 	<p:outputLabel value="#{ent.TMihAplicacion.TMihLineanegocio.TMihProyecto.nombre}"/>
+					 </p:column>
+					 
+					 <p:column headerText="#{msg['entidades.lineaNegocio']}" >
+					 	<p:outputLabel value="#{ent.TMihAplicacion.TMihLineanegocio.nombre}"/>
+					 </p:column>
+					 
+					 <p:column headerText="#{msg['entidades.aplicacion']}" >
+					 	<p:outputLabel value="#{ent.TMihAplicacion.nombre}"/>
+					 </p:column>
+					 
+					 <p:column headerText="#{msg['entidades.creador']}" >
+					 	<p:outputLabel value="#{ent.usrcreador}"/>
+					 </p:column>
+					 
+					 <p:column headerText="#{msg['entidades.solicitante']}" >
+					 	<p:outputLabel value="#{ent.usrsolcreacion}"/>
+					 </p:column>
+					 
+					 <p:column width="40" headerText="#{msg['entidades.vacia']}" >
+					 	<p:outputLabel value="#{ent.vacia}"/>
+					 </p:column>
+					
+					<p:column headerText="#{msg['entidades.botones']}" >
+						
+						<p:commandLink id="viewCampos" action="#{entidadBean.camposEntidadSeleccionada()}">
+							<p:graphicImage library="images" name="ico-buscar.png" with="16px" height="16px" title="#{msg['entidades.title.ver_campos']}"/>
+							<f:setPropertyActionListener target="#{entidadBean.entidadSeleccionada}" value="#{ent}"/>
+						</p:commandLink>&nbsp;
+						
+						<p:commandLink id="deleteTable" action="#{entidadBean.eliminar}" update="tabla,:mensaje"> 
+							<p:graphicImage library="images" name="ico-eliminar.png" with="16px" height="16px" title="#{msg['entidades.title.eliminar_tabla']}"/>
+							<p:confirm header="Eliminar tabla" message="#{msg['entidades.confirmar.eliminacion']}" />
+							<f:setPropertyActionListener target="#{entidadBean.entidadSeleccionada}" value="#{ent}"/>
+						</p:commandLink>&nbsp;
+						
+						<p:commandLink id="editarTable" action="#{entidadBean.editar()}" rendered="#{ent.vacia !='N'}">
+							<p:graphicImage library="images" name="ico-editar.png" with="16px" height="16px" title="#{msg['entidades.title.editar_tabla']}"/>
+							<f:setPropertyActionListener target="#{entidadBean.entidadSeleccionada}" value="#{ent}"/>
+						</p:commandLink>
+																		
+						<!-- Ventana para ver los campos de la tabla -->
+						<p:overlayPanel id="overPanel" for="viewCampos" hideEffect="fade" dynamic="true">
+							<p:outputLabel value="#{msg['entidades.campos']}" styleClass="titulo"/>
+							
+							<p:dataTable value="#{entidadBean.entidadSeleccionada.campos}" var="c" scrollable="true" scrollHeight="90">
+								<p:column headerText="#{msg['entidades.campos.nombreCorto']}">
+									<p:outputLabel value="#{c.nombreCorto}"/> 
+								</p:column>
+								
+								<p:column headerText="#{msg['entidades.campos.nombreCompleto']}">
+									<p:outputLabel value="#{c.nombreCompleto}"/>
+								</p:column>
+								
+								<p:column headerText="#{msg['entidades.campos.descripcion']}">
+									<p:outputLabel value="#{c.descripcion}"/>
+								</p:column>
+								
+								<p:column headerText="#{msg['entidades.campos.tipoDato']}">
+									<p:outputLabel value="#{c.tipoDato}"/>
+								</p:column>
+								
+								<p:column headerText="#{msg['entidades.campos.longitud']}">
+									<p:outputLabel value="#{c.longitud}"/>	
+								</p:column>
+								
+								<p:column headerText="#{msg['entidades.campos.clave']}">
+									<p:outputLabel value="#{c.clave}"/>
+								</p:column>
+								
+							</p:dataTable>
+						</p:overlayPanel>
+					
+						<!-- Ventana eliminar tabla -->						
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					        <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+					    </p:confirmDialog>
+					
+					</p:column>
+						
+				</p:dataTable>
+			
+			</h:form>
+				</div>
+				<div class="ui-g-1"></div>
+			</div>
+			
+			
+				<!-- Preload -->
+			<p:ajaxStatus onstart="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()" />
+ 
+			<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+			    <center><p:graphicImage library="images" name="preloader.gif" /></center><br/>
+				<p:outputLabel value="#{msg['cargando']}" styleClass="letras" />				
+			</p:dialog>
+			
+
+			
+			
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	
+<h:body>
+
+	<ui:composition	template="${pageContext.request.contextPath}/modules/jsf/template/template.xhtml">
+		
+		<ui:define name="content">
+			    
+	    <div class="ui-g">	    	
+	    	<div class="ui-g-5 titulo">
+	    		<p:outputLabel value="#{msg['consultas.especifica.titulo']}"/>
+	    	</div>
+	    	<div class="ui-g-5"></div>
+	    	<div class="ui-g-2">
+			
+				<h:panelGroup id="fade">
+					<h:graphicImage styleClass="block_tooltip" library="images"	name="icon_help.png" />
+				</h:panelGroup>
+				<p:tooltip id="toolTipFade" for="fade" styleClass="tooltip" trackMouse="true" position="left">
+					    <h:outputText value="#{msg['consultas.especifica.ayuda1']}"/>
+					    <br></br>
+			            <h:outputText value="#{msg['consultas.especifica.ayuda2']}"/>
+			            <br></br>
+			            <h:outputText value="#{msg['consultas.especifica.ayuda3']}"/>
+			            <br></br>
+			            <h:outputText value="#{msg['consultas.especifica.ayuda4']}"/>
+			            <br></br>
+			            <h:outputText value="#{msg['consultas.especifica.ayuda5']}"/>
+			            <br></br>
+			            <h:outputText value="#{msg['consultas.especifica.ayuda6']}"/>
+			            <br></br>
+			            <h:outputText value="#{msg['consultas.especifica.ayuda7']}"/>
+			            <br></br>
+			            <h:outputText value="#{msg['consultas.especifica.ayuda8']}"/>
+			            <br></br>
+			            <h:outputText value="#{msg['consultas.especifica.ayuda9']}"/>
+			            <br></br>
+				</p:tooltip>
+					
+			</div>
+	    </div>
+	    
+	    
+	    <h:form id="formEntidad">
+	    
+	    	<p:fieldset legend="#{msg['consultas.especifica.fc_estructura']}" >
+	    		<h:panelGrid columns="2">
+	    			<p:outputLabel value="#{msg['consultas.especifica.estructura']} :" style="font-size:15px;font-family:verdana;"/>
+	    			<p:selectOneMenu id="selectEntidad1" value="#{consultaEspecificaBean.oentidad.nombre}" title="#{msg['consultas.especifica.title.tablas']}" style="width:85px;font-size:11px;font-family:verdana;">
+									<f:selectItem itemValue="" itemLabel="#{msg['consultas.dinamicas.slct_tab']}" ></f:selectItem>
+									<f:selectItems value="#{consultaEspecificaBean.nombreEntidades}"  />
+<!-- 									<a4j:ajax event="change" render="datos_entidad" execute="selectEntidad1" listener="#{consultaEspecificaBean.consultar}"  /> -->
+									<f:ajax  execute="@this" render=":formTabla:datos_entidad" process="selectEntidad1" listener="#{consultaEspecificaBean.consultar}"/>
+					</p:selectOneMenu>
+					
+<!-- 					<p:commandButton value="#{msg['boton.limpiar']}" type="reset" update=":formTabla:datos_entidad" /> -->
+	    		</h:panelGrid>
+	    			    	
+	    	</p:fieldset>&nbsp;
+	 
+	  </h:form>
+	  
+	   
+	 <h:panelGroup id="result" styleClass="display: none">
+	 <h:form id="formTabla">
+			<p:fieldset legend="#{msg['consultas.especifica.datos_entidad']}">
+				    <div style="overflow-x: scroll; width: 1025px;">
+					    <p:dataTable id="datos_entidad" var="registro" value="#{consultaEspecificaBean.lazyModel}" emptyMessage="#{msg['sin.resultados']}"
+					    	paginator="true" rows="10" paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+					    	rowsPerPageTemplate="5,10,15,20,50" lazy="true" style="font-size:11px;font-family:verdana;color:#424242;">                      
+					        <p:columns value="#{consultaEspecificaBean.columnas}" var="column"   
+					                    sortBy="#{column}" filterBy="#{column}">  
+					            <f:facet name="header">  
+					                #{column}  
+					            </f:facet>  
+					            #{registro[column]}  
+					        </p:columns>  
+					    </p:dataTable>
+				    </div>
+								
+			</p:fieldset>
+	</h:form>
+	</h:panelGroup>
+		  
+		<!-- Preload -->
+			<p:ajaxStatus onstart="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()" />
+ 
+			<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+			    <center><p:graphicImage library="images" name="preloader.gif" /></center><br/>
+				<p:outputLabel value="#{msg['cargando']}" styleClass="letras" />				
+			</p:dialog>
+
+
+		  
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

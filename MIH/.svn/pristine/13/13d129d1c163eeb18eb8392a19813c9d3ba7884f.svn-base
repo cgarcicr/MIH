@@ -1,0 +1,96 @@
+/*Nuevos estilos*/
+
+
+.titulo{
+    font-family:verdana;
+    font-size:20px;
+    text-align:center;
+    padding:15px;
+    color:white;
+}
+
+.label1{
+	text-align:left;
+    font-family:verdana;
+    font-size:15px;
+    padding:50px 0px 0px 30px; 
+    
+}
+
+.label2{
+	text-align:left;
+    font-family:verdana;
+    font-size:15px;
+    padding:20px 0px 0px 30px; 
+    
+}
+
+.input1{
+    margin-top:-24px;
+    margin-left:50px;
+   }
+
+.input2{
+    margin-top:-25px;
+    margin-left:50px;
+}
+
+.caja-login1{
+    width: 400px;
+    height: 50px;
+    
+    background: #820024;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    margin-top:200px;
+    /*margin-left:300px;*/
+    }
+
+.caja-login2{
+    width: 400px;
+    height: 200px;
+    background: #FAFAFA;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    /*margin-top:0px;
+    margin-left:300px;*/
+   }
+   
+.boton{
+	
+	margin-top:20px;
+	margin-left:20px;
+	font-size:12px;
+	
+}   
+
+body{
+
+      background-image:url(http://fotorecurso.com/images/2014/10/23/fondo-bokeh-gris-fotorecurso.jpg);
+      background-repeat: no-repeat;
+/*        background-size: 1600px 1200px; */
+
+/*
+http://fotorecurso.com/images/2014/10/23/fondo-bokeh-gris-fotorecurso.jpg
+/*background-image:url(http://fotorecurso.com/images/2014/10/23/fondo-bokeh-gris-fotorecurso.jpg);
+background-image:url(https://wallpaperstock.net/limpie-la-superficie-gris-claro-wallpapers_34731_1680x1050.jpg);
+*/
+*/
+      }
+      
+.styleFooter{
+	font-family: verdana;
+	font-size: 14px;
+	color: #ffff;
+	text-align: center;
+	margin-top: 90px;
+}      
+      
+.ui-c{
+	color:#820024;
+	font-size: 13px;
+}
+
+.logoMih{
+	margin: 20px 10px 10px 100px;
+}

@@ -1,0 +1,145 @@
+/*Estilos app*/
+
+.logoSophos{
+ margin-top: 30px;
+ text-align: center;
+}
+
+.logoMih{
+ margin-top: 10px; 
+}
+
+.letra{
+ font-size: 100px;
+ color:red;
+}
+
+/*Letra del menubar*/
+.ui-menuitem-text{
+ font-size: 13px;
+ color:#820024 ;
+ font-family: verdana;
+}
+
+/*User logueado*/
+.user{
+ font-family: verdana;
+ font-size: 13px;
+ color:#820024;
+ margin: -20px 0px -10px 230px;
+ font-weight: bold;
+}
+
+.footer{
+ font-family: verdana;
+ font-size: 14px;
+ text-align: center; 
+ margin-top: 80px;
+ margin-bottom: 30px;
+ font-weight: bold;
+}
+
+.ui-c{
+ color:#000000;
+ font-size: 11px;
+ font-family: verdana;
+ 
+}
+
+.salir{
+ color:red;
+}
+
+.inicio{
+  margin-right:10px;
+}
+
+.letras{
+ color:#424242;
+ font-size: 11px;
+ font-family: verdana;
+}
+
+.tooltip{
+ color:#ffffff;
+ font-family: verdana;
+ font-size: 12px;
+}
+
+.block_tooltip{
+ margin-left:170px;
+}
+
+.titulo{
+ font-size: 25px;
+ font-family: verdana;
+ color:#711414;
+ font-weight: bold;
+ 
+}
+
+
+.subTitulo{
+ font-size: 15px;
+ font-family: verdana;
+ color:#711414;
+ font-weight: bold;
+ 
+}
+
+.titleSize{
+ font-family:verdana;
+ font-size: 15px;
+ text-align: left;
+}
+
+.titleSize2{
+ font-family:verdana;
+ font-size: 15px;
+ text-align: justify;
+}
+
+.contenido{
+ font-family: verdana;
+ color:#424242;
+ font-size: 11px; 
+}
+
+.titleSize3{
+	font-family:verdana;
+	font-size: 10px;
+}
+
+.labelModal{	
+ font-family:verdana;
+ font-size: 10px;
+
+}
+
+.mensajes_validacion{
+	font-size: 11px;
+	font-family: verdana;
+}
+
+
+.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight{
+	background: #F0F4F8;	
+}
+
+.ui-selectonemenu-panel .ui-selectonemenu-list-item{
+	color: #000000;
+	font-size: 11px;
+	font-family: verdana;	
+}
+
+
+.ui-growl-message p {
+    font-size:11px;
+    font-family:"verdana";
+    color: #000000;
+}
+
+
+
+
+

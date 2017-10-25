@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+
+	
+	>
+<h:body>
+	<ui:composition template="${pageContext.request.contextPath}/modules/jsf/template/template.xhtml">
+	
+		<ui:define name="content">
+			<div class="ui-g">
+				<div class="ui-g-5 titulo">
+					<p:outputLabel value="#{msg['historicos.reporte.titulo']}"/>
+				</div>
+				<div class="ui-g-5"></div>
+				<div class="ui-g-2">
+						<h:panelGroup id="fade">
+						<h:graphicImage styleClass="block_tooltip" library="images"	name="icon_help.png" />
+						</h:panelGroup>
+						<p:tooltip id="toolTipFade" for="fade" styleClass="tooltip"	trackMouse="true" position="left">
+								    <h:outputText value="#{msg['historicos.reporte.ayuda1']}"/>
+								    <br></br>
+			                        <h:outputText value="#{msg['historicos.reporte.ayuda2']}"/>
+			                        <br></br>
+			                        <h:outputText value="#{msg['historicos.reporte.ayuda3']}"/>
+			                        <br></br>
+			                        <h:outputText value="#{msg['historicos.reporte.ayuda4']}"/>
+			                        <br></br>
+			                        <h:outputText value="#{msg['historicos.reporte.ayuda5']}"/>
+			                        <br></br>
+			                        <h:outputText value="#{msg['historicos.reporte.ayuda6']}"/>
+			                        <br></br>
+			                        <h:outputText value="#{msg['historicos.reporte.ayuda7']}"/>
+			                        <br></br>
+			                        <h:outputText value="#{msg['historicos.reporte.ayuda8']}"/>
+			                        <br></br>
+			                        <h:outputText value="#{msg['historicos.reporte.ayuda9']}"/>
+			                        <br></br>
+			                        <h:outputText value="#{msg['historicos.reporte.ayuda10']}"/>
+			                        <br></br>
+			                        <h:outputText value="#{msg['historicos.reporte.ayuda11']}"/>
+			                        <br></br>
+			                        <h:outputText value="#{msg['historicos.reporte.ayuda12']}"/>
+			                        <br></br>
+			                        <h:outputText value="#{msg['historicos.reporte.ayuda13']}"/>
+						</p:tooltip>
+				</div>
+			</div>
+			
+			<p:fieldset legend="#{msg['historicos.reporte.fc_estructura']}">
+				
+				<h:form id="form">
+					<p:dataTable>
+						
+					</p:dataTable>
+				</h:form>
+			
+			</p:fieldset>
+			
+			
+
+		</ui:define> 
+	</ui:composition>
+</h:body>
+</html>

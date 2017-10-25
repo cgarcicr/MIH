@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:p="http://primefaces.org/ui"
+
+	>
+
+<h:body>
+
+	<ui:composition template="${pageContext.request.contextPath}/modules/jsf/template/template.xhtml">
+
+		<ui:define name="content">
+
+			<div class="ui-g">
+
+				<div class="ui-g-5 titulo">
+					<p:outputLabel value="#{msg['mantenimiento.titulo']}" />
+				</div>
+				<div class="ui-g-5 "></div>
+				<div class="ui-g-2">
+
+					<h:panelGroup id="fade">
+						<h:graphicImage styleClass="block_tooltip" library="images"	name="icon_help.png" />
+					</h:panelGroup>
+					<p:tooltip id="toolTipFade" for="fade" styleClass="tooltip"	trackMouse="true" position="left">
+						<h:outputText value="#{msg['mantenimiento.ayuda1']}" />
+						<br></br>
+						<h:outputText value="#{msg['mantenimiento.ayuda2']}" />
+						<br></br>
+						<h:outputText value="#{msg['mantenimiento.ayuda3']}" />
+						<br></br>
+						<h:outputText value="#{msg['mantenimiento.ayuda4']}" />
+						<br></br>
+						<h:outputText value="#{msg['mantenimiento.ayuda5']}" />
+						<br></br>
+						<h:outputText value="#{msg['mantenimiento.ayuda6']}" />
+						<br></br>
+						<h:outputText value="#{msg['mantenimiento.ayuda7']}" />
+						<br></br>
+					</p:tooltip>
+
+				</div>
+			</div>
+			
+		<p:growl id="validacion" showSummary="false" showDetail="true" life="8000" />
+
+	<p:fieldset legend="#{msg['mantenimiento.log']}">
+	
+		<div class="ui-g">
+			<div class="ui-g-6 contenido">
+				<h:form id="form_dias">
+					<h:panelGrid id="grid" columns="5">
+						<p:outputLabel for="diaslogs" value="#{msg['mantenimiento.dias']}" style="font-size:15px;font-family:verdana;"/>
+						<p:inputMask mask="9?999" id="diaslogs" value="#{mantenimientoBean.diasLogs}" title="#{msg['mantenimiento.title.dias_log']}"
+						required="true" requiredMessage="#{msg['campo.requerido']}" style="width:100px;font-size:11px;font-family:verdana;"/>
+						<p:messages for="diaslogs" style="font-size:11px;font-family:verdana;" closable="true"/>
+					</h:panelGrid>
+					<h:panelGrid columns="2">
+						<p:commandButton value="#{msg['boton.ejecutar']}" update="dialogo,grid,:form_historico" action="#{mantenimientoBean.showConfirmLog}" />
+					</h:panelGrid>
+				</h:form>
+				
+				<p:dialog id="dialogo" widgetVar="wdialogo" header="Depurar logs" modal="true" resizable="false" closeOnEscape="true" draggable="true" 
+						  visible="#{mantenimientoBean.confirmLog}">
+						<h:form>
+							<h:panelGrid columns="2">
+								<p:outputLabel value="#{msg['mantenimiento.confirmar.log']}" style="font-size:15px;font-family:verdana;"/>
+							</h:panelGrid>
+							<h:panelGrid columns="2">
+								<p:commandButton value="#{msg['mantenimiento.confirmar']}" action="#{mantenimientoBean.depurarLogs}" onclick="PF('dialogo').hide();"/>
+								<p:commandButton value="#{msg['boton.cancelar']}" onclick="PF('dialogo').hide();"/>
+						</h:panelGrid>
+						</h:form>
+				</p:dialog>
+				
+			</div>			
+			
+			<div class="ui-g-3"></div>
+		</div>
+		
+	</p:fieldset>&nbsp;
+
+	<p:fieldset legend="#{msg['mantenimiento.info']}">
+		
+		<div class="ui-g">
+			<div class="ui-g-6 contenido">
+				<h:form id="form_historico">
+							<h:panelGrid id="grid2" columns="5">
+								<h:outputLabel for="ent" value="#{msg['mantenimiento.tabla.depurar']}"
+									style="font-size:15px;font-family:verdana;" />
+								<p:selectOneMenu value="#{mantenimientoBean.entidad.nombre}" id="ent" required="true"
+									requiredMessage="#{msg['mantenimiento.tabla.requerido']}">
+									<f:selectItem itemLabel="#{msg['consultas.dinamicas.slct_tab']}" />
+									<f:selectItems value="#{mantenimientoBean.list}" var="tabla" itemLabel="#{tabla.nombre}" itemValue="#{tabla.nombre}" />
+								</p:selectOneMenu>
+								<p:messages for="ent" style="font-size:11px;font-family:verdana;" closable="true" />
+							</h:panelGrid>
+							<h:panelGrid columns="2">
+								<p:commandButton value="#{msg['boton.ejecutar']}" action="#{mantenimientoBean.showConfirmInfo}" update="grid2,dialogo2,:form_dias" />
+							</h:panelGrid>
+				</h:form>
+				
+				<p:dialog id="dialogo2" widgetVar="wdialogo2" header="Depurar Información" modal="true" resizable="false" closeOnEscape="true" draggable="true" 
+				          visible="#{mantenimientoBean.confirmInfo}">
+					<h:form>
+						<h:panelGrid columns="2">
+							<p:outputLabel value="#{msg['mantenimiento.confirmar.info']}" style="font-size:15px;font-family:verdana;"/>
+						</h:panelGrid>
+						<h:panelGrid columns="2">
+								<p:commandButton value="#{msg['mantenimiento.confirmar']}" action="#{mantenimientoBean.depurarInfoHistorica}" onclick="PF('dialogo2').hide();"/>
+								<p:commandButton value="#{msg['boton.cancelar']}" onclick="PF('dialogo2').hide();"/>
+						</h:panelGrid>
+					
+					</h:form>			
+				</p:dialog>
+				
+				
+			</div>
+			<div class="ui-g-3"></div>
+			<div class="ui-g-3"></div>
+			
+		</div>
+		
+	</p:fieldset>
+
+
+
+
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+
+<h:body>
+
+	<ui:composition
+		template="${pageContext.request.contextPath}/modules/jsf/template/template.xhtml">
+		<ui:param name="title" value="Administracion de aplicaciones" />
+		<ui:define name="content">
+		
+ 			<script type="text/javascript"> 
+			
+ 			    function limitTextArea(element, limit) { 
+					
+					if (element.value.length > limit) { 
+ 						element.value = element.value.substring(0, limit); 
+					}
+ 				} 
+ 			
+			</script> 
+			
+			
+			<div class="ui-g">
+			<div class="ui-g-10 titulo">
+			    
+					<h:outputText value="#{msg['a.titulo']}" />
+				
+			</div>
+			
+			<div class="ui-g-2">
+
+				<h:panelGroup id="fade">
+					<h:graphicImage styleClass="block_tooltip" library="images" name="icon_help.png" />
+				</h:panelGroup>
+				<p:tooltip id="toolTipFade" for="fade" styleClass="tooltip" trackMouse="true" position="left">
+				    <h:outputText value="#{msg['a.ayuda1']}" /><br/>
+				   <h:outputText value="#{msg['a.ayuda2']}" /><br/>
+				   <h:outputText value="#{msg['a.ayuda3']}" /><br/>
+				   <h:outputText value="#{msg['a.ayuda4']}" /><br/>
+				   <h:outputText value="#{msg['a.ayuda5']}" /><br/>
+				   <h:outputText value="#{msg['a.ayuda6']}" /><br/>
+				   <h:outputText value="#{msg['a.ayuda7']}" /><br/>
+				   <h:outputText value="#{msg['a.ayuda8']}" /><br/>
+				   <h:outputText value="#{msg['a.ayuda9']}" /><br/>
+				   <h:outputText value="#{msg['a.ayuda10']}" /><br/>
+				   <h:outputText value="#{msg['a.ayuda11']}" />
+				</p:tooltip>
+			</div>
+		</div>
+			
+			
+			
+			<div class="ui-g">
+			<div class="ui-g-1"></div>
+			
+			<div class="ui-g-10 contenido">
+				
+			<h:form>
+				<p:dataTable value="#{aplicacionExistente.aplicaciones}" var="app" id="tablaA" styleClass="letras"
+				emptyMessage="No existen datos para la consulta." paginator="true" rows="10"
+				paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+				rowsPerPageTemplate="5,10,15" scrollable="true" scrollWidth="100%">
+				<p:messages autoUpdate="true"></p:messages>
+						<p:column headerText="#{msg['a.codigo']}" filterStyle="width:50px;" filterBy="#{app.codigo}"
+					     filterMatchMode="contains" sortBy="#{app.codigo}">
+							<p:outputLabel value="#{app.codigo}" />
+						</p:column>
+						
+						<p:column headerText="#{msg['a.nombre']}" filterStyle="width:100px;" filterBy="#{app.nombre}"
+					     filterMatchMode="contains" sortBy="#{app.nombre}">
+						  <p:outputLabel value="#{app.nombre}" />
+						</p:column>
+						
+						<p:column headerText="#{msg['a.estado']}" filterStyle="width:50px;" filterBy="#{app.estado}"
+					     filterMatchMode="contains" sortBy="#{app.estado}" >
+						    <p:outputLabel value="#{app.estado}" />
+						</p:column>
+						
+						<p:column width="160" headerText="#{msg['a.proyecto']}" filterStyle="width:140px;" filterBy="#{app.TMihLineanegocio.TMihProyecto.nombre}"
+					     filterMatchMode="contains" sortBy="#{app.TMihLineanegocio.TMihProyecto.nombre}">
+							<p:outputLabel value="#{app.TMihLineanegocio.TMihProyecto.nombre}" />
+						</p:column>
+						
+						<p:column headerText="#{msg['a.lineaNegocio']}" filterStyle="width:110px;" filterBy="#{app.TMihLineanegocio.nombre}"
+					     filterMatchMode="contains" sortBy="#{app.TMihLineanegocio.nombre}">
+							<p:outputLabel value="#{app.TMihLineanegocio.nombre}" />
+						</p:column>
+						
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="#{msg['a.descripcion']}" />
+							</f:facet>
+							<h:outputText value="#{app.descripcion}" />
+						</p:column>
+						
+						<p:column width="50" headerText="#{msg['entidades.botones']}" >
+							
+						
+							<div class="divBoton">
+							
+						
+								<p:commandLink process="@this"  action="#{aplicacionExistente.eliminar}" update="tablaA,appError" >
+								<p:confirm header="Eliminar" message="Estas seguro que deseas eliminar este registro?" icon="ui-icon-alert" />
+                                   <h:graphicImage library="images" name="ico-eliminar.png"
+										height="18" title="#{msg['boton.eliminar']}" />
+									<f:setPropertyActionListener target="#{aplicacionExistente.appEditada}" value="#{app}" />
+								</p:commandLink>
+								
+								<p:commandLink   process="@this" update=":dialog"
+								    action="#{aplicacionExistente.editarApp}"
+								    onstart="#{aplicacionExistente.refrescarValores()}"
+									onclick="{PF('dialogoEdit').show()}"> 
+									<h:graphicImage library="images" name="ico-editar.png"
+										height="18" title="#{msg['boton.editar']}" />
+									<f:setPropertyActionListener target="#{aplicacionExistente.appEditada}" value="#{app}" />
+								</p:commandLink>
+							</div>
+						</p:column>
+						
+						
+					</p:dataTable>
+					    
+					    <!-- Modal de confirmación para eliminación -->
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+							<p:commandButton value="Si" type="button" 
+								styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+							<p:commandButton value="No" type="button"
+								styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+						</p:confirmDialog>
+						
+						 <!-- Modal para edición -->
+						 
+						 
+		          </h:form>
+                     
+                     
+                     
+						<p:dialog header="#{msg['a.editar.titulo']}" id="dialogoEdit" widgetVar="dialogoEdit" modal="true" showEffect="explode" height="240" >
+						     
+				         <h:form id="dialog" >   
+						    
+						    <h:panelGrid columns="3" id="editGrid">
+							<h:outputText value="#{msg['a.codigo']}" />
+							<h:outputText value="#{aplicacionExistente.appEditada.codigo}" />
+							<h:panelGroup />
+							<h:outputText value="#{msg['a.nombre']}" />
+							<h:inputText id="editarNombre" title="#{msg['a.title.nombre']}"
+								value="#{aplicacionExistente.appEditada.nombre}"
+								converter="mayusculasConverter" maxlength="40" required="true"
+								requiredMessage="#{msg['requerido.nombre']}">
+
+							</h:inputText>
+							<h:panelGroup />
+							
+							<h:outputText value="#{msg['a.proyecto']}" />
+							<h:selectOneMenu id="proyecto" title="#{msg['a.title.proyecto']}" 
+								value="#{aplicacionExistente.appEditada.TMihLineanegocio.TMihProyecto.codigo}">
+								<f:selectItem itemLabel="--#{msg['entidades.proyecto']}--" />
+								<f:selectItems value="#{aplicacionExistente.proyectos}"
+									var="proy" itemLabel="#{proy.nombre}"
+									itemValue="#{proy.codigo}" />
+								<p:ajax event="change"  update="selectApp,dialog" listener="#{aplicacionExistente.cambioProyecto}" />
+							</h:selectOneMenu>
+							
+							<h:panelGroup />
+							<h:outputText value="#{msg['a.lineaNegocio']}" />
+							<h:selectOneMenu id="selectApp" title="#{msg['a.title.ln']}"
+								value="#{aplicacionExistente.appEditada.TMihLineanegocio.codigo}"
+								required="true"
+								requiredMessage="#{msg['requerido.lineaNegocio']}">
+								<f:selectItem itemLabel="--Línea de Negocio--" />
+								<f:selectItems value="#{aplicacionExistente.lineasNegocio}"
+									var="app" itemLabel="#{app.nombre}" itemValue="#{app.codigo}" />
+						
+							</h:selectOneMenu>
+							<h:panelGroup />
+							<h:outputText value="#{msg['a.estado']}" />
+							<h:selectOneMenu id="estado" value="#{aplicacionExistente.appEditada.estado}" title="#{msg['a.title.estado']}">
+								<f:selectItem itemValue="A" itemLabel="#{msg['estado.activo']}" />
+								<f:selectItem itemValue="I"
+									itemLabel="#{msg['estado.inactivo']}" />
+							</h:selectOneMenu>
+							<h:panelGroup />
+							<h:outputText value="#{msg['a.descripcion']}" />
+							<h:inputTextarea id="descripcion"
+								value="#{aplicacionExistente.appEditada.descripcion}" cols="100"
+								rows="4" 
+									onkeyup="limitTextArea(this,400);" 
+									onkeydown="limitTextArea(this,400);"/>
+						</h:panelGrid>
+						<div class="divBoton">
+							<p:commandButton value="#{msg['boton.guardar']}"
+								action="#{aplicacionExistente.editar()}"
+								render="tablaA,appError" execute="editarAPanel"
+								oncomplete="if (#{facesContext.maximumSeverity==null}) {PF('dialogoEdit').hide();}" />
+							<p:commandButton value="#{msg['boton.cancelar']}" 
+								onclick="{PF('dialogoEdit').hide(); return false;" 
+								action="#{aplicacionNueva.limpiar()}"/>
+						</div>
+						
+						<p:messages for="editarNombre" autoUpdate="true" />
+						<p:messages for="selectApp" autoUpdate="true"/>
+			
+						    
+					
+                      </h:form>    	
+
+                        </p:dialog>
+				
+                      
+                  
+                  <!-- Mensaje flotante para error de eliminacion  -->
+                  <p:growl showDetail="true" showSummary="false" id="appError" ></p:growl>
+                  
+                  <!-- Mensaje de preload -->
+                  <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+                  <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+					   <center><h:graphicImage library="images" name="preloader.gif" /></center><br/>
+					    <h:outputText value="#{msg['cargando']}" styleClass="letras" />
+				   </p:dialog><br/>
+
+                  <h:outputText value="#{aplicacionExistente.error}"
+					styleClass="failureNotification" id="appError2"></h:outputText>
+			
+
+			<p:fieldset legend="#{msg['a.nuevaAplicacion']}"  title="#{msg['a.title.creacion']}">
+				
+				<h:form id="formAplicacion">
+					<table class="tablaCentrada">
+						<tr>
+							<td><h:outputLabel value="#{msg['a.nombre']}" /></td>
+							<td><p:inputText id="nuevaNombre" title="#{msg['a.title.nombre']}" 
+									value="#{aplicacionNueva.nombre}" maxlength="40"
+									converter="mayusculasConverter" required="true"
+									requiredMessage="#{msg['requerido.nombre']}">
+<!-- 									<a4j:ajax event="blur" render="@this" /> -->
+								</p:inputText></td>
+							<td><h:outputLabel value="#{msg['a.proyecto']}" /></td>
+							<td><p:selectOneMenu id="codProyecto" value="#{aplicacionNueva.codProyecto}" title="#{msg['a.title.proyecto']}"
+									 styleClass="letras" required="true" requiredMessage="#{msg['requerido.proyecto']}">
+									<f:selectItem itemLabel="--Proyecto--" />
+									<f:selectItems value="#{aplicacionNueva.proyectos}" var="proy"
+										itemLabel="#{proy.nombre}" itemValue="#{proy.codigo}" />
+									<p:ajax listener="#{aplicacionNueva.cambioProyecto}" update="nuevaLn" />
+								</p:selectOneMenu></td>
+							<td><h:outputLabel value="#{msg['a.lineaNegocio']}" /></td>
+							<td><p:selectOneMenu id="nuevaLn" title="#{msg['a.title.ln']}"
+									value="#{aplicacionNueva.codLineaNegocio}" required="true" styleClass="letras"
+									requiredMessage="#{msg['requerido.lineaNegocio']}">
+									<f:selectItem itemLabel="--Línea de Negocio--" />
+									<f:selectItems value="#{aplicacionNueva.lineasNegocio}"
+										var="ln" itemLabel="#{ln.nombre}" itemValue="#{ln.codigo}" />
+								</p:selectOneMenu></td>
+							<td><h:outputLabel value="#{msg['a.estado']}" /></td>
+							<td><p:selectOneMenu id="estado" value="#{aplicacionNueva.estado}" 
+							      styleClass="letras" title="#{msg['a.title.estado']}">
+									<f:selectItem itemValue="A" itemLabel="#{msg['estado.activo']}" />
+									<f:selectItem itemValue="I"
+										itemLabel="#{msg['estado.inactivo']}" />
+								</p:selectOneMenu></td>
+						</tr>
+						<tr>
+							<td colspan="8"><div style="text-align: left;">
+									<h:outputLabel value="#{msg['a.descripcion']}" />
+								</div> <p:inputTextarea value="#{aplicacionNueva.descripcion}"
+									cols="150" rows="3"
+									validatorMessage="#{msg['longitud.400']}"
+									onkeyup="limitTextArea(this,400);" 
+									onkeydown="limitTextArea(this,400);">
+									<f:validateLength maximum="400" />
+								</p:inputTextarea></td>
+						</tr>
+						<tr>
+							<td class="boton">
+								<p:commandButton
+									value="#{msg['boton.guardar']}" type="submit"
+									action="#{aplicacionNueva.guardar}" /></td>
+							<td class="boton">
+								<p:commandButton action="#{aplicacionNueva.limpiar()}"  id="cancelar" execute="@this"
+									value="#{msg['boton.cancelar']}" 
+									render="messNombre messLn nuevaNombre codProyecto nuevaLn" /></td>
+						</tr>
+						<tr>
+							<td colspan="8"><h:outputText
+									value="#{aplicacionNueva.error}"
+									styleClass="failureNotification"></h:outputText></td>
+						</tr>
+					</table>
+					<h:inputHidden id="resultado"></h:inputHidden>					
+<!-- 					<rich:notifyMessage id="msgResultado" stayTime="2000" nonblocking="true" for="resultado" ajaxRendered="true"/> -->
+					<p:messages id="messNombre" for="nuevaNombre" autoUpdate="true" />
+					<p:messages id="messProyecto" for="codProyecto" autoUpdate="true"/>
+					<p:messages id="messLn" for="nuevaLn" autoUpdate="true" />
+
+				</h:form>
+			</p:fieldset>
+			
+					
+			</div>
+			
+			<div class="ui-g-1"></div>
+		</div>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

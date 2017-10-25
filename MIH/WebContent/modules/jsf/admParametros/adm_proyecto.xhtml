@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	>
+
+<h:body>
+
+	<ui:composition template="${pageContext.request.contextPath}/modules/jsf/template/template.xhtml">
+		<ui:define name="content">
+		
+		<script type="text/javascript">
+			    function limitTextArea(element, limit) { 
+					
+					if (element.value.length > limit) { 
+						element.value = element.value.substring(0, limit); 
+					}
+					
+					//var mensaje = document.getElementById("mensaje");
+					
+				} 
+	
+		</script>
+	
+		<div class="ui-g">
+			<div class="ui-g-5 titulo">
+				<p:outputLabel value="#{msg['proyectos.titulo']}"/>
+			</div>
+			<div class="ui-g-5"></div>
+			<div class="ui-g-2">
+				<h:panelGroup id="fade">
+					<h:graphicImage styleClass="block_tooltip" library="images"	name="icon_help.png" />
+				</h:panelGroup>
+				<p:tooltip id="toolTipFade" for="fade" styleClass="tooltip"	trackMouse="true" position="left">
+									<h:outputText value="#{msg['proyectos.ayuda1']}" />
+									<br></br>
+									<h:outputText value="#{msg['proyectos.ayuda2']}" />
+									<br></br>
+									<h:outputText value="#{msg['proyectos.ayuda3']}" />
+									<br></br>
+									<h:outputText value="#{msg['proyectos.ayuda4']}" />
+									<br></br>
+									<h:outputText value="#{msg['proyectos.ayuda5']}" />
+									<br></br>
+									<h:outputText value="#{msg['proyectos.ayuda6']}" />
+									<br></br>
+									<h:outputText value="#{msg['proyectos.ayuda7']}" />
+									<br></br>
+									<h:outputText value="#{msg['proyectos.ayuda8']}" />
+									<br></br>
+									<h:outputText value="#{msg['proyectos.ayuda9']}" />
+				</p:tooltip>
+			</div>
+		</div>
+		
+		<p:growl id="mensaje" showSummary="false" showDetail="true" />
+		
+		<h:form id="formAdmProyecto">
+		
+			
+				
+			
+		
+		
+		<p:fieldset legend="#{msg['proyectos.proyectosExistentes']}" >
+		
+		<p:dataTable value="#{proyectoExistente.proyectos}" var="proy" id="tablaProyectos" 
+					    emptyMessage="No existen registros para la consulta." paginator="true"
+						rows="10" 
+						paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+						rowsPerPageTemplate="5,10,15" scrollable="true" scrollWidth="100%"
+						 widgetVar="entidadTable" style="font-size:11px;font-family:verdana;color:#424242;">
+						 
+					 <p:column width="50" headerText="#{msg['proyectos.codigo']}" >
+					 	<p:outputLabel value="#{proy.codigo}"/>
+					 </p:column>
+					 
+					 <p:column width="80" headerText="#{msg['proyectos.nombre']}">
+					 	
+					 	<p:outputLabel value="#{proy.nombre}" />
+					 </p:column>
+					 
+					 <p:column width="80" headerText="#{msg['proyectos.estado']}">
+					 	<p:outputLabel value="#{proy.estado}"/>
+					 </p:column>
+					 
+					 <p:column width="80" headerText="#{msg['proyectos.descripcion']}">
+					 	<p:outputLabel value="#{proy.descripcion}"/>
+					 </p:column>
+					 
+					  <p:column width="80" headerText="#{msg['entidades.botones']}">
+					  
+					  	<p:commandLink id="deleteTable" action="#{proyectoExistente.eliminar}" update="tablaProyectos, mensaje"> 
+							<p:graphicImage library="images" name="ico-eliminar.png" with="16px" height="16px" title="#{msg['boton.eliminar']}"/>
+							<p:confirm header="Eliminar" message="#{msg['proyectos.confirmar.eliminacion']}"/>
+							<f:setPropertyActionListener target="#{proyectoExistente.proyectoEditado}" value="#{proy}" />
+						</p:commandLink>&nbsp;
+					  
+					  	<p:commandLink id="editarTable" onclick="PF('wdialog_editar').show();" update=":form_editar">
+							<p:graphicImage library="images" name="ico-editar.png" with="16px" height="16px" title="#{msg['boton.editar']}"/>
+							<f:setPropertyActionListener target="#{proyectoExistente.proyectoEditado}" value="#{proy}" />
+						</p:commandLink>
+						
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" style="font-size:11px;font-family:verdana;">
+							<p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+							<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>														
+						</p:confirmDialog>
+						
+						<p:dialog header="#{msg['proyectos.editar.titulo']}">
+						
+						</p:dialog>
+					 	
+					 </p:column>
+
+
+						
+				</p:dataTable>
+		
+		
+		</p:fieldset>
+		
+	
+				
+		
+			</h:form>
+			
+			
+			<p:dialog id="dialogo_editar" widgetVar="wdialog_editar" header="#{msg['proyectos.editar.titulo']}" modal="true" resizable="false" closeOnEscape="true" draggable="true">
+			
+				<h:form id="form_editar">
+				
+					<h:panelGrid columns="2">
+					<p:outputLabel for="txtCodigo" value="#{msg['proyectos.codigo']}:" style="font-size:15px;font-family:verdana;" />
+					<p:outputLabel value="#{proyectoExistente.proyectoEditado.codigo}" id="txtCodigo" style="font-size:15px;font-family:verdana;"/>
+					
+					<p:outputLabel for="editNombre" value="#{msg['proyectos.nombre']}" style="font-size:15px;font-family:verdana;" />
+					<p:inputText id="editNombre" title="#{msg['proyectos.title.nombre']}" style="width:100px;font-size:11px;font-family:verdana;"
+								value="#{proyectoExistente.proyectoEditado.nombre}"
+								converter="mayusculasConverter" required="true">				
+					</p:inputText>
+					<p:outputLabel value="#{msg['proyectos.estado']}" style="font-size:15px;font-family:verdana;"/>
+					<p:selectOneMenu id="estado" title="#{msg['proyectos.title.estado']}" style="width:85px;font-size:11px;font-family:verdana;"
+									 value="#{proyectoExistente.proyectoEditado.estado}">
+						<f:selectItem itemValue="A" itemLabel="#{msg['estado.activo']}" />
+						<f:selectItem itemValue="I"
+							itemLabel="#{msg['estado.inactivo']}" />
+					</p:selectOneMenu>
+					
+					<p:outputLabel value="#{msg['proyectos.descripcion']}"  style="font-size:15px;font-family:verdana;"/>
+					<p:inputTextarea id="descripcion" value="#{proyectoExistente.proyectoEditado.descripcion}" style="font-size:11px;font-family:verdana;"
+									 cols="40" rows="4" validatorMessage="#{msg['longitud.400']}">
+					</p:inputTextarea> 
+					
+					</h:panelGrid>
+					<h:panelGrid columns="2">
+							<p:commandButton value="#{msg['boton.guardar']}" icon="ui-icon-check" action="#{proyectoExistente.editar()}" oncomplete="PF('wdialog_editar').hide();"  update=":formAdmProyecto:tablaProyectos"  />
+							<p:commandButton value="#{msg['boton.cancelar']}"  icon="ui-icon-close" immediate="true" onclick="PF('wdialog_editar').hide();"/>
+					</h:panelGrid>
+				
+					
+				</h:form>
+			
+			</p:dialog><br></br>
+						
+				<p:fieldset legend="#{msg['proyectos.nuevoProyecto']}">
+					<h:form id="formProyecto">
+					
+					<h:panelGrid columns="2">
+						<p:outputLabel value="#{msg['proyectos.nombre']}" for="nuevoNombre" style="font-size:11px;font-family:verdana;"/>
+						<p:inputText id="nuevoNombre" title="#{msg['proyectos.title.nombre']}" style="width:100px;font-size:11px;font-family:verdana;"
+									 value="#{proyectoNuevo.nombre}" converter="mayusculasConverter" maxlength="40" required="true"
+									 requiredMessage="#{msg['requerido.nombre']}">
+						</p:inputText>
+						
+						<p:outputLabel value="#{msg['proyectos.estado']}" style="font-size:11px;font-family:verdana;"/>
+						<p:selectOneMenu value="#{proyectoNuevo.estado}" title="#{msg['proyectos.title.estado']}" style="width:85px;font-size:11px;font-family:verdana;">
+									<f:selectItem itemValue="A" itemLabel="#{msg['estado.activo']}" />
+									<f:selectItem itemValue="I" itemLabel="#{msg['estado.inactivo']}" />
+						</p:selectOneMenu>
+						
+						<p:outputLabel value="#{msg['proyectos.descripcion']}" style="font-size:11px;font-family:verdana;"/>
+						<p:inputTextarea id="descripcion" value="#{proyectoNuevo.descripcion}" style="font-size:11px;font-family:verdana;"
+									     cols="100" rows="4" validatorMessage="#{msg['longitud.400']}" onkeyup="limitTextArea(this,400);" 
+									     onkeydown="limitTextArea(this,400);"  >
+							<f:validateLength maximum="400" />
+						</p:inputTextarea>
+						
+						
+						<p:commandButton value="#{msg['boton.guardar']}" type="submit" action="#{proyectoNuevo.guardar}" update="mensaje"/>
+									
+						<p:commandButton id="cancelar" action="#{proyectoNuevo.clear()}" value="#{msg['boton.cancelar']}" type="reset" execute="@this" 
+									     render="mensajesCreacion"/>		
+									
+						<p:outputLabel value="#{proyectoNuevo.error}" styleClass="failureNotification" />									
+						 
+					</h:panelGrid>
+					
+				</h:form>
+				</p:fieldset>
+				
+				<!-- Preload -->
+			<p:ajaxStatus onstart="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()" />
+ 
+			<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+			    <center><p:graphicImage library="images" name="preloader.gif" /></center><br/>
+				<p:outputLabel value="#{msg['cargando']}" styleClass="letras" />				
+			</p:dialog>
+	
+			
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

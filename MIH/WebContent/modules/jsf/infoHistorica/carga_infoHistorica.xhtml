@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"	
+	>
+<h:body>
+
+	<ui:composition
+		template="${pageContext.request.contextPath}/modules/jsf/template/template.xhtml">
+		<ui:param name="title" value="#{msg['historicos.carga.titulo']}" />
+		<ui:define name="content">
+<!-- 		<a4j:status onstart="#{rich:component('statPane')}.show()" onstop="#{rich:component('statPane')}.hide()" /> -->
+			
+			<div class="ui-g">
+			<div class="ui-g-5 titulo">
+				<p:outputLabel value="#{msg['historicos.carga.titulo']}"/>
+			</div>
+			<div class="ui-g-5"></div>
+			<div class="ui-g-2">
+				<h:panelGroup id="fade">
+					<h:graphicImage styleClass="block_tooltip" library="images"	name="icon_help.png" />
+				</h:panelGroup>
+				<p:tooltip id="toolTipFade" for="fade" styleClass="tooltip"	trackMouse="true" position="left">
+									<h:outputText value="#{msg['historicos.carga.ayuda1']}"/>
+									<br></br>
+			                        <h:outputText value="#{msg['historicos.carga.ayuda2']}"/>
+			                        <br></br>
+			                        <h:outputText value="#{msg['historicos.carga.ayuda3']}"/>
+			                        <br></br>
+			                        <h:outputText value="#{msg['historicos.carga.ayuda4']}"/>
+			                        <br></br>
+			                        <h:outputText value="#{msg['historicos.carga.ayuda5']}"/>
+			                        <br></br>
+			                        <h:outputText value="#{msg['historicos.carga.ayuda6']}"/>
+			                        <br></br>
+			                        <h:outputText value="#{msg['historicos.carga.ayuda7']}"/>
+			                        <br></br>
+			                        <h:outputText value="#{msg['historicos.carga.ayuda8']}"/>
+			                        <br></br>
+			                        <h:outputText value="#{msg['historicos.carga.ayuda9']}"/>
+			                        <br></br>
+			                        <h:outputText value="#{msg['historicos.carga.ayuda10']}"/>
+				</p:tooltip>
+				</div>
+				</div>
+			<p:growl id="mensajes_pop" showSummary="false" showDetail="true" life="8000" />	
+			<h:form id="cargaDatosform" >
+				<p:fieldset legend="#{msg['historicos.carga.fc_estructura']}">
+				
+				
+				<!-- 1er fila -->
+				<div class="ui-g">
+					<div class="ui-g-2 titleSize2">
+						<p:outputLabel value="#{msg['historicos.carga.Estructura']}" />
+					</div>
+					<div class="ui-g-1 contenido">
+						<p:selectOneMenu id="codEntidad" value="#{cargaInfoHistoricaBean.nombreEntidad}" required="true" style="width:85px" requiredMessage="#{msg['historicos.carga.reqEntidad']}"
+						title="#{msg['historicos.carga.ttTabla']}">
+							<f:selectItem itemLabel="#{msg['historicos.carga.somEntidad']}" itemDisabled="true" noSelectionOption="true"/>
+							<f:selectItems value="#{cargaInfoHistoricaBean.entidades}" var="ent" itemLabel="#{ent.nombre}" itemValue="#{ent.nombre}" />
+						</p:selectOneMenu>
+				</div>				
+				</div>
+				<!-- 2da fila -->
+				<div class="ui-g">
+					<div class="ui-g-2 titleSize2">
+						<p:outputLabel value="#{msg['historicos.carga.ModoCarga']}"/>
+					</div>
+					<div class="ui-g-1 contenido">
+						<p:selectOneMenu id="somModoCarga" value="#{cargaInfoHistoricaBean.tipoCarga}" required="true" style="width:85px" requiredMessage="#{msg['historicos.carga.reqModoCarga']}"
+													title="#{msg['historicos.carga.ttModoCarga']}">
+							<f:selectItem itemLabel="#{msg['historicos.carga.somModoCarga']}" itemDisabled="true" noSelectionOption="true"/>
+							<f:selectItem itemValue="A" itemLabel="APPEND" />
+							<f:selectItem itemValue="R" itemLabel="REPLACE" />
+						</p:selectOneMenu>
+					</div>
+				
+				</div>
+				
+				<!-- 3ra fila -->
+				<div class="ui-g">
+					<div class="ui-g-2 titleSize2">
+						<p:outputLabel value="#{msg['historicos.carga.Encabezado']} :"/>
+					</div>
+					<div class="ui-g-1">
+						<p:selectBooleanCheckbox id="encabezado" value="#{cargaInfoHistoricaBean.encabezado}" title="#{msg['historicos.carga.ttEncabezado']}">
+						</p:selectBooleanCheckbox>
+					</div>
+				</div>
+				
+				<!-- 4ta fila -->
+				
+				<div class="ui-g">
+					<div class="ui-g-2 titleSize2">
+						<p:outputLabel value="#{msg['historicos.carga.Separador']}"/>
+					</div>
+					<div class="ui-g-1 contenido">
+						<p:selectOneMenu id="codSeparador" value="#{cargaInfoHistoricaBean.delimiter}" required="true" style="width:85px" requiredMessage="#{msg['historicos.carga.reqSeparador']}"
+													title="#{msg['historicos.carga.ttSeparador']}">
+							<f:selectItem itemLabel="#{msg['historicos.carga.somSeparador']}" itemDisabled="true" noSelectionOption="true"/>
+							<f:selectItems value="#{cargaInfoHistoricaBean.listaSeparadores}" itemLabel="#{listaSeparadores}"/> 
+						</p:selectOneMenu>
+					</div>
+				</div>
+				
+				<!-- 5ta fila -->
+				
+				<div class="ui-g">
+					<div class="ui-g-2 titleSize2">
+						<p:outputLabel value="#{msg['historicos.carga.Archivo']}"/>
+					</div>
+					<div class="ui-g-1 contenido">
+						<p:selectOneMenu id="somArchivo" value="#{cargaInfoHistoricaBean.archivo}" required="true" style="width:85px" requiredMessage="#{msg['historicos.carga.reqArchivo']}"
+													title="#{msg['historicos.carga.ttArchivo']}">
+							<f:selectItem itemLabel="#{msg['historicos.carga.somArchivo']}" itemDisabled="true" noSelectionOption="true"/>
+							<f:selectItems value="#{cargaInfoHistoricaBean.archivos}" itemLabel="#{archivos}"/> 
+						</p:selectOneMenu>
+					</div>
+				</div>
+				
+				
+			</p:fieldset><br></br>
+			
+			<h:panelGrid columns="2">
+				
+				<p:commandButton value="#{msg['historicos.carga.btnAceptar']}" id="btnAceptar" action="#{cargaInfoHistoricaBean.mostrarPopup}" title="#{msg['historicos.carga.ttAceptar']}" update="mensajes_pop, cargaDatosform"> 
+				</p:commandButton>
+				<p:commandButton value="#{msg['historicos.carga.btnCancelar']}" id="btnCancelar1" process="@this" action="#{cargaInfoHistoricaBean.limpiarFormulario()}" title="#{msg['historicos.carga.ttCancelar1']}"> 
+								<!--  render="msgCodEntidad msgSomModoCarga msgCodSeparador msgSomArchivo codEntidad somModoCarga encabezado codSeparador somArchivo"-->								
+				</p:commandButton>
+				
+			</h:panelGrid>
+			
+			
+			<p:dialog height="280" width="400" id="popup" header="#{msg['historicos.prevalidador.tituloConfirmacion']}" modal="true" visible="#{cargaInfoHistoricaBean.popupVisible}" resizable="false" closeOnEscape="true" draggable="true" widgetVar="wdialogo">
+				<h:form>
+				
+					<h:outputText value="#{prevalidadorBean.encabezado?  msg['historicos.carga.notaEncabezado'] :  msg['historicos.carga.notaSinEncabezado'] }" style="font-size:15px;font-family:verdana;color:red;"/><br/>
+					<br></br><br></br>
+					
+					<h:panelGrid columns="3">
+						<p:outputLabel value="#{msg['historicos.prevalidador.Estructura']}" style="font-size:15px;font-family:verdana;" />&nbsp;					
+						<p:outputLabel id="lblEntidad" value="#{cargaInfoHistoricaBean.nombreEntidad}" style="font-size:15px;font-family:verdana;"/>
+					</h:panelGrid>
+					
+					<h:panelGrid columns="3">
+						<p:outputLabel value="#{msg['historicos.carga.ModoCarga']}" style="font-size:15px;font-family:verdana;"/>
+						<p:outputLabel id="lblModoCarga" value="#{cargaInfoHistoricaBean.tipoCarga == 'A'? 'APPEND' : 'REPLACE'}" style="font-size:15px;font-family:verdana;"/>
+					</h:panelGrid>
+					
+					<h:panelGrid columns="3">
+						<p:outputLabel value="#{msg['historicos.carga.Encabezado']} :" style="font-size:15px;font-family:verdana;" />&nbsp;
+						<p:outputLabel id="lblEncabezado" value="#{cargaInfoHistoricaBean.encabezado? 'Si' : 'No'}" style="font-size:15px;font-family:verdana;"/>						
+					</h:panelGrid>
+				
+					<h:panelGrid columns="3">
+						<p:outputLabel value="#{msg['historicos.prevalidador.Separador']}" style="font-size:15px;font-family:verdana;"/>
+						<p:outputLabel id="lblSeparador" value="#{cargaInfoHistoricaBean.delimiter}" style="font-size:15px;font-family:verdana;"/>
+					</h:panelGrid>
+					
+					<h:panelGrid columns="3">
+						<p:outputLabel value="#{msg['historicos.prevalidador.Archivo']}" style="font-size:15px;font-family:verdana;"/>
+						<p:outputLabel id="lblArchivo" value="#{cargaInfoHistoricaBean.archivo}" style="font-size:15px;font-family:verdana;"/>					
+					</h:panelGrid>
+						<br></br>
+<!-- 					<h:panelGrid columns="3"> -->
+<!-- 						<p:outputLabel value="#{msg['historicos.prevalidador.sumatoria']}" style="font-size:15px;font-family:verdana;"/> -->
+<!-- 							<c:forEach var="campos" items="#{prevalidadorBean.camposSeleccionado}" > -->
+<!-- 									<h:outputLabel value="#{msg['historicos.prevalidador.vineta']}" /> -->
+<!-- 									<h:outputLabel value="#{campos}" /> -->
+<!-- 							</c:forEach> -->
+<!-- 					</h:panelGrid><br></br> -->
+					
+					<h:panelGrid columns="2">
+						<p:commandButton update="cargaDatosform" id="btnCargar" icon="ui-icon-check" value="#{msg['historicos.prevalidador.btnCargar']}" action="#{cargaInfoHistoricaBean.cargarArchivo}" title="#{msg['historicos.prevalidador.ttCargar']}" oncomplete="PF('wdialogo').hide()"/>
+						<p:commandButton id="btnCancelar2" icon="ui-icon-close" value="#{msg['historicos.prevalidador.btnCancelar']}" onclick="PF('wdialogo').hide();" title="#{msg['historicos.prevalidador.ttCancelar2']}"/>
+						
+					</h:panelGrid>				
+				</h:form>			 
+			</p:dialog>			
+			
+				<!-- Preload -->
+			<p:ajaxStatus onstart="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()" />
+ 
+			<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+			    <center><p:graphicImage library="images" name="preloader.gif" /></center><br/>
+				<p:outputLabel value="#{msg['cargando']}" styleClass="letras" />				
+			</p:dialog>
+			
+
+			
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

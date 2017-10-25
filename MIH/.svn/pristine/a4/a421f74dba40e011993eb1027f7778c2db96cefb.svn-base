@@ -1,0 +1,34 @@
+#
+#Copyright (c) 2013, SEDECO. Todos los derechos reservados.
+#Secretaria de Desarrollo Economico del Distrito Federal. 
+#PROPRIETARY/CONFIDENTIAL.
+#
+#Este archivo contiene la configuración de Log4j para manejar los registos.
+#Author: fernando.maillane Callejas
+#Version: 1.0
+#Fecha: 01-04/2013
+log4j.rootLogger=ALL, stdout, archivo
+log4j.rootCategory=INFO, stdout, archivo
+
+log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.threshold=INFO
+log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+log4j.appender.stdout.layout.ConversionPattern=%d{HH:mm:ss,SSS} [@semih@] %p [%t] %c - %m%n
+
+log4j.appender.archivo=org.apache.log4j.RollingFileAppender
+log4j.appender.archivo.threshold=INFO
+log4j.appender.archivo.File=${catalina.base}/logs/semih.log
+log4j.appender.archivo.Append=true
+log4j.appender.archivo.MaxFileSize=1024KB
+log4j.appender.archivo.ImmediateFlush=true
+
+log4j.appender.archivo.MaxBackupIndex=3
+log4j.appender.archivo.layout=org.apache.log4j.PatternLayout
+log4j.appender.archivo.layout.ConversionPattern=%d{HH:mm:ss,SSS} [@semih@] %p [%t] %c - %m%n
+
+log4j.logger.mx.gob.sedecodf.siapem=INFO
+log4j.logger.org.springframework=INFO
+log4j.logger.org.apache.myfaces=INFO
+log4j.logger.com.opensymphony=INFO
+log4j.logger.org.ajax4jsf=INFO
+log4j.logger.org.richfaces=INFO

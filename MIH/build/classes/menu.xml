@@ -1,0 +1,92 @@
+<menu>
+	<item titulo="Administración de seguridad">
+		<subitem titulo="Acceso a tablas" 
+				 url="/faces/modules/jsf/admSeguridad/acceso_entidades.xhtml"
+				 metodo="autorizar">
+		</subitem>
+		<subitem titulo="Administración de usuarios" 
+				 url="/faces/modules/jsf/admSeguridad/adm_usuarios.xhtml"
+				 metodo="admUsuario">
+		</subitem>
+		<subitem titulo="Control de Sesiones de Usuarios" 
+				 url="/faces/modules/jsf/admSeguridad/controlSesiones.xhtml"
+				 metodo="admUsuario">
+		</subitem>
+	</item>
+	<item titulo="Administración de tablas">
+		<subitem titulo="Consulta de tablas" 
+				 url="/faces/modules/jsf/admEntidades/admin_entidad.xhtml"
+				 metodo="entidades">
+		</subitem>
+		<subitem titulo="Creación de tablas" 
+				 url="/faces/modules/jsf/admEntidades/adm_entidad.xhtml"
+				 metodo="entidades">
+		</subitem>
+	</item>
+	<item titulo="Administración de históricos">
+		<subitem titulo="Prevalidador" 
+				 url="/faces/modules/jsf/infoHistorica/prevalidador.xhtml"
+				 metodo="carga">
+	    </subitem>
+		<subitem titulo="Carga" 
+				 url="/faces/modules/jsf/infoHistorica/carga_infoHistorica.xhtml"
+				 metodo="carga">
+	    </subitem>
+	    <subitem titulo="Reportes" 
+				 url="/faces/modules/jsf/infoHistorica/reporte_carga.xhtml"
+				 metodo="carga">
+	    </subitem>
+	</item>
+	<item titulo="Parámetros del sistema">
+		<subitem titulo="Administración proyectos" 
+				 url="/faces/modules/jsf/admParametros/adm_proyecto.xhtml"
+				 metodo="parametros">
+		</subitem>
+		<subitem titulo="Administración de líneas de negocio" 
+				 url="/faces/modules/jsf/admParametros/adm_lineaNegocio.xhtml"
+				 metodo="parametros">
+		</subitem>
+		<subitem titulo="Administración de aplicaciones" 
+				 url="/faces/modules/jsf/admParametros/adm_aplicacion.xhtml"
+				 metodo="parametros">
+		</subitem>
+		<subitem titulo="Administración parámetros de negocio" 
+				 url="/faces/modules/jsf/admParametros/adm_catalogo.xhtml"
+				 metodo="parametros">
+		</subitem>
+		<subitem titulo="Administración parámetros de aplicación" 
+				 url="/faces/modules/jsf/admParametros/adm_parametros.xhtml"
+				 metodo="parametros">
+		</subitem>
+	</item>
+	<item titulo="Consultas">
+		<subitem titulo="Consultas dinámicas" 
+				 url="/faces/modules/jsf/consulta/consulta_dinamica.xhtml"
+				 metodo="consultaMasiva">
+		</subitem>
+		<subitem titulo="Consultas específicas"
+				 url="/faces/modules/jsf/consulta/consulta_especifica.xhtml"
+				 metodo="consultaMasiva">
+		</subitem>
+		<subitem titulo="Consultas por rango de fechas" 
+				 url="/faces/modules/jsf/consulta/consulta_masiva.xhtml"
+				 metodo="consultaMasiva">
+		</subitem>
+	</item>
+	<item titulo="Data No Estructurada">
+		<subitem titulo="Generar Índice" 
+				 url="/faces/modules/jsf/dataNoEstructurada/generar_indice.xhtml"
+				 metodo="consultaPuntual">
+		</subitem>		
+	</item>
+	<item titulo="Auditoría y Mantenimieto">
+		<subitem titulo="Consulta de Logs" 
+				 url="/faces/modules/jsf/auditoria/auditoria_logs.xhtml"
+				 metodo="auditoria">
+		</subitem>
+		<subitem titulo="Depuración"
+				 url="/faces/modules/jsf/auditoria/mantenimiento.xhtml"
+				 metodo="depuracion">
+		</subitem>
+	</item>
+</menu>

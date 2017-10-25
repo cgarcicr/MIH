@@ -1,0 +1,536 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<ui:composition
+	template="${pageContext.request.contextPath}/modules/jsf/template/template.xhtml">
+	<ui:param name="title" value="Administrción de usuarios" />
+	<ui:define name="content">
+
+
+		<div class="ui-g">
+			<div class="ui-g-5 titulo">
+				<p:outputLabel value="#{msg['usuarios.title']}"/>
+			</div>
+			<div class="ui-g-5"></div>
+			<div class="ui-g-2">
+				<h:panelGroup id="fade">
+					<h:graphicImage styleClass="block_tooltip" library="images"	name="icon_help.png" />
+				</h:panelGroup>
+				<p:tooltip id="toolTipFade" for="fade" styleClass="tooltip"	trackMouse="true" position="left">
+					<h:outputText value="#{msg['usuarios.ayuda1']}" /><br/>
+					<h:outputText value="#{msg['usuarios.ayuda2']}" /><br/>
+					<h:outputText value="#{msg['usuarios.ayuda3']}" /><br/>
+					<h:outputText value="#{msg['usuarios.ayuda4']}" /><br/>
+					<h:outputText value="#{msg['usuarios.ayuda5']}" /><br/>
+					<h:outputText value="" /><br/>
+					<h:outputText value="#{msg['usuarios.ayuda6']}" /><br/>
+					<h:outputText value="#{msg['usuarios.ayuda7']}" /><br/>
+					<h:outputText value="#{msg['usuarios.ayuda8']}" /><br/>
+					<h:outputText value="#{msg['usuarios.ayuda9']}" />
+				</p:tooltip>
+			</div>
+		</div>
+		
+		<p:growl id="mensaje" showSummary="false" showDetail="true" />
+		
+		<h:form id="usuarios">
+			<p:fieldset legend="#{msg['usuarios.title.lista']}" >
+				<p:dataTable value="#{usuariosBean.usuariosList}" var="user" id="tableUsuarios"
+					    emptyMessage="No existen registros para la consulta." paginator="true"
+						rows="10" 
+						paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+						rowsPerPageTemplate="5,10,15" scrollable="true" scrollWidth="100%"
+						widgetVar="entidadTable" style="font-size:11px;font-family:verdana;color:#424242;">
+						 
+						<p:column width="80" headerText="#{msg['usuarios.tb_codigo']}"  filterBy="#{user.codigoempleado}" filterMatchMode="contains" filterStyle="width:70px;height:13px">
+					 		<p:outputLabel value="#{user.codigoempleado}"/>
+					 	</p:column>
+					 	
+					 	<p:column width="80" headerText="#{msg['usuarios.tb_nombres']} "  filterBy="#{user.nombres}" filterMatchMode="contains" filterStyle="width:70px;height:13px">
+					 		<p:outputLabel value="#{user.nombres}"/>
+					 	</p:column>
+					 	
+					 	<p:column width="80" headerText="#{msg['usuarios.tb_apellidos']} "  filterBy="#{user.apellidos}" filterMatchMode="contains" filterStyle="width:70px;height:13px">
+					 		<p:outputLabel value="#{user.apellidos}"/>
+					 	</p:column>
+					 	
+					 	<p:column width="80" headerText="#{msg['usuarios.tb_rol']} "  filterBy="#{user.TMihRol.nombre}" filterMatchMode="contains" filterStyle="width:70px;height:13px">
+					 		<p:outputLabel value="#{user.TMihRol.nombre}"/>
+					 	</p:column>
+					 	
+					 	<p:column width="80" headerText="#{msg['usuarios.tb_lnegocio']} "  filterBy="#{user.TMihLineanegocio.nombre}" filterMatchMode="contains" filterStyle="width:70px;height:13px">
+					 		<p:outputLabel value="#{user.TMihLineanegocio.nombre}"/>
+					 	</p:column>
+					 	
+					 	<p:column width="80" filterBy="${user.estado}" headerText="#{msg['usuarios.tb_estado']}"  filterMatchMode="exact">
+				            <f:facet name="filter">
+				                <p:selectOneMenu id="estadoUsuario"
+									value="#{usuariosBean.estado}"
+									title="#{msg['usuarios.title.t_estado']}"
+									onchange="PF('entidadTable').filter()" >
+				                    <f:selectItem itemLabel="#{msg['usuarios.slct_estado']}" />
+									<f:selectItem itemValue="A" itemLabel="#{msg['estado.activo']}" />
+									<f:selectItem itemValue="I"
+										itemLabel="#{msg['estado.inactivo']}" />
+				                </p:selectOneMenu>
+				            </f:facet>
+			            	<h:outputText value="${user.estado.toString() eq 'A' ? 'ACTIVO' : 'INACTIVO'}" />
+			        	</p:column>
+			        	
+			        	<p:column width="80" headerText="#{msg['entidades.botones']}">
+							<p:commandLink id="editarTable" oncomplete="PF('wdialog_editar').show();" update=":form_editar,dialogo_editar" action="#{usuariosBean.editarUsr()}" process="@this">
+								<p:graphicImage library="images" name="ico-editar.png" with="16px" height="16px" title="#{msg['boton.editar']}"/>
+								<f:setPropertyActionListener target="#{usuariosBean.usuario}" value="#{user}" />
+							</p:commandLink>
+							
+							<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" style="font-size:11px;font-family:verdana;">
+								<p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+								<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>														
+							</p:confirmDialog>
+						
+							<p:dialog header="#{msg['acceso.permisos']}">
+							</p:dialog>
+							
+					 	</p:column>
+
+				</p:dataTable>
+			
+			</p:fieldset>
+		</h:form>
+		
+		<!-- Editar usuario -->
+		<p:dialog id="dialogo_editar" widgetVar="wdialog_editar" header="#{msg['usuarios.edit_usuario']}" modal="true" resizable="false" closeOnEscape="true" draggable="true" width="900px">
+			<h:form id="form_editar">
+				<p:fieldset legend="#{msg['usuarios.user']}" >
+				<h:panelGrid columns="4">
+					<p:outputLabel for="codigoEmpleado" value="#{msg['usuarios.user']}" style="font-size:15px;font-family:verdana;" />
+					<p:inputText id="codigoEmpleado" style="width:100px;font-size:11px;font-family:verdana;"
+						value="#{usuariosBean.usuario.codigoempleado}" maxlength="20"
+						required="true"
+						requiredMessage="#{msg['usuarios.requerido.id_usuario']}">
+					</p:inputText>
+					
+					<p:outputLabel value="#{msg['usuarios.tb_nombres']}" for="nombresUsuario" style="font-size:15px;font-family:verdana;"/>
+					<p:inputText id="nombresUsuario" style="width:100px;font-size:11px;font-family:verdana;"
+						value="#{usuariosBean.usuario.nombres}" maxlength="40"
+						required="true"
+						requiredMessage="#{msg['usuarios.requerido.tb_nombres']}" >
+					</p:inputText>
+					
+					<p:outputLabel for="apellidosUsuario" value="#{msg['usuarios.tb_apellidos']}" style="font-size:15px;font-family:verdana;"/>
+					<p:inputText id="apellidosUsuario" style="width:100px;font-size:11px;font-family:verdana;"
+						value="#{usuariosBean.usuario.apellidos}" maxlength="40"
+						required="true"
+						requiredMessage="#{msg['usuarios.requerido.tb_apellidos']}" >
+					</p:inputText>
+					<p:outputLabel value="#{msg['usuarios.tipodoc']}" for="tipoDoc" style="font-size:15px;font-family:verdana;"/>
+					<p:selectOneMenu id="tipoDoc" style="font-size: 11px;font-family: verdana;color: #000000;"
+							value="#{usuariosBean.usuario.tipodocumento}" required="true"
+							requiredMessage="#{msg['usuarios.requerido.tipodoc']}" >
+							<f:selectItem itemLabel="#{msg['usuarios.slct_tipodoc']}" />
+							<f:selectItems value="#{usuariosBean.tipoDocumento}"
+								var="proy" itemLabel="#{proy.descripcion}"
+								itemValue="#{proy.id.codigo}" />
+					</p:selectOneMenu>	
+					<p:outputLabel value="#{msg['usuarios.nodoc']}" for="numeroDoc" style="font-size:15px;font-family:verdana;"/>
+					<p:inputText id="numeroDoc" style="width:100px;font-size:11px;font-family:verdana;"
+						converter="mayusculasConverter"
+						value="#{usuariosBean.usuario.numerodocumento}"
+						maxlength="20" required="true"
+						requiredMessage="#{msg['usuarios.requerido.nodoc']}">
+						<f:validator validatorId="numeroDocumentoValidator" />
+					</p:inputText>
+					<p:outputLabel value="#{msg['usuarios.empresa']}" for="empresaUsuario" style="font-size:15px;font-family:verdana;"/>
+					<p:selectOneMenu id="empresaUsuario" style="font-size: 11px;font-family: verdana;color: #000000;"
+						value="#{usuariosBean.usuario.empresa}" required="true"
+						requiredMessage="#{msg['usuarios.requerido.empresa']}">
+						<f:selectItem itemLabel="#{msg['usuarios.slct_empresa']}" />
+						<f:selectItems value="#{usuariosBean.empresa}" var="proy"
+							itemLabel="#{proy.descripcion}"
+							itemValue="#{proy.id.codigo}" />
+					</p:selectOneMenu>
+					<p:outputLabel value="#{msg['usuarios.cargo']}" for="cargoUsuario" style="font-size:15px;font-family:verdana;"/>
+					<p:selectOneMenu id="cargoUsuario" style="font-size: 11px;font-family: verdana;color: #000000;"
+						value="#{usuariosBean.usuario.cargo}" required="true"
+						requiredMessage="#{msg['usuarios.requerido.cargo']}">
+						<f:selectItem itemLabel="#{msg['usuarios.slct_cargo']}" />
+						<f:selectItems value="#{usuariosBean.cargos}" var="proy"
+							itemLabel="#{proy.descripcion}"
+							itemValue="#{proy.id.codigo}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="#{msg['usuarios.area']}" for="areaUsuario" style="font-size:15px;font-family:verdana;"/>
+					<p:selectOneMenu id="areaUsuario" style="font-size: 11px;font-family: verdana;color: #000000;"
+						value="#{usuariosBean.usuario.area}" required="true"
+						requiredMessage="#{msg['usuarios.requerido.area']}">
+						<f:selectItem itemLabel="#{msg['usuarios.slct_areas']}" />
+						<f:selectItems value="#{usuariosBean.areas}" var="proy"
+							itemLabel="#{proy.descripcion}"
+							itemValue="#{proy.id.codigo}" />
+						<f:ajax event="change" execute="@this">
+						</f:ajax>
+					</p:selectOneMenu>
+					<p:outputLabel value="#{msg['usuarios.tb_rol']}" for="rolUsuario" style="font-size:15px;font-family:verdana;"/>
+					<h:selectOneMenu id="rolUsuario" style="font-size: 11px;font-family: verdana;color: #000000;"
+						value="#{usuariosBean.usuario.TMihRol.codigo}"
+						required="true"
+						requiredMessage="#{msg['usuarios.requerido.tb_rol']}">
+						<f:selectItem itemLabel="#{msg['usuarios.slct_rol']}" />
+						<f:selectItems value="#{usuariosBean.rol}" var="proy"
+							itemLabel="#{proy.nombre}" itemValue="#{proy.codigo}" />
+						<p:ajax event="change"  update="form_editar" listener="#{usuariosBean.obtenerPermisosRol}" />
+					</h:selectOneMenu>
+					<p:outputLabel value="#{msg['estado.label']}" for="estadoUsuario" style="font-size:15px;font-family:verdana;"/>
+					<p:selectOneMenu id="estadoUsuario" style="font-size: 11px;font-family: verdana;color: #000000;"
+							value="#{usuariosBean.usuario.estado}" required="true"
+							requiredMessage="#{msg['usuarios.requerido.tb_estado']}">
+							<f:selectItem itemLabel="#{msg['usuarios.slct_estado']}" />
+							<f:selectItem itemValue="A"
+								itemLabel="#{msg['estado.activo']}" />
+							<f:selectItem itemValue="I"
+								itemLabel="#{msg['estado.inactivo']}" />
+					</p:selectOneMenu>
+					<p:outputLabel value="#{msg['a.proyecto']}" for="proyUsuario" style="font-size:15px;font-family:verdana;"/>
+						<h:selectOneMenu id="proyUsuario" style="font-size: 11px;font-family: verdana;color: #000000;"
+							value="#{usuariosBean.usuario.TMihLineanegocio.TMihProyecto.codigo}"
+							valueChangeListener="#{usuariosBean.cambioProyecto}"
+							required="true"
+							requiredMessage="#{msg['usuarios.requerido.proyecto']}">
+							<f:selectItem itemLabel="#{msg['usuarios.slct_proyecto']}" />
+							<f:selectItems value="#{usuariosBean.proyectos}" var="proy"
+								itemLabel="#{proy.nombre}" itemValue="#{proy.codigo}" />
+							<f:ajax event="change" execute="proyUsuario" render="lnUsuario" >
+							</f:ajax>				
+						</h:selectOneMenu>
+						<p:outputLabel value="#{msg['a.lineaNegocio']}" for="lnUsuario" style="font-size:15px;font-family:verdana;"/>
+						<h:selectOneMenu id="lnUsuario" style="font-size: 11px;font-family: verdana;color: #000000;"
+							value="#{usuariosBean.usuario.TMihLineanegocio.codigo}"
+							required="true"
+							requiredMessage="#{msg['usuarios.requerido.tb_lnegocio']}">
+							<f:selectItem itemLabel="#{msg['usuarios.slct_ln']}" />
+							<f:selectItems value="#{usuariosBean.lineasNegocio}" var="ln"
+								itemLabel="#{ln.nombre}" itemValue="#{ln.codigo}" />
+						</h:selectOneMenu>
+
+				</h:panelGrid>
+
+				
+				</p:fieldset>&nbsp;
+				
+				
+				
+					<p:fieldset legend="#{msg['usuarios.permisos_rol']} #{usuariosBean.usuario.TMihRol.nombre}" id="ppp" >
+				
+					<table id="permisosUsuario">
+						<tr>
+							<td><p:outputLabel style="font-size:15px;font-family:verdana;"
+									value="#{msg['usuarios.permisos.adm_usuarios']}" /></td>
+							<td><p:selectBooleanCheckbox id="admUsuario"
+									value="#{usuariosBean.admusuario}"
+									disabled="#{usuariosBean.esSudo}" /></td>
+							<td><p:outputLabel style="font-size:15px;font-family:verdana;"
+									value="#{msg['usuarios.permisos.adm_parametros']}" /></td>
+							<td><p:selectBooleanCheckbox id="parametros"
+									value="#{usuariosBean.parametros}"
+									disabled="#{usuariosBean.esSudo}" /></td>
+						</tr>
+						<tr>
+							<td><p:outputLabel style="font-size:15px;font-family:verdana;"
+									value="#{msg['usuarios.permisos.adm_entidades']}" /></td>
+							<td><p:selectBooleanCheckbox id="entidades"
+									value="#{usuariosBean.entidades}"
+									disabled="#{usuariosBean.esSudo}" /></td>
+							<td><p:outputLabel style="font-size:15px;font-family:verdana;"
+									value="#{msg['usuarios.permisos.adm_carga']}" /></td>
+							<td><p:selectBooleanCheckbox id="carga"
+									value="#{usuariosBean.carga}"
+									disabled="#{usuariosBean.esSudo}" /></td>
+						</tr>
+						<tr>
+							<td><p:outputLabel style="font-size:15px;font-family:verdana;"
+									value="#{msg['usuarios.permisos.adm_cons_puntual']}" /></td>
+							<td><p:selectBooleanCheckbox id="consultaPuntual"
+									value="#{usuariosBean.consultapuntual}"
+									disabled="#{usuariosBean.esSudo}" /></td>
+							<td><p:outputLabel style="font-size:15px;font-family:verdana;"
+									value="#{msg['usuarios.permisos.adm_cons_masiva']}" /></td>
+							<td><p:selectBooleanCheckbox id="consultaMasiva"
+									value="#{usuariosBean.consultamasiva}"
+									disabled="#{usuariosBean.esSudo}" /></td>
+						</tr>
+						<tr>
+							<td><p:outputLabel style="font-size:15px;font-family:verdana;"
+									value="#{msg['usuarios.permisos.adm_auditoria']}" /></td>
+							<td><p:selectBooleanCheckbox id="auditoria"
+									value="#{usuariosBean.auditoria}"
+									disabled="#{usuariosBean.esSudo}" /></td>
+							<td><p:outputLabel style="font-size:15px;font-family:verdana;"
+									value="#{msg['usuarios.permisos.adm_depuracion']}" /></td>
+							<td><p:selectBooleanCheckbox id="depuracion"
+									value="#{usuariosBean.depuracion}"
+									disabled="#{usuariosBean.esSudo}" /></td>
+						</tr>
+						<tr>
+							<td><p:outputLabel style="font-size:15px;font-family:verdana;"
+									value="#{msg['usuarios.permisos.adm_autorizar']}" /></td>
+							<td colspan="3"><p:selectBooleanCheckbox
+									id="autorizar" value="#{usuariosBean.autorizar}"
+									disabled="#{usuariosBean.esSudo}" /></td>
+						</tr>
+					</table>			
+				</p:fieldset>
+				
+				<table align="center">
+					<tr>
+						<td>
+							<p:commandButton value="#{msg['boton.guardar']}" icon="ui-icon-check" action="#{usuariosBean.guardar()}" update=":usuarios:tableUsuarios,mensaje,form_editar "  />
+							<p:commandButton value="#{msg['boton.cancelar']}"  icon="ui-icon-close" immediate="true" onclick="PF('wdialog_editar').hide();"/>
+						</td>
+					</tr>
+				</table>
+
+			</h:form>
+		</p:dialog>
+		
+		<!-- Usuario nuevo -->
+		<p:dialog id="nuevoUsr" widgetVar="wnuevoUsr" header="Datos del usuario nuevo"  modal="true" resizable="false" closeOnEscape="true" draggable="true" width="900px">
+			<h:form id="form_nuevoUsr">
+				<p:fieldset legend="#{msg['usuarios.user']}">
+				
+					<h:panelGrid columns="4">
+						<p:outputLabel for="n_codigoEmpleado" value="#{msg['usuarios.user']}" style="font-size:15px;font-family:verdana;" />
+						<p:inputText id="n_codigoEmpleado" style="width:100px;font-size:11px;font-family:verdana;"
+							value="#{usuariosBeanNuevo.usuario.codigoempleado}" maxlength="20"
+							required="true"
+							requiredMessage="#{msg['usuarios.requerido.id_usuario']}">
+						</p:inputText>
+						
+						<p:outputLabel for="n_nombresUsuario" value="#{msg['usuarios.tb_nombres']}" style="font-size:15px;font-family:verdana;"/>
+						<p:inputText id="n_nombresUsuario" style="width:100px;font-size:11px;font-family:verdana;"
+							value="#{usuariosBeanNuevo.usuario.nombres}" maxlength="40"
+							required="true"
+							requiredMessage="#{msg['usuarios.requerido.tb_nombres']}" >
+						</p:inputText>
+						
+						<p:outputLabel for="n_apellidosUsuario" value="#{msg['usuarios.tb_apellidos']}" style="font-size:15px;font-family:verdana;"/>
+						<p:inputText id="n_apellidosUsuario" style="width:100px;font-size:11px;font-family:verdana;"
+							value="#{usuariosBeanNuevo.usuario.apellidos}" maxlength="40"
+							required="true"
+							requiredMessage="#{msg['usuarios.requerido.tb_apellidos']}" >
+						</p:inputText>
+						<p:outputLabel for="n_tipoDoc" value="#{msg['usuarios.tipodoc']}" style="font-size:15px;font-family:verdana;"/>
+						<p:selectOneMenu id="n_tipoDoc" style="font-size: 11px;font-family: verdana;color: #000000;"
+								value="#{usuariosBeanNuevo.usuario.tipodocumento}" required="true"
+								requiredMessage="#{msg['usuarios.requerido.tipodoc']}">
+								<f:selectItem itemLabel="#{msg['usuarios.slct_tipodoc']}" />
+								<f:selectItems value="#{usuariosBeanNuevo.tipoDocumento}"
+									var="proy" itemLabel="#{proy.descripcion}"
+									itemValue="#{proy.id.codigo}" />
+						</p:selectOneMenu>
+						<p:outputLabel for="n_numeroDoc" value="#{msg['usuarios.nodoc']}" style="font-size:15px;font-family:verdana;"/>
+						<p:inputText id="n_numeroDoc" style="width:100px;font-size:11px;font-family:verdana;"
+							value="#{usuariosBeanNuevo.usuario.numerodocumento}"
+							maxlength="20" required="true"
+							requiredMessage="#{msg['usuarios.requerido.nodoc']}"
+							converterMessage="#{msg['usuarios.converter.nodoc']}">
+							<f:validator validatorId="numeroDocumentoValidator" />
+						</p:inputText>
+						<p:outputLabel for="n_empresaUsuario" value="#{msg['usuarios.empresa']}" style="font-size:15px;font-family:verdana;"/>
+						<p:selectOneMenu id="n_empresaUsuario" style="font-size: 11px;font-family: verdana;color: #000000;"
+							value="#{usuariosBeanNuevo.usuario.empresa}" required="true"
+							requiredMessage="#{msg['usuarios.requerido.empresa']}">
+							<f:selectItem itemLabel="#{msg['usuarios.slct_empresa']}" />
+							<f:selectItems value="#{usuariosBeanNuevo.empresa}" var="proy"
+								itemLabel="#{proy.descripcion}"
+								itemValue="#{proy.id.codigo}" />
+						</p:selectOneMenu>
+						<p:outputLabel for="n_cargoUsuario" value="#{msg['usuarios.cargo']}" style="font-size:15px;font-family:verdana;"/>
+						<p:selectOneMenu id="n_cargoUsuario" style="font-size: 11px;font-family: verdana;color: #000000;"
+							value="#{usuariosBeanNuevo.usuario.cargo}" required="true"
+							requiredMessage="#{msg['usuarios.requerido.cargo']}">
+							<f:selectItem itemLabel="#{msg['usuarios.slct_cargo']}" />
+							<f:selectItems value="#{usuariosBeanNuevo.cargos}" var="proy"
+								itemLabel="#{proy.descripcion}"
+								itemValue="#{proy.id.codigo}" />
+						</p:selectOneMenu>
+						
+						<p:outputLabel for="n_areaUsuario" value="#{msg['usuarios.area']}" style="font-size:15px;font-family:verdana;"/>
+						<p:selectOneMenu id="n_areaUsuario" style="font-size: 11px;font-family: verdana;color: #000000;"
+							value="#{usuariosBeanNuevo.usuario.area}" required="true"
+							requiredMessage="#{msg['usuarios.requerido.area']}">
+							<f:selectItem itemLabel="#{msg['usuarios.slct_areas']}" />
+							<f:selectItems value="#{usuariosBeanNuevo.areas}" var="proy"
+								itemLabel="#{proy.descripcion}"
+								itemValue="#{proy.id.codigo}" />
+							<f:ajax event="change" execute="@this" />
+						</p:selectOneMenu>
+						<p:outputLabel for="n_rolUsuario" value="#{msg['usuarios.tb_rol']}" style="font-size:15px;font-family:verdana;"/>
+						<p:selectOneMenu id="n_rolUsuario" style="font-size: 11px;font-family: verdana;color: #000000;"
+							value="#{usuariosBeanNuevo.codRol}"
+							required="true"
+							requiredMessage="#{msg['usuarios.requerido.tb_rol']}">
+							<f:selectItem itemLabel="#{msg['usuarios.slct_rol']}" />
+							<f:selectItems value="#{usuariosBeanNuevo.rol}" var="proy"
+								itemLabel="#{proy.nombre}" itemValue="#{proy.codigo}" />
+							<p:ajax event="change"  update="panelPermisosNuevos" listener="#{usuariosBeanNuevo.obtenerPermisosRol}" />
+						</p:selectOneMenu>
+						<p:outputLabel for="n_estadoUsuario" value="#{msg['estado.label']}" style="font-size:15px;font-family:verdana;"/>
+						<p:selectOneMenu id="n_estadoUsuario" style="font-size: 11px;font-family: verdana;color: #000000;"
+								value="#{usuariosBeanNuevo.usuario.estado}" required="true"
+								requiredMessage="#{msg['usuarios.requerido.tb_estado']}">
+								<f:selectItem itemLabel="#{msg['usuarios.slct_estado']}" />
+								<f:selectItem itemValue="A"
+									itemLabel="#{msg['estado.activo']}" />
+								<f:selectItem itemValue="I"
+									itemLabel="#{msg['estado.inactivo']}" />
+						</p:selectOneMenu>
+						<p:outputLabel for="n_proyUsuario" value="#{msg['a.proyecto']}" style="font-size:15px;font-family:verdana;"/>
+						<p:selectOneMenu id="n_proyUsuario" style="font-size: 11px;font-family: verdana;color: #000000;"
+								value="#{usuariosBeanNuevo.codProyecto}" valueChangeListener="#{usuariosBeanNuevo.cambioProyecto}"
+								required="true"
+								requiredMessage="#{msg['usuarios.requerido.proyecto']}">
+								<f:selectItem itemLabel="#{msg['usuarios.slct_proyecto']}" />
+													<f:selectItems value="#{usuariosBeanNuevo.proyectos}"
+														var="proy" itemLabel="#{proy.nombre}"
+														itemValue="#{proy.codigo}" />
+								
+								<f:ajax event="change" execute="n_proyUsuario" render="n_lnUsuario" >
+								</f:ajax>
+						</p:selectOneMenu>
+						<p:outputLabel for="n_lnUsuario" value="#{msg['a.lineaNegocio']}" style="font-size:15px;font-family:verdana;"/>
+						<p:selectOneMenu id="n_lnUsuario" style="font-size: 11px;font-family: verdana;color: #000000;"
+							value="#{usuariosBeanNuevo.codLineaNegocio}"
+							required="true"
+							requiredMessage="#{msg['usuarios.requerido.tb_lnegocio']}">
+							<f:selectItem itemLabel="#{msg['usuarios.slct_ln']}" />
+							<f:selectItems value="#{usuariosBeanNuevo.lineasNegocio}"
+												var="ln" itemLabel="#{ln.nombre}" itemValue="#{ln.codigo}" />
+						</p:selectOneMenu>
+					</h:panelGrid>					
+				</p:fieldset>&nbsp;
+				
+				<p:fieldset legend="Permisos rol #{usuariosBeanNuevo.usuario.TMihRol.nombre}" id="panelPermisosNuevos" >
+				
+					<table id="n_permisosUsuario">
+						<tr>
+							<td><p:outputLabel style="font-size:15px;font-family:verdana;"
+									value="#{msg['usuarios.permisos.adm_usuarios']}" /></td>
+							<td><p:selectBooleanCheckbox id="n_admUsuario"
+									value="#{usuariosBeanNuevo.admusuario}"
+									disabled="#{usuariosBeanNuevo.esSudo}" /></td>
+							<td><p:outputLabel style="font-size:15px;font-family:verdana;"
+									value="#{msg['usuarios.permisos.adm_parametros']}" /></td>
+							<td><p:selectBooleanCheckbox id="n_parametros"
+									value="#{usuariosBeanNuevo.parametros}"
+									disabled="#{usuariosBeanNuevo.esSudo}" /></td>
+						</tr>
+						<tr>
+							<td><p:outputLabel style="font-size:15px;font-family:verdana;"
+									value="#{msg['usuarios.permisos.adm_entidades']}" /></td>
+							<td><p:selectBooleanCheckbox id="n_entidades"
+									value="#{usuariosBeanNuevo.entidades}"
+									disabled="#{usuariosBeanNuevo.esSudo}" /></td>
+							<td><p:outputLabel style="font-size:15px;font-family:verdana;"
+									value="#{msg['usuarios.permisos.adm_carga']}" /></td>
+							<td><p:selectBooleanCheckbox id="n_carga"
+									value="#{usuariosBeanNuevo.carga}"
+									disabled="#{usuariosBeanNuevo.esSudo}" /></td>
+						</tr>
+						<tr>
+							<td><p:outputLabel style="font-size:15px;font-family:verdana;"
+									value="#{msg['usuarios.permisos.adm_cons_puntual']}" /></td>
+							<td><p:selectBooleanCheckbox id="n_consultaPuntual"
+									value="#{usuariosBeanNuevo.consultapuntual}"
+									disabled="#{usuariosBeanNuevo.esSudo}" /></td>
+							<td><p:outputLabel style="font-size:15px;font-family:verdana;"
+									value="#{msg['usuarios.permisos.adm_cons_masiva']}" /></td>
+							<td><p:selectBooleanCheckbox id="n_consultaMasiva"
+									value="#{usuariosBeanNuevo.consultamasiva}"
+									disabled="#{usuariosBeanNuevo.esSudo}" /></td>
+						</tr>
+						<tr>
+							<td><p:outputLabel style="font-size:15px;font-family:verdana;"
+									value="#{msg['usuarios.permisos.adm_auditoria']}" /></td>
+							<td><p:selectBooleanCheckbox id="n_auditoria"
+									value="#{usuariosBeanNuevo.auditoria}"
+									disabled="#{usuariosBeanNuevo.esSudo}" /></td>
+							<td><p:outputLabel style="font-size:15px;font-family:verdana;"
+									value="#{msg['usuarios.permisos.adm_depuracion']}" /></td>
+							<td><p:selectBooleanCheckbox id="n_depuracion"
+									value="#{usuariosBeanNuevo.depuracion}"
+									disabled="#{usuariosBeanNuevo.esSudo}" /></td>
+						</tr>
+						<tr>
+							<td><p:outputLabel style="font-size:15px;font-family:verdana;"
+									value="#{msg['usuarios.permisos.adm_autorizar']}" /></td>
+							<td colspan="3"><p:selectBooleanCheckbox
+									id="n_autorizar" value="#{usuariosBeanNuevo.autorizar}"
+									disabled="#{usuariosBeanNuevo.esSudo}" /></td>
+						</tr>
+					</table>
+				</p:fieldset>
+				
+				<table align="center">
+					<tr>
+						<td>
+						<p:commandButton value="#{msg['boton.guardar']}" icon="ui-icon-check" action="#{usuariosBeanNuevo.guardar()}" update=":usuarios:tableUsuarios, mensaje, form_nuevoUsr"  />
+						<p:commandButton value="#{msg['boton.cancelar']}"  icon="ui-icon-close" immediate="true" onclick="PF('wnuevoUsr').hide();"/>
+						</td>
+					</tr>
+				
+				</table>
+					
+				
+				
+			</h:form>
+		
+		</p:dialog>
+			<br></br>
+			
+		<div class="sub">Creación de usuario</div> <br></br>
+		<div>
+			<p:commandButton value="#{msg['usuarios.btn_nuevo']}" oncomplete="PF('wnuevoUsr').show();" update=":form_nuevoUsr,nuevoUsr" process="@this" action="#{usuariosBeanNuevo.mostrarPermisosUsuario()}"
+							title="#{msg['usuarios.title.nuevo_usr']}" icon="ui-icon-check" >
+				<f:setPropertyActionListener target="#{usuariosBeanNuevo.usuario}" value="#{usuariosBeanNuevo.nuevoUsuario()}" />
+			</p:commandButton>
+		</div>	
+		
+<!-- 		<p:fieldset legend="#{msg['usuarios.title.creacion']}"> -->
+		
+<!-- 			<h:form id="nuevoUsuario"> -->
+<!-- 				<table> -->
+<!-- 					<tr> -->
+<!-- 						<td class="boton"> -->
+<!-- 							<p:commandButton value="#{msg['usuarios.btn_nuevo']}" oncomplete="PF('wnuevoUsr').show();" update=":form_nuevoUsr,nuevoUsr" process="@this" action="#{usuariosBeanNuevo.mostrarPermisosUsuario()}" -->
+<!-- 							title="#{msg['usuarios.title.nuevo_usr']}" icon="ui-icon-check" > -->
+<!-- 								<f:setPropertyActionListener target="#{usuariosBeanNuevo.usuario}" value="#{usuariosBeanNuevo.nuevoUsuario()}" /> -->
+<!-- 							</p:commandButton> -->
+
+<!-- 						</td> -->
+<!-- 					</tr> -->
+<!-- 				</table> -->
+<!-- 			</h:form> -->
+<!-- 		</p:fieldset> -->
+
+
+	<!-- Preload -->
+		<p:ajaxStatus onstart="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()" />
+
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+		    <center><p:graphicImage library="images" name="preloader.gif" /></center><br/>
+			<p:outputLabel value="#{msg['cargando']}" styleClass="letras" />				
+		</p:dialog>
+		
+
+	</ui:define>
+</ui:composition>
+</html>

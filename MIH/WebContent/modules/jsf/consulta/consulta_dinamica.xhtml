@@ -1,0 +1,242 @@
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+		
+	<ui:composition template="${pageContext.request.contextPath}/modules/jsf/template/template.xhtml">
+		
+		<ui:define name="content">
+			<h:form id="formprincipal">
+					<div class="ui-g">			
+						<div class="ui-g-5 titulo">
+							<p:outputLabel value="#{msg['consultas.dinamicas.titulo']}" />
+						</div>
+						<div class="ui-g-5 "></div>
+						<div class="ui-g-2">
+			
+							<h:panelGroup id="fade">
+								<h:graphicImage styleClass="block_tooltip" library="images" name="icon_help.png" />
+							</h:panelGroup>
+							<p:tooltip id="toolTipFade" for="fade" styleClass="tooltip" trackMouse="true" position="left">
+								       <h:outputText value="#{msg['consultas.dinamicas.ayuda1']}"/>
+								       <br></br>
+						               <h:outputText value="#{msg['consultas.dinamicas.ayuda2']}"/>
+						               <br></br>
+						        	   <h:outputText value="#{msg['consultas.dinamicas.ayuda3']}"/>
+						        	   <br></br>
+						               <h:outputText value="#{msg['consultas.dinamicas.ayuda4']}"/>
+						               <br></br>
+						               <h:outputText value="#{msg['consultas.dinamicas.ayuda5']}"/>
+						               <br></br>
+						               <h:outputText value="#{msg['consultas.dinamicas.ayuda6']}"/>
+						               <br></br>
+						               <h:outputText value="#{msg['consultas.dinamicas.ayuda7']}"/>
+						               <br></br>
+						               <h:outputText value="#{msg['consultas.dinamicas.ayuda8']}"/>
+						               <br></br>
+							</p:tooltip>
+			
+						</div>
+					</div>
+		
+
+	
+			
+			
+				<p:fieldset legend="#{msg['consultas.dinamicas.predefinida']}">
+					<p:panel header="#{msg['consultas.dinamicas.predefinida']}">
+						<h:panelGrid columns="2">
+							<p:selectOneMenu id="codConsulta" value="#{consultaDinamicaBean.consultadoId}" title="#{msg['consultas.dinamicas.predefinida']}"> 
+							<f:selectItem itemLabel="#{msg['consultas.dinamicas.selectConsulta']}"/>
+							<f:selectItems value="#{consultaDinamicaBean.consultas}" var="con" itemLabel="#{con.descripcion}" itemValue="#{con.codigo}" />
+<!--						<a4j:ajax event="change" render="selectEntidad1,labelEntidad1,selectEntidad2,labelEntidad2,estructura1,estructura2,campos,selectForanea"  -->
+<!--						execute="@this" listener="#{consultaDinamicaBean.consultarConsulta}"/> -->
+							</p:selectOneMenu>
+							<p:commandButton action="#{consultaDinamicaBean.limpiarCampos()}"  id="cancelarConsulta" execute="@this" value="#{msg['boton.limpiar']}"/>
+						</h:panelGrid>
+					</p:panel>
+				</p:fieldset>&nbsp;
+				
+				<p:fieldset legend="#{msg['consultas.dinamicas.fc_estructuras']}">
+					<p:panel header="#{msg['consultas.dinamicas.fc_estructuras']}">
+						<h:panelGrid columns="2">
+							<p:outputLabel value="#{msg['consultas.dinamicas.estructura1']} :"/>
+							<p:selectOneMenu id="selectEntidad1" title="#{msg['consultas.title.tabla1']}"
+								value="#{consultaDinamicaBean.entidad1.nombre}" required="true" requiredMessage="#{msg['consultas.dinamicas.requerido.entidad_uno']}">
+								<f:selectItem itemLabel="#{msg['consultas.dinamicas.slct_tab1']}" ></f:selectItem>
+								<f:selectItems value="#{consultaDinamicaBean.nombreEntidades}" var="nombreEntidad" itemLabel="nombreEntidad" itemValue="nombreEntidad" />
+<!-- 								<f:ajax event="change" execute="selectEntidad1" render=":formpicklist:primerpanel" /> -->
+									<f:ajax event="change" listener="#{consultaDinamicaBean.llenarLista1()}" render=":picklistbase:pickList1"/>
+							</p:selectOneMenu>
+							
+							<p:outputLabel value="#{msg['consultas.dinamicas.estructura2']} :"/>
+							<p:selectOneMenu id="selectEntidad2" title="#{msg['consultas.title.tabla2']}"
+								value="#{consultaDinamicaBean.entidad2.nombre}" required="true" requiredMessage="#{msg['consultas.dinamicas.requerido.entidad_dos']}">
+								<f:selectItem itemLabel="#{msg['consultas.dinamicas.slct_tab2']}" itemValue=""></f:selectItem>
+								<f:selectItems value="#{consultaDinamicaBean.nombreEntidades}" var="nombreEntidad" itemLabel="nombreEntidad" itemValue="nombreEntidad" />
+								<f:ajax event="change" listener="#{consultaDinamicaBean.llenarLista2()}" render=":picklistbase2:pickList2"/>
+							</p:selectOneMenu>
+							<p:commandButton action="#{consultaDinamicaBean.limpiarCampos()}"  id="cancelar1" execute="@this" value="#{msg['boton.cancelar']}"/>
+						</h:panelGrid>							
+					</p:panel>				
+				</p:fieldset>&nbsp;
+				
+				</h:form>
+				
+				<!-- PickList -->
+				<p:fieldset legend="#{msg['consultas.dinamicas.campos_estructuras']}">
+				
+					<div class="ui-g">
+						<div class="ui-g-4"></div>
+						<div class="ui-g-4">
+							<p:outputLabel value="Primera tabla"/><br></br>					
+							<h:form id="picklistbase">
+								<p:pickList id="pickList1" value="#{consultaDinamicaBean.campos}" var="campos" itemValue="#{campos}" itemLabel="#{campos}" converter="entityConverter">
+									<f:ajax event="transfer" listener="#{consultaDinamicaBean.onTransfer1}"/>
+								</p:pickList>
+							</h:form>							
+						</div>
+						<div class="ui-g-4"></div>
+					</div>
+					
+					<div class="ui-g">
+						<div class="ui-g-4"></div>
+						<div class="ui-g-4">
+							<p:outputLabel value="Segunda tabla"/><br></br>					
+							<h:form id="picklistbase2">
+								<p:pickList  id="pickList2" value="#{consultaDinamicaBean.campos2}" var="campos2" itemValue="#{campos2}" itemLabel="#{campos2}" converter="entityConverter">
+									<f:ajax event="transfer" listener="#{consultaDinamicaBean.onTransfer2}" render=":formforanea:selectForanea"/>
+								</p:pickList>
+								
+								
+							</h:form>		
+						</div>
+						<div class="ui-g-4"></div>
+					</div>
+					
+					<h:form id="formforanea">
+						<div class="ui-g">
+						<div class="ui-g-4"></div>
+						<div class="ui-g-4">
+							<h:panelGrid columns="2">
+									<p:outputLabel value="#{msg['consultas.dinamicas.relacion']}"/>
+									<p:selectOneMenu id="selectForanea" value="#{consultaDinamicaBean.foranea}" title="#{msg['consultas.title.relacion']}">
+										<f:selectItem itemValue="#{consultaDinamicaBean.foranea}" itemLabel="#{msg['consultas.dinamicas.slct_relacion']}" ></f:selectItem>
+										<f:selectItems value="#{consultaDinamicaBean.camposSeleccionadosE2}" var="campo" itemValue="#{campo.nombreCorto}" />
+										<f:converter converterId="ForaneaConverter" />
+				<!-- 						<a4j:ajax event="change" render="botones,buttonPanel" execute="@this" listener="#{consultaDinamicaBean.activaBotones}"/> -->
+											<f:ajax event="change" listener="consultaDinamicaBean.activaBotones"/>	
+									</p:selectOneMenu>
+							</h:panelGrid>
+						</div>
+						<div class="ui-g-4"></div>
+						
+					</div>
+				
+					</h:form>
+					
+														
+				</p:fieldset>&nbsp;
+				
+				<p:fieldset>
+				
+				<table align="center">
+							<tr>
+								<td colspan="5" align="center">
+								</td>
+							</tr>
+							<tr>
+								<td colspan="4" align="left" class="boton">
+										<p:commandButton value="#{msg['boton.consultar']}" id="consultar"
+											action="#{consultaDinamicaBean.consultar}" update="datos_consulta">
+				
+										</p:commandButton>
+										
+								</td>
+								<td colspan="4" align="left" class="boton">
+										<p:commandButton value="#{msg['boton.guardar']}" id="guardar" 
+											action="#{consultaDinamicaBean.validarGuardar}" onclick="PF('wdialogo_confirmGuardarCON').show();">
+										</p:commandButton>
+								</td>
+								<td colspan="4" align="left" class="boton">
+										<p:commandButton value="#{msg['boton.eliminar']}" id="eliminar" render="codConsulta" execute="@this"
+											 >
+										</p:commandButton>
+								</td>
+								<td align="left" class="boton">
+									<p:commandButton action="#{consultaDinamicaBean.limpiarCampos()}"  id="cancelar" execute="@this"
+											value="#{msg['boton.cancelar']}"/>
+								</td>
+							</tr>
+						</table>
+				
+				</p:fieldset>&nbsp;
+				
+				<p:fieldset legend="#{msg['consultas.dinamicas.resultado']}">
+				
+				<div style="overflow-x: scroll; width: 1025px;">
+					    <p:dataTable id="datos_consulta" var="registro" value="#{consultaDinamicaBean.lazyModel}" emptyMessage="#{msg['sin.resultados']}"
+					    	paginator="true" rows="10" paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+					    	rowsPerPageTemplate="5,10,15,20,50" lazy="true" >                      
+					        <p:columns value="#{consultaDinamicaBean.columnas}" var="column"   
+					                    sortBy="#{column}" filterBy="#{column}">  
+					            <f:facet name="header">  
+					                #{column}  
+					            </f:facet>  
+					            #{registro[column]}  
+					        </p:columns>  
+					    </p:dataTable>
+				    </div>
+				
+				</p:fieldset>
+				
+			<!-- guardar campo -->
+		
+		
+	<!-- guardar campo -->
+		
+			<p:dialog id="confirmGuardarCON" widgetVar="wdialogo_confirmGuardarCON" header="Confirmación" modal="true" resizable="false" closeOnEscape="true" draggable="true" >
+			<p:growl id="guardado_exitoso" showSummary="false" showDetail="true" life="8000" />
+				<h:form id="guardarform">
+					<div class="divBoton">
+					 <table>
+					  <tr><td>
+					    <p:outputLabel value="#{msg['consultas.dinamicas.cofirmar']}" /></td>
+					  </tr>
+					  <tr><td>
+						<p:inputText id="descripcion" value="#{consultaDinamicaBean.constaDesc}" 
+						maxlength="90" size="90"/></td>
+					  </tr>
+					  <tr><td>	
+						<p:commandButton value="#{msg['boton.guardar']}"
+							action="#{consultaDinamicaBean.guardarConsulta}"  oncomplete="PF('wdialogo_confirmGuardarCON').hide();" update=":formprincipal:codConsulta"/>
+							
+						<p:commandButton value="#{msg['boton.cancelar']}"
+							action="#{consultaDinamicaBean.ocultarGuardarConsulta}" 
+							onclick="PF('wdialogo_confirmGuardarCON').hide();"
+							/></td>
+					   </tr>		
+					</table>	
+					</div>
+				</h:form>
+			</p:dialog>	
+									
+	
+
+<!-- Preload -->
+			<p:ajaxStatus onstart="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()" />
+ 
+			<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+			    <center><p:graphicImage library="images" name="preloader.gif" /></center><br/>
+				<p:outputLabel value="#{msg['cargando']}" styleClass="letras" />				
+			</p:dialog>
+
+			
+		</ui:define>
+	</ui:composition>
+
+</html>

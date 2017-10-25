@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:p="http://primefaces.org/ui">
+
+
+<h:body>
+
+	<ui:composition
+		template="${pageContext.request.contextPath}/modules/jsf/template/template.xhtml">
+		<ui:param name="title" value="Generar Índice" />
+		
+		<ui:define name="content">
+		
+		<div class="ui-g">
+			<div class="ui-g-5 titulo">
+				<p:outputLabel value="#{msg['gIndice.titulo']}"/>
+			</div>
+			<div class="ui-g-5"></div>
+			<div class="ui-g-2">
+					<h:panelGroup id="fade">
+					<h:graphicImage styleClass="block_tooltip" library="images"
+						name="icon_help.png" />
+				</h:panelGroup>
+				<p:tooltip id="toolTipFade" for="fade" styleClass="tooltip">
+						   <h:outputText value="#{msg['gIndice.ayuda1']}"/>
+						   <br></br>
+			               <h:outputText value="#{msg['gIndice.ayuda2']}"/>
+			               <br></br>
+			               <h:outputText value="#{msg['gIndice.ayuda3']}"/>
+			               <br></br>
+			               <h:outputText value="#{msg['gIndice.ayuda4']}"/>
+			               <br></br>
+			               <h:outputText value="#{msg['gIndice.ayuda5']}"/>
+			               <br></br>
+			               <h:outputText value="#{msg['gIndice.ayuda6']}"/>
+				</p:tooltip>
+				
+			</div>
+		</div>
+
+
+			<p:growl id="confirmacion" showSummary="false" showDetail="true" life="8000" />	
+
+			<p:fieldset legend="#{msg['gIndice.subtitulo']}">
+			
+				<h:panelGrid columns="3">
+					<p:outputLabel value="#{msg['gIndice.ruta']}" />&nbsp;
+					<p:outputLabel value="#{generarIndiceBean.ruta}"/>
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton action="#{generarIndiceBean.generar}" title="#{msg['mantenimiento.title.infobtn']}" value="#{msg['boton.generar']}" update="confirmacion"/>
+				</h:panelGrid>
+			
+			</p:fieldset>
+
+
+				
+	
+
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

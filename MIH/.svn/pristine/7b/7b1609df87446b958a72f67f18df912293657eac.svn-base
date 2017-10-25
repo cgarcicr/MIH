@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:body>
+	<ui:composition	template="${pageContext.request.contextPath}/modules/jsf/template/template.xhtml">
+	
+		<ui:define name="content">
+
+		<div class="ui-g">
+				<div class="ui-g-5 titulo">
+					<p:outputLabel value="#{msg['sesion.titulo']}" />
+				</div>
+				<div class="ui-g-5"></div>
+				<div class="ui-g-2">
+					<h:panelGroup id="fade">
+						<h:graphicImage styleClass="block_tooltip" library="images"
+							name="icon_help.png" />
+					</h:panelGroup>
+					<p:tooltip id="toolTipFade" for="fade" styleClass="tooltip"
+						trackMouse="true" position="left">
+						<h:outputText value="#{msg['sesion.ayuda1']}" />
+						<br></br>
+						<h:outputText value="#{msg['sesion.ayuda2']}" />
+						<br></br>
+						<h:outputText value="#{msg['sesion.ayuda3']}" />
+						<br></br>
+					</p:tooltip>
+				</div>
+			</div>
+
+
+				<div class="ui-g">
+					<div class="ui-g-1"></div>
+					<div class="ui-g-10">
+				<h:form id="sesiones">
+				
+				<p:remoteCommand name="eliminar" actionListener="#{controlSesionesBean.eliminar()}" process="@this" update="tabla" />
+
+					<p:dataTable emptyMessage="Sesión eliminada." id="tabla" var="sesion" value="#{controlSesionesBean.sesionsList}">
+
+						<p:column width="7" styleClass="letras" headerText="#{msg['sesion.usuario']}">
+							<p:outputLabel value="#{sesion.idUsuario}"/>
+						</p:column>
+
+						<p:column width="7" styleClass="letras"  headerText="#{msg['sesion.nombre']}">
+							<p:outputLabel value="#{sesion.nombreUsuario}" />
+						</p:column>
+
+						<p:column width="10" styleClass="letras" headerText="#{msg['sesion.id']}">
+							<p:outputLabel value="#{sesion.idSesion}"/>
+						</p:column>
+
+						<p:column width="7" styleClass="letras" headerText="#{msg['sesion.fecha']}">
+							<p:outputLabel value="#{sesion.fechaLogin}"/>							
+						</p:column>
+						
+						<p:column width="7" styleClass="letras" headerText="#{msg['entidades.botones']} ">
+						
+								<p:commandLink  action="#{controlSesionesBean.eliminar}" update="tabla">
+									<p:graphicImage library="images" name="ico-salir.png" with="16px" height="16px" />
+									<p:confirm header="Eliminar sesión" message="Desea eliminar la sesión?"/>	
+									<f:setPropertyActionListener target="#{controlSesionesBean.editSesion}" value="#{sesion}" />
+								</p:commandLink>
+						
+							
+						</p:column>
+
+					</p:dataTable>
+						
+								<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+									<p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+									<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+									<p:outputLabel value="#{controlSesionesBean.editSesion.idUsuario}"/>									
+								</p:confirmDialog>		
+					
+					</h:form>
+												
+
+						
+					</div>
+					<div class="ui-g-1"></div>
+				</div>	
+			
+
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

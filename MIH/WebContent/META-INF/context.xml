@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+	
+	<!-- TOMCAT -->
+	
+	<!-- DLLO -->
+	<Resource name="jdbc/semihDataSource" auth="Container" type="javax.sql.DataSource"
+               maxActive="100" maxIdle="30" maxWait="10000"
+               username="SYSTEM" password="d3c0ntr0lA" driverClassName="oracle.jdbc.driver.OracleDriver"
+               url="jdbc:oracle:thin:@SBMEDLAPPROYCG6:1521:xe"/>
+     
+    <!-- DLLO -->
+<!-- 	<Resource name="jdbc/semihDataSource" auth="Container" type="javax.sql.DataSource" -->
+<!--                maxActive="100" maxIdle="30" maxWait="10000" -->
+<!--                username="schsemih" password="schsemih" driverClassName="oracle.jdbc.driver.OracleDriver" -->
+<!--                url="jdbc:oracle:thin:@52.44.17.86:1528:SPHDEVMG"/>            -->
+
+	<!-- PBAS -->
+<!-- 	<Resource name="jdbc/semihDataSource" auth="Container" type="javax.sql.DataSource" -->
+<!--                maxActive="100" maxIdle="30" maxWait="10000" -->
+<!--                username="SEMIH" password="semih" driverClassName="oracle.jdbc.driver.OracleDriver" -->
+<!--                url="jdbc:oracle:thin:@172.23.85.50:1521:TESTDB"/> -->
+
+	<!-- CERTIFICACION -->
+<!-- 	<Resource name="jdbc/semihDataSource" auth="Container" type="javax.sql.DataSource" -->
+<!--                maxActive="100" maxIdle="30" maxWait="10000" -->
+<!--                username="SEMIH" password="semih" driverClassName="oracle.jdbc.driver.OracleDriver" -->
+<!--                url="jdbc:oracle:thin:@172.23.85.50:1521:CERTDB"/> -->
+
+	<!-- PBAS SOPHOS EXTERNO -->
+<!-- 	<Resource name="jdbc/semihDataSource" auth="Container" type="javax.sql.DataSource" -->
+<!--                maxActive="100" maxIdle="30" maxWait="10000" -->
+<!--                username="SEMIH" password="semih" driverClassName="oracle.jdbc.driver.OracleDriver" -->
+<!--                url="jdbc:oracle:thin:@200.116.4.210:1521:DEVDB"/> -->
+
+	<!-- PBAS PANAMA -->
+<!-- 	<Resource name="jdbc/semihDataSource" auth="Container" type="javax.sql.DataSource" -->
+<!--                maxActive="100" maxIdle="30" maxWait="10000" -->
+<!--                username="SEMIH" password="SEMIH" driverClassName="oracle.jdbc.driver.OracleDriver" -->
+<!--                url="jdbc:oracle:thin:@166.26.3.138:1521:SEMIHDEV"/> -->
+
+	<!-- FIN TOMCAT -->
+</Context>

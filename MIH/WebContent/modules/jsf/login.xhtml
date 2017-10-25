@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<!--  <h:outputStylesheet library="css" name="Site.css" /> -->
+	<h:outputStylesheet library="css" name="styleLogin.css" />
+	<title>MIH</title>
+</h:head>
+
+<h:body>
+
+	<div class="ui-g">
+		<div class="ui-g-4"></div>
+
+
+		<div class="ui-g-4">
+		
+			<div class="ui-g-4 logoMih">        		
+        		<h:graphicImage library="images" name="logoMih.png" width="200" height="96" />
+        	</div>
+		
+		
+
+			<center>
+
+				<h:form>
+					<div class="caja-login1">
+						<div class="titulo">MIH</div>
+					</div>
+
+					<div class="caja-login2">
+
+						<div class="label1">
+							<p:outputLabel value="Usuario:" />
+						</div>
+
+						<div class="input1">
+							<p:inputText value="#{loginBean.userName}" />
+
+						</div>
+
+
+						<div class="label2">
+							<p:outputLabel value="Contraseña:" />
+						</div>
+
+						<div class="input2">
+							<p:password value="#{loginBean.password}" />
+						</div>
+
+						<div class="boton">
+							<p:commandButton value="Iniciar" action="#{loginBean.login}" />
+						</div>
+
+
+					</div>
+
+					<p:messages autoUpdate="true" styleClass="mensajes_validacion"/>
+				</h:form>
+			</center>
+		</div>
+
+
+
+		<div class="ui-g-4"></div>
+	</div>
+
+	<div class="iu-g">
+		<div class="ui-g-12">
+			<div class="styleFooter">
+				<h:outputText value="#{msg.footer}" />
+			</div>
+		</div>
+	</div>
+
+
+</h:body>
+
+
+</html>
